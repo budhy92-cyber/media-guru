@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Portal Media Interaktif CBT B-TEK</title>
+    <!-- Memanggil sistem Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Font Google: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Desain Latar & Font Dasar */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #f0f4f8; /* Biru sangat muda */
+            background-image: radial-gradient(#d7e1ec 1px, transparent 1px);
+            background-size: 20px 20px;
+            margin: 0; 
+            padding: 20px; 
+            color: #333;
+        }
+
+        /* Navigasi Atas */
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: linear-gradient(135deg, #6e8efb, #a777e3); /* Gradien biru-ungu */
+            color: white;
+            padding: 15px 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3); 
+            margin-bottom: 30px; 
+            max-width: 1000px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+        .akun-info { font-weight: 600; font-size: 15px; }
+        .kuota-badge { 
+            background: #ff9f43; /* Oranye ceria */
+            color: white; 
+            padding: 6px 15px; 
+            border-radius: 20px; 
+            font-size: 14px; 
+            margin-left: 10px; 
+            box-shadow: 0 2px 5px rgba(255, 159, 67, 0.4);
+        }
+        .btn-logout { 
+            background: #ff4757; 
+            color: white; 
+            border: none; 
+            padding: 8px 18px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-family: 'Poppins', sans-serif;
+            transition: 0.3s;
+        }
+        .btn-logout:hover { background: #ff6b81; transform: scale(1.05); }
+
+        /* Area Judul & Karakter */
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            position: relative;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .header h1 { 
+            font-size: 28px; 
+            color: #2f3542; 
+            margin-bottom: 5px;
+            background: -webkit-linear-gradient(#6e8efb, #a777e3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p { color: #57606f; font-size: 15px; }
+        
+        /* Dekorasi Karakter Bawaan (Emoji) */
+        .karakter { font-size: 45px; position: absolute; top: -20px; }
+        .karakter-kiri { left: 20px; transform: rotate(-10deg); }
+        .karakter-kanan { right: 20px; transform: rotate(10deg); }
+
+        /* Grid Katalog */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 25px; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding-bottom: 50px;
+        }
+
+        /* Desain Kartu Media */
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
+            display: flex; 
+            flex-direction: column; 
+            transition: all 0.3s ease;
+            border-top: 6px solid #1dd1a1; /* Garis hijau di atas kartu */
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12); 
+            border-top: 6px solid #ff9f43;
+        }
+        
+        /* Hiasan latar airmark di dalam kartu */
+        .card::after {
+            content: '📚';
+            position: absolute;
+            right: -10px;
+            bottom: -15px;
+            font-size: 80px;
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+        .badge-container { z-index: 1; margin-bottom: 12px; }
+        .badge { 
+            display: inline-block; 
+            padding: 5px 10px; 
+            border-radius: 6px; 
+            font-size: 11px; 
+            font-weight: bold;
+            margin-right: 6px; 
+            text-transform: uppercase;
+        }
+        .badge-kelas { background: #eccc68; color: #2f3542; }
+        .badge-mapel { background: #7bed9f; color: #2f3542; }
+        
+        .judul { font-size: 19px; font-weight: 700; margin: 0 0 10px 0; color: #2f3542; z-index: 1; }
+        .deskripsi { font-size: 13px; color: #747d8c; margin-bottom: 25px; flex-grow: 1; line-height: 1.6; z-index: 1; }
+        
+        /* Tombol Buka Media */
+        .btn-buka { 
+            background: linear-gradient(135deg, #1e90ff, #3742fa); 
+            color: white; 
+            text-align: center; 
+            padding: 12px; 
+            border-radius: 25px; 
+            font-weight: 600; 
+            font-family: 'Poppins', sans-serif;
+            border: none; 
+            cursor: pointer; 
+            width: 100%; 
+            transition: 0.3s;
+            z-index: 1;
+        }
+        .btn-buka:hover { 
+            background: linear-gradient(135deg, #3742fa, #1e90ff); 
+            box-shadow: 0 5px 15px rgba(55, 66, 250, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="akun-info">
+        Halo, <span id="teksEmail">Memuat akun...</span>
+        <span class="kuota-badge">🚀 Kuota Gratis: <span id="teksKuota">-</span></span>
+    </div>
+    <button class="btn-logout" onclick="prosesLogout()">Keluar</button>
+</div>
+
+<div class="header">
+    <div class="karakter karakter-kiri">👨‍🏫</div>
+    <div class="karakter karakter-kanan">👩‍🎓</div>
+    <h1>Katalog Media B-TEK</h1>
+    <p>Pilih dan eksplorasi media interaktif di bawah ini.<br>Setiap media yang dibuka akan mengurangi 1 kuota gratis Anda.</p>
+</div>
+
+<div class="grid-container" id="katalogMedia">
+    <p style="text-align: center; width: 100%; font-weight: bold; color: #6e8efb;">Sedang memuat keajaiban dari server...</p>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://luutehtjtsvivdyipjpy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dXRlaHRqdHN2aXZkeWlwanB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjc5MDgsImV4cCI6MjEwNTY0MzkwOH0.74C0F1UmOOe53ObtIrqnh84MYeTfgW0EQXSgrhLyIeY';
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let dataUser = null;
+    let sisaKuota = 0;
+
+    async function cekLogin() {
+        const { data: { session }, error } = await client.auth.getSession();
+        
+        if (!session) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        dataUser = session.user;
+        // Mengambil nama depan dari email agar sapaan lebih personal
+        const namaPendek = dataUser.email.split('@')[0];
+        document.getElementById('teksEmail').innerText = namaPendek;
+        
+        await muatProfilGuru();
+        await muatKatalog();
+    }
+
+    async function muatProfilGuru() {
+        const { data, error } = await client
+            .from('profil_guru')
+            .select('sisa_kuota')
+            .eq('id', dataUser.id)
+            .single();
+
+        if (data) {
+            sisaKuota = data.sisa_kuota;
+            document.getElementById('teksKuota').innerText = sisaKuota;
+        }
+    }
+
+    async function muatKatalog() {
+        const katalog = document.getElementById('katalogMedia');
+        const { data, error } = await client.from('daftar_media').select('*').order('id', { ascending: false });
+
+        if (data.length === 0) {
+            katalog.innerHTML = '<p style="text-align: center; width: 100%;">Belum ada media yang diunggah.</p>';
+            return;
+        }
+
+        katalog.innerHTML = '';
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="badge-container">
+                    <span class="badge badge-kelas">${item.kelas.replace('-', ' ').toUpperCase()}</span>
+                    <span class="badge badge-mapel">${item.mapel.toUpperCase()}</span>
+                </div>
+                <h3 class="judul">${item.judul}</h3>
+                <p class="deskripsi">${item.deskripsi}</p>
+                <button class="btn-buka" id="btn_${item.id}" onclick="bukaMedia('${item.file_url}', 'btn_${item.id}')">▶ Buka Media</button>
+            `;
+            katalog.appendChild(card);
+        });
+    }
+
+    // FUNGSI: Buka Media & Sistem Premium (WhatsApp)
+    async function bukaMedia(url, idTombol) {
+        if (sisaKuota <= 0) {
+            const mauLangganan = confirm("MAAF, KUOTA GRATIS ANDA HABIS!\n\nSilakan Upgrade Premium untuk mendapatkan akses semua media tanpa batas.\n\nKlik 'OK' untuk menghubungi Admin via WhatsApp.");
+            
+            if (mauLangganan) {
+                // ---> JANGAN LUPA GANTI NOMOR DI BAWAH INI DENGAN NOMOR WA ANDA <---
+                const nomorWA = "6281234567890"; 
+                
+                const pesan = `Halo Admin CBT B-TEK, saya ingin Upgrade Premium agar bisa mengakses semua media interaktif. Akun email saya: ${dataUser.email}`;
+                
+                window.location.href = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
+            }
+            return;
+        }
+
+        const tombol = document.getElementById(idTombol);
+        const teksAsli = tombol.innerText;
+
+        try {
+            tombol.innerText = "⏳ Memuat Aplikasi...";
+            tombol.disabled = true;
+
+            const respon = await fetch(url);
+            const isiHtml = await respon.text();
+
+            sisaKuota -= 1;
+            document.getElementById('teksKuota').innerText = sisaKuota;
+            await client.from('profil_guru').update({ sisa_kuota: sisaKuota }).eq('id', dataUser.id);
+
+            const jendelaBaru = window.open("", "_blank");
+            jendelaBaru.document.open();
+            jendelaBaru.document.write(isiHtml);
+            jendelaBaru.document.close();
+
+        } catch (error) {
+            alert("Gagal memuat media. Pastikan koneksi internet stabil.");
+            console.error(error);
+        } finally {
+            tombol.innerText = teksAsli;
+            tombol.disabled = false;
+        }
+    }
+
+    async function prosesLogout() {
+        await client.auth.signOut();
+        window.location.href = "login.html";
+    }
+
+    cekLogin();
+</script>
+
+</body>
+</html>

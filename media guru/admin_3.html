@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Super Admin - CBT B-TEK</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #f0f4f8;
+            background-image: radial-gradient(#d7e1ec 1px, transparent 1px);
+            background-size: 20px 20px;
+            margin: 0; 
+            padding: 40px 20px; 
+            color: #333;
+        }
+        .container { 
+            max-width: 550px; 
+            background: white; 
+            padding: 35px 30px; 
+            border-radius: 20px; 
+            margin: 0 auto; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-top: 6px solid #ff9f43; /* Garis aksen oranye */
+        }
+        .header-admin { text-align: center; margin-bottom: 25px; }
+        .header-admin h2 { margin: 10px 0 5px 0; color: #2f3542; font-size: 24px; }
+        .header-admin p { color: #747d8c; font-size: 14px; margin: 0; }
+        .karakter { font-size: 50px; line-height: 1; }
+
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #2f3542; font-size: 14px; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px 15px; 
+            margin-bottom: 20px; 
+            border: 2px solid #e1e8ed; 
+            border-radius: 10px; 
+            font-family: 'Poppins', sans-serif; 
+            font-size: 14px; 
+            box-sizing: border-box; 
+            transition: 0.3s;
+            background: #f8f9fa;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #ff9f43; background: white; }
+        
+        button { 
+            width: 100%; 
+            background: linear-gradient(135deg, #ff9f43, #ff6b81); 
+            color: white; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+            padding: 15px; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-family: 'Poppins', sans-serif;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        button:hover { box-shadow: 0 5px 15px rgba(255, 159, 67, 0.4); transform: translateY(-2px); }
+        .file-input-wrapper { background: #fff3e0; padding: 15px; border-radius: 10px; border: 2px dashed #ff9f43; margin-bottom: 20px; text-align: center; }
+        .file-input-wrapper input { margin-bottom: 0; border: none; background: transparent; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-admin">
+        <div class="karakter">⚙️👨‍💻</div>
+        <h2>Panel Admin B-TEK</h2>
+        <p>Unggah media interaktif baru ke dalam katalog.</p>
+    </div>
+
+    <div id="formMedia">
+        <label>📌 Judul Media</label>
+        <input type="text" id="judul" placeholder="Contoh: Kuis Interaktif Tata Surya" required>
+
+        <label>📝 Deskripsi Singkat</label>
+        <textarea id="deskripsi" rows="3" placeholder="Tuliskan tujuan pembelajaran media ini..." required></textarea>
+
+        <label>🏫 Target Kelas</label>
+        <select id="kelas">
+            <option value="kelas-1">Kelas 1</option>
+            <option value="kelas-2">Kelas 2</option>
+            <option value="kelas-3">Kelas 3</option>
+            <option value="kelas-4">Kelas 4</option>
+            <option value="kelas-5">Kelas 5</option>
+            <option value="kelas-6">Kelas 6</option>
+        </select>
+
+        <label>📚 Mata Pelajaran</label>
+        <select id="mapel">
+            <option value="pai">PAI & Budi Pekerti</option>
+            <option value="tematik">Tematik</option>
+            <option value="matematika">Matematika</option>
+            <option value="ipas">IPAS</option>
+        </select>
+
+        <label>📂 Unggah File Media (.html)</label>
+        <div class="file-input-wrapper">
+            <input type="file" id="fileHtml" accept=".html" required>
+        </div>
+
+        <button id="btnSubmit">🚀 Unggah & Simpan ke Server</button>
+        <p id="statusMssg" style="font-weight: 600; text-align: center; margin-top: 20px; font-size: 14px;"></p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('btnSubmit').addEventListener('click', async function() {
+        const btn = document.getElementById('btnSubmit');
+        const status = document.getElementById('statusMssg');
+        
+        try {
+            if (typeof window.supabase === 'undefined') {
+                alert("Koneksi Supabase terblokir! Periksa koneksi internet Anda.");
+                return;
+            }
+
+            const judul = document.getElementById('judul').value;
+            const deskripsi = document.getElementById('deskripsi').value;
+            const kelas = document.getElementById('kelas').value;
+            const mapel = document.getElementById('mapel').value;
+            const fileInput = document.getElementById('fileHtml');
+
+            if (!judul || !deskripsi || fileInput.files.length === 0) {
+                alert("Harap isi Judul, Deskripsi, dan pilih File HTML terlebih dahulu!");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            btn.innerText = "⏳ Memproses...";
+            btn.disabled = true;
+            status.innerText = "Menghubungkan ke server...";
+            status.style.color = "#3742fa";
+
+            const SUPABASE_URL = 'https://luutehtjtsvivdyipjpy.supabase.co';
+            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dXRlaHRqdHN2aXZkeWlwanB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjc5MDgsImV4cCI6MjEwNTY0MzkwOH0.74C0F1UmOOe53ObtIrqnh84MYeTfgW0EQXSgrhLyIeY';
+            const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+            const namaFile = Date.now() + "_" + file.name;
+
+            status.innerText = "Mengunggah file (Tahap 1/2)...";
+            const { data: uploadData, error: uploadError } = await client.storage
+                .from('media-interaktif')
+                .upload(namaFile, file, {
+                    contentType: 'text/html', // Pengunci agar file HTML terbaca
+                    cacheControl: '3600',
+                    upsert: false
+                });
+
+            if (uploadError) throw uploadError;
+
+            const { data: publicUrlData } = client.storage
+                .from('media-interaktif')
+                .getPublicUrl(namaFile);
+            
+            const fileUrl = publicUrlData.publicUrl;
+
+            status.innerText = "Menyimpan data (Tahap 2/2)...";
+            const { error: dbError } = await client
+                .from('daftar_media')
+                .insert([{ judul, deskripsi, kelas, mapel, file_url: fileUrl }]);
+
+            if (dbError) throw dbError;
+
+            status.style.color = "#10b981";
+            status.innerText = "✅ SUKSES! Media berhasil ditambahkan.";
+            alert("BERHASIL! Data sudah masuk ke Supabase.");
+
+            // Bersihkan form
+            document.getElementById('judul').value = '';
+            document.getElementById('deskripsi').value = '';
+            document.getElementById('fileHtml').value = '';
+
+        } catch (error) {
+            alert("ERROR: " + error.message);
+            status.style.color = "#ff4757";
+            status.innerText = "❌ GAGAL: " + error.message;
+        } finally {
+            btn.innerText = "🚀 Unggah & Simpan ke Server";
+            btn.disabled = false;
+        }
+    });
+</script>
+
+</body>
+</html>

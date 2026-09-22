@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Masuk - CBT B-TEK</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #f0f4f8;
+            background-image: radial-gradient(#d7e1ec 1px, transparent 1px);
+            background-size: 20px 20px;
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .container { 
+            background: white; 
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center; 
+            border-top: 6px solid #6e8efb;
+            position: relative;
+        }
+        .karakter { font-size: 55px; margin-bottom: 10px; line-height: 1; }
+        h2 { margin: 0 0 10px 0; color: #2f3542; font-size: 24px; }
+        p.subtitle { color: #747d8c; font-size: 13px; margin-bottom: 25px; line-height: 1.5; }
+        
+        input { 
+            width: 100%; 
+            padding: 14px 15px; 
+            margin-bottom: 15px; 
+            border: 2px solid #e1e8ed; 
+            border-radius: 12px; 
+            font-family: 'Poppins', sans-serif; 
+            font-size: 14px; 
+            box-sizing: border-box; 
+            transition: 0.3s;
+            background: #f8f9fa;
+        }
+        input:focus { outline: none; border-color: #6e8efb; background: white; }
+        
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            margin-bottom: 12px; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 15px; 
+            cursor: pointer; 
+            font-family: 'Poppins', sans-serif; 
+            transition: 0.3s; 
+            color: white; 
+        }
+        .btn-login { background: linear-gradient(135deg, #1e90ff, #3742fa); }
+        .btn-login:hover { box-shadow: 0 5px 15px rgba(55, 66, 250, 0.4); transform: translateY(-2px); }
+        
+        .btn-daftar { background: linear-gradient(135deg, #10b981, #059669); }
+        .btn-daftar:hover { box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4); transform: translateY(-2px); }
+        
+        .status { margin-top: 15px; font-size: 13px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="karakter">👋🏫</div>
+    <h2>Selamat Datang!</h2>
+    <p class="subtitle">Masuk menggunakan email Anda untuk mulai menjelajahi media interaktif CBT B-TEK.</p>
+
+    <input type="email" id="email" placeholder="Alamat Email Anda" required>
+    <input type="password" id="password" placeholder="Kata Sandi (minimal 6 karakter)" required>
+
+    <button class="btn-login" onclick="prosesMasuk()">Masuk (Login)</button>
+    <button class="btn-daftar" onclick="prosesDaftar()">Daftar Akun Baru</button>
+
+    <p id="pesanStatus" class="status"></p>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://luutehtjtsvivdyipjpy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dXRlaHRqdHN2aXZkeWlwanB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjc5MDgsImV4cCI6MjEwNTY0MzkwOH0.74C0F1UmOOe53ObtIrqnh84MYeTfgW0EQXSgrhLyIeY';
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function prosesDaftar() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const status = document.getElementById('pesanStatus');
+
+        // --- SISTEM ANTI KECURANGAN (JEJAK DIGITAL) ---
+        // Mengecek apakah HP/Laptop ini sudah pernah dipakai mendaftar
+        if (localStorage.getItem('pernah_daftar_btek') === 'sudah') {
+            alert("⛔ PERINGATAN!\n\nPerangkat ini (HP/Laptop) sudah pernah digunakan untuk mengklaim kuota gratis.\n\nSilakan gunakan akun lama Anda untuk Login, atau hubungi Admin untuk Upgrade Premium.");
+            return; // Hentikan proses pendaftaran
+        }
+        // ----------------------------------------------
+
+        if (!email || password.length < 6) {
+            alert("Harap isi Email dengan benar dan Password minimal 6 karakter!");
+            return;
+        }
+
+        status.innerText = "⏳ Memproses pendaftaran...";
+        status.style.color = "#3742fa";
+
+        const { data, error } = await client.auth.signUp({ email: email, password: password });
+
+        if (error) {
+            status.innerText = "❌ Gagal: " + error.message;
+            status.style.color = "#ff4757";
+        } else {
+            // --- TANAM JEJAK DIGITAL SETELAH BERHASIL ---
+            localStorage.setItem('pernah_daftar_btek', 'sudah');
+            // ----------------------------------------------
+
+            status.innerText = "✅ Berhasil Mendaftar!";
+            status.style.color = "#10b981";
+            alert("Pendaftaran berhasil! Sistem telah memberi Anda saldo 5 akses gratis. Silakan klik tombol 'Masuk (Login)'.");
+        }
+    }
+
+    async function prosesMasuk() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const status = document.getElementById('pesanStatus');
+
+        if (!email || !password) {
+            alert("Harap isi Email dan Password!");
+            return;
+        }
+
+        status.innerText = "🚀 Mencoba masuk...";
+        status.style.color = "#3742fa";
+
+        const { data, error } = await client.auth.signInWithPassword({ email: email, password: password });
+
+        if (error) {
+            status.innerText = "❌ Gagal: Email/Password salah.";
+            status.style.color = "#ff4757";
+        } else {
+            status.innerText = "✅ Berhasil Masuk! Mengalihkan...";
+            status.style.color = "#10b981";
+            window.location.href = "portal.html";
+        }
+    }
+</script>
+
+</body>
+</html>
