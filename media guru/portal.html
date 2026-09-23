@@ -5,13 +5,12 @@
     <title>Portal Media Interaktif CBT B-TEK</title>
     <!-- Memanggil sistem Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Font Google: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Desain Latar & Font Dasar */
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: #f0f4f8; /* Biru sangat muda */
+            background: #f0f4f8; 
             background-image: radial-gradient(#d7e1ec 1px, transparent 1px);
             background-size: 20px 20px;
             margin: 0; 
@@ -24,7 +23,7 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            background: linear-gradient(135deg, #6e8efb, #a777e3); /* Gradien biru-ungu */
+            background: linear-gradient(135deg, #6e8efb, #a777e3); 
             color: white;
             padding: 15px 25px; 
             border-radius: 12px; 
@@ -36,7 +35,7 @@
         }
         .akun-info { font-weight: 600; font-size: 15px; }
         .kuota-badge { 
-            background: #ff9f43; /* Oranye ceria */
+            background: #ff9f43; 
             color: white; 
             padding: 6px 15px; 
             border-radius: 20px; 
@@ -57,10 +56,10 @@
         }
         .btn-logout:hover { background: #ff6b81; transform: scale(1.05); }
 
-        /* Area Judul & Karakter */
+        /* Area Judul */
         .header { 
             text-align: center; 
-            margin-bottom: 40px; 
+            margin-bottom: 30px; 
             position: relative;
             max-width: 800px;
             margin-left: auto;
@@ -79,11 +78,41 @@
             -webkit-text-fill-color: transparent;
         }
         .header p { color: #57606f; font-size: 15px; }
-        
-        /* Dekorasi Karakter Bawaan (Emoji) */
         .karakter { font-size: 45px; position: absolute; top: -20px; }
         .karakter-kiri { left: 20px; transform: rotate(-10deg); }
         .karakter-kanan { right: 20px; transform: rotate(10deg); }
+
+        /* AREA PENCARIAN & FILTER */
+        .filter-container {
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            border-top: 4px solid #1dd1a1;
+        }
+        .filter-container input, .filter-container select {
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-container input:focus, .filter-container select:focus {
+            border-color: #1dd1a1;
+            background: #f8fffc;
+        }
+        .filter-container input {
+            flex: 2; /* Membuat kotak pencarian lebih panjang */
+        }
 
         /* Grid Katalog */
         .grid-container { 
@@ -104,7 +133,7 @@
             display: flex; 
             flex-direction: column; 
             transition: all 0.3s ease;
-            border-top: 6px solid #1dd1a1; /* Garis hijau di atas kartu */
+            border-top: 6px solid #1dd1a1; 
             position: relative;
             overflow: hidden;
         }
@@ -113,8 +142,6 @@
             box-shadow: 0 12px 25px rgba(0,0,0,0.12); 
             border-top: 6px solid #ff9f43;
         }
-        
-        /* Hiasan latar airmark di dalam kartu */
         .card::after {
             content: '📚';
             position: absolute;
@@ -124,7 +151,6 @@
             opacity: 0.05;
             z-index: 0;
         }
-
         .badge-container { z-index: 1; margin-bottom: 12px; }
         .badge { 
             display: inline-block; 
@@ -137,11 +163,9 @@
         }
         .badge-kelas { background: #eccc68; color: #2f3542; }
         .badge-mapel { background: #7bed9f; color: #2f3542; }
-        
         .judul { font-size: 19px; font-weight: 700; margin: 0 0 10px 0; color: #2f3542; z-index: 1; }
         .deskripsi { font-size: 13px; color: #747d8c; margin-bottom: 25px; flex-grow: 1; line-height: 1.6; z-index: 1; }
         
-        /* Tombol Buka Media */
         .btn-buka { 
             background: linear-gradient(135deg, #1e90ff, #3742fa); 
             color: white; 
@@ -160,13 +184,22 @@
             background: linear-gradient(135deg, #3742fa, #1e90ff); 
             box-shadow: 0 5px 15px rgba(55, 66, 250, 0.4);
         }
+        
+        .data-kosong {
+            text-align: center;
+            width: 100%;
+            grid-column: 1 / -1;
+            color: #ff4757;
+            font-weight: bold;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
 
 <div class="navbar">
     <div class="akun-info">
-        Halo, <span id="teksEmail">Memuat akun...</span>
+        Halo, <span id="teksEmail">Memuat...</span>
         <span class="kuota-badge">🚀 Kuota Gratis: <span id="teksKuota">-</span></span>
     </div>
     <button class="btn-logout" onclick="prosesLogout()">Keluar</button>
@@ -176,11 +209,34 @@
     <div class="karakter karakter-kiri">👨‍🏫</div>
     <div class="karakter karakter-kanan">👩‍🎓</div>
     <h1>Katalog Media B-TEK</h1>
-    <p>Pilih dan eksplorasi media interaktif di bawah ini.<br>Setiap media yang dibuka akan mengurangi 1 kuota gratis Anda.</p>
+    <p>Pilih dan eksplorasi media interaktif di bawah ini.</p>
+</div>
+
+<!-- BARIS FILTER & PENCARIAN -->
+<div class="filter-container">
+    <input type="text" id="inputCari" placeholder="🔍 Cari judul atau deskripsi media..." onkeyup="saringData()">
+    
+    <select id="filterKelas" onchange="saringData()">
+        <option value="semua">-- Semua Kelas --</option>
+        <option value="kelas-1">Kelas 1</option>
+        <option value="kelas-2">Kelas 2</option>
+        <option value="kelas-3">Kelas 3</option>
+        <option value="kelas-4">Kelas 4</option>
+        <option value="kelas-5">Kelas 5</option>
+        <option value="kelas-6">Kelas 6</option>
+    </select>
+    
+    <select id="filterMapel" onchange="saringData()">
+        <option value="semua">-- Semua Mapel --</option>
+        <option value="pai">PAI & Budi Pekerti</option>
+        <option value="tematik">Tematik</option>
+        <option value="matematika">Matematika</option>
+        <option value="ipas">IPAS</option>
+    </select>
 </div>
 
 <div class="grid-container" id="katalogMedia">
-    <p style="text-align: center; width: 100%; font-weight: bold; color: #6e8efb;">Sedang memuat keajaiban dari server...</p>
+    <p style="text-align: center; width: 100%; grid-column: 1/-1; color: #6e8efb;">Memuat data dari server...</p>
 </div>
 
 <script>
@@ -190,17 +246,15 @@
 
     let dataUser = null;
     let sisaKuota = 0;
+    let semuaDataMedia = []; // Variabel untuk menyimpan semua data dari server
 
     async function cekLogin() {
         const { data: { session }, error } = await client.auth.getSession();
-        
         if (!session) {
             window.location.href = "login.html";
             return;
         }
-
         dataUser = session.user;
-        // Mengambil nama depan dari email agar sapaan lebih personal
         const namaPendek = dataUser.email.split('@')[0];
         document.getElementById('teksEmail').innerText = namaPendek;
         
@@ -209,12 +263,7 @@
     }
 
     async function muatProfilGuru() {
-        const { data, error } = await client
-            .from('profil_guru')
-            .select('sisa_kuota')
-            .eq('id', dataUser.id)
-            .single();
-
+        const { data, error } = await client.from('profil_guru').select('sisa_kuota').eq('id', dataUser.id).single();
         if (data) {
             sisaKuota = data.sisa_kuota;
             document.getElementById('teksKuota').innerText = sisaKuota;
@@ -222,16 +271,39 @@
     }
 
     async function muatKatalog() {
-        const katalog = document.getElementById('katalogMedia');
         const { data, error } = await client.from('daftar_media').select('*').order('id', { ascending: false });
+        
+        if (data) {
+            semuaDataMedia = data; // Simpan ke variabel lokal
+            saringData(); // Tampilkan data pertama kali
+        }
+    }
 
-        if (data.length === 0) {
-            katalog.innerHTML = '<p style="text-align: center; width: 100%;">Belum ada media yang diunggah.</p>';
+    // FUNGSI BARU: MENYARING (PENCARIAN & SORTIR)
+    function saringData() {
+        const kataKunci = document.getElementById('inputCari').value.toLowerCase();
+        const kelasPilihan = document.getElementById('filterKelas').value;
+        const mapelPilihan = document.getElementById('filterMapel').value;
+        const katalog = document.getElementById('katalogMedia');
+        
+        katalog.innerHTML = ''; // Kosongkan layar dulu
+
+        // Proses penyaringan (filtering)
+        const dataTersaring = semuaDataMedia.filter(item => {
+            const cocokKataKunci = item.judul.toLowerCase().includes(kataKunci) || item.deskripsi.toLowerCase().includes(kataKunci);
+            const cocokKelas = (kelasPilihan === 'semua') || (item.kelas === kelasPilihan);
+            const cocokMapel = (mapelPilihan === 'semua') || (item.mapel === mapelPilihan);
+            
+            return cocokKataKunci && cocokKelas && cocokMapel;
+        });
+
+        // Tampilkan hasilnya
+        if (dataTersaring.length === 0) {
+            katalog.innerHTML = `<div class="data-kosong">Data tidak ditemukan. Coba kata kunci atau filter lain.</div>`;
             return;
         }
 
-        katalog.innerHTML = '';
-        data.forEach(item => {
+        dataTersaring.forEach(item => {
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
@@ -247,17 +319,12 @@
         });
     }
 
-    // FUNGSI: Buka Media & Sistem Premium (WhatsApp)
     async function bukaMedia(url, idTombol) {
         if (sisaKuota <= 0) {
             const mauLangganan = confirm("MAAF, KUOTA GRATIS ANDA HABIS!\n\nSilakan Upgrade Premium untuk mendapatkan akses semua media tanpa batas.\n\nKlik 'OK' untuk menghubungi Admin via WhatsApp.");
-            
             if (mauLangganan) {
-                // ---> JANGAN LUPA GANTI NOMOR DI BAWAH INI DENGAN NOMOR WA ANDA <---
-                const nomorWA = "6281234567890"; 
-                
+                const nomorWA = "6281234567890"; // GANTI DENGAN NOMOR WA ANDA
                 const pesan = `Halo Admin CBT B-TEK, saya ingin Upgrade Premium agar bisa mengakses semua media interaktif. Akun email saya: ${dataUser.email}`;
-                
                 window.location.href = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
             }
             return;
@@ -281,10 +348,8 @@
             jendelaBaru.document.open();
             jendelaBaru.document.write(isiHtml);
             jendelaBaru.document.close();
-
         } catch (error) {
             alert("Gagal memuat media. Pastikan koneksi internet stabil.");
-            console.error(error);
         } finally {
             tombol.innerText = teksAsli;
             tombol.disabled = false;
