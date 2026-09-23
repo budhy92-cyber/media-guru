@@ -193,6 +193,19 @@
             font-weight: bold;
             padding: 20px;
         }
+
+        /* Animasi Skeleton Loading Baru */
+        @keyframes skeletonLoading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            border-top: 6px solid #e1e8ed !important;
+            height: 220px;
+        }
     </style>
 </head>
 <body>
@@ -236,7 +249,7 @@
 </div>
 
 <div class="grid-container" id="katalogMedia">
-    <p style="text-align: center; width: 100%; grid-column: 1/-1; color: #6e8efb;">Memuat data dari server...</p>
+    <!-- Area ini akan diisi oleh animasi Skeleton saat loading -->
 </div>
 
 <script>
@@ -246,7 +259,8 @@
 
     let dataUser = null;
     let sisaKuota = 0;
-    let semuaDataMedia = []; // Variabel untuk menyimpan semua data dari server
+    let semuaDataMedia = []; 
+    let riwayatBuka = []; // Array untuk melacak media yang sudah dibuka (bebas kuota)
 
     async function cekLogin() {
         const { data: { session }, error } = await client.auth.getSession();
@@ -257,6 +271,9 @@
         dataUser = session.user;
         const namaPendek = dataUser.email.split('@')[0];
         document.getElementById('teksEmail').innerText = namaPendek;
+        
+        // Memuat riwayat dari penyimpanan lokal perangkat guru
+        riwayatBuka = JSON.parse(localStorage.getItem('riwayat_btek_' + dataUser.id)) || [];
         
         await muatProfilGuru();
         await muatKatalog();
@@ -270,60 +287,76 @@
         }
     }
 
-    async function muatKatalog() {
-        const { data, error } = await client.from('daftar_media').select('*').order('id', { ascending: false });
-        
-        if (data) {
-            semuaDataMedia = data; // Simpan ke variabel lokal
-            saringData(); // Tampilkan data pertama kali
+    function tampilkanSkeleton() {
+        const katalog = document.getElementById('katalogMedia');
+        katalog.innerHTML = '';
+        for(let i=0; i<6; i++) {
+            katalog.innerHTML += `<div class="card skeleton"></div>`;
         }
     }
 
-    // FUNGSI BARU: MENYARING (PENCARIAN & SORTIR)
+    async function muatKatalog() {
+        tampilkanSkeleton(); // Jalankan efek loading rangka
+        
+        const { data, error } = await client.from('daftar_media').select('*').order('id', { ascending: false });
+        
+        if (data) {
+            semuaDataMedia = data; 
+            saringData(); 
+        }
+    }
+
     function saringData() {
         const kataKunci = document.getElementById('inputCari').value.toLowerCase();
         const kelasPilihan = document.getElementById('filterKelas').value;
         const mapelPilihan = document.getElementById('filterMapel').value;
         const katalog = document.getElementById('katalogMedia');
         
-        katalog.innerHTML = ''; // Kosongkan layar dulu
+        katalog.innerHTML = ''; 
 
-        // Proses penyaringan (filtering)
         const dataTersaring = semuaDataMedia.filter(item => {
             const cocokKataKunci = item.judul.toLowerCase().includes(kataKunci) || item.deskripsi.toLowerCase().includes(kataKunci);
             const cocokKelas = (kelasPilihan === 'semua') || (item.kelas === kelasPilihan);
             const cocokMapel = (mapelPilihan === 'semua') || (item.mapel === mapelPilihan);
-            
             return cocokKataKunci && cocokKelas && cocokMapel;
         });
 
-        // Tampilkan hasilnya
         if (dataTersaring.length === 0) {
             katalog.innerHTML = `<div class="data-kosong">Data tidak ditemukan. Coba kata kunci atau filter lain.</div>`;
             return;
         }
 
         dataTersaring.forEach(item => {
+            // Cek apakah media ini masuk dalam riwayat bebas kuota
+            const sudahPernah = riwayatBuka.includes(item.id);
+            const teksTombol = sudahPernah ? '▶ Buka Lagi (Gratis)' : '▶ Buka Media';
+            const warnaTombol = sudahPernah ? 'background: linear-gradient(135deg, #a29bfe, #6c5ce7);' : '';
+            const badgeRiwayat = sudahPernah ? `<span class="badge" style="background:#a29bfe; color:white;">RIWAYAT</span>` : '';
+
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
                 <div class="badge-container">
                     <span class="badge badge-kelas">${item.kelas.replace('-', ' ').toUpperCase()}</span>
                     <span class="badge badge-mapel">${item.mapel.toUpperCase()}</span>
+                    ${badgeRiwayat}
                 </div>
                 <h3 class="judul">${item.judul}</h3>
                 <p class="deskripsi">${item.deskripsi}</p>
-                <button class="btn-buka" id="btn_${item.id}" onclick="bukaMedia('${item.file_url}', 'btn_${item.id}')">▶ Buka Media</button>
+                <button class="btn-buka" id="btn_${item.id}" style="${warnaTombol}" onclick="bukaMedia('${item.file_url}', 'btn_${item.id}', ${item.id})">${teksTombol}</button>
             `;
             katalog.appendChild(card);
         });
     }
 
-    async function bukaMedia(url, idTombol) {
-        if (sisaKuota <= 0) {
+    async function bukaMedia(url, idTombol, idMedia) {
+        const sudahPernah = riwayatBuka.includes(idMedia);
+
+        // Cegah akses jika kuota 0 DAN belum pernah dibuka
+        if (sisaKuota <= 0 && !sudahPernah) {
             const mauLangganan = confirm("MAAF, KUOTA GRATIS ANDA HABIS!\n\nSilakan Upgrade Premium untuk mendapatkan akses semua media tanpa batas.\n\nKlik 'OK' untuk menghubungi Admin via WhatsApp.");
             if (mauLangganan) {
-                const nomorWA = "6281234567890"; // GANTI DENGAN NOMOR WA ANDA
+                const nomorWA = "6281234567890"; 
                 const pesan = `Halo Admin CBT B-TEK, saya ingin Upgrade Premium agar bisa mengakses semua media interaktif. Akun email saya: ${dataUser.email}`;
                 window.location.href = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
             }
@@ -340,9 +373,19 @@
             const respon = await fetch(url);
             const isiHtml = await respon.text();
 
-            sisaKuota -= 1;
-            document.getElementById('teksKuota').innerText = sisaKuota;
-            await client.from('profil_guru').update({ sisa_kuota: sisaKuota }).eq('id', dataUser.id);
+            // Potong kuota hanya jika ini media baru
+            if (!sudahPernah) {
+                sisaKuota -= 1;
+                document.getElementById('teksKuota').innerText = sisaKuota;
+                await client.from('profil_guru').update({ sisa_kuota: sisaKuota }).eq('id', dataUser.id);
+                
+                // Tambahkan ke riwayat lokal
+                riwayatBuka.push(idMedia);
+                localStorage.setItem('riwayat_btek_' + dataUser.id, JSON.stringify(riwayatBuka));
+                
+                // Segarkan kartu agar badge riwayat muncul otomatis
+                setTimeout(() => saringData(), 1000);
+            }
 
             const jendelaBaru = window.open("", "_blank");
             jendelaBaru.document.open();
