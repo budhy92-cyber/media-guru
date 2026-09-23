@@ -240,10 +240,16 @@
     
     <select id="filterMapel" onchange="saringData()">
         <option value="semua">-- Semua Mapel --</option>
-        <option value="pai">PAI & Budi Pekerti</option>
-        <option value="tematik">Tematik</option>
-        <option value="matematika">Matematika</option>
-        <option value="ipas">IPAS</option>
+        <option value="Pendidikan Agama Islam">Pendidikan Agama Islam</option>
+        <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+        <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+        <option value="Matematika">Matematika</option>
+        <option value="IPAS">IPAS</option>
+        <option value="Bahasa Inggris">Bahasa Inggris</option>
+        <option value="Seni Rupa">Seni Rupa</option>
+        <option value="Seni Musik">Seni Musik</option>
+        <option value="Bahasa Makassar">Bahasa Makassar</option>
+        <option value="Koding dan Kecerdasan Artifisial">Koding dan Kecerdasan Artifisial</option>
     </select>
 </div>
 
@@ -269,7 +275,6 @@
         const namaPendek = dataUser.email.split('@')[0];
         document.getElementById('teksEmail').innerText = namaPendek;
         
-        // Tarik data riwayat (jika null, jadikan array kosong)
         riwayatBuka = JSON.parse(localStorage.getItem('riwayat_btek_' + dataUser.id)) || [];
         
         await muatProfilGuru();
@@ -324,7 +329,6 @@
         }
 
         dataTersaring.forEach(item => {
-            // Pastikan perbandingan berupa tipe data string (ToString)
             const idMediaString = String(item.id);
             const sudahPernah = riwayatBuka.includes(idMediaString);
             
@@ -335,7 +339,6 @@
             const card = document.createElement('div');
             card.className = 'card';
             
-            // PERBAIKAN PENTING: Menambahkan tanda kutip satu (' ') membungkus ${item.id} di fungsi bukaMedia
             card.innerHTML = `
                 <div class="badge-container">
                     <span class="badge badge-kelas">${item.kelas.replace('-', ' ').toUpperCase()}</span>
@@ -369,7 +372,6 @@
         tombol.innerText = "⏳ Membuka...";
         tombol.disabled = true;
 
-        // BUKA JENDELA BARU DI AWAL SEBELUM PROSES LAIN (Solusi Anti Pop-up Blocker)
         const jendelaBaru = window.open("", "_blank");
         if (jendelaBaru) {
             jendelaBaru.document.write(`
@@ -385,7 +387,6 @@
         }
 
         try {
-            // Proses potong kuota jika belum pernah dibuka
             if (!sudahPernah) {
                 sisaKuota -= 1;
                 document.getElementById('teksKuota').innerText = sisaKuota;
@@ -394,11 +395,9 @@
                 riwayatBuka.push(idMediaString);
                 localStorage.setItem('riwayat_btek_' + dataUser.id, JSON.stringify(riwayatBuka));
                 
-                // Segarkan kartu di belakang layar
                 setTimeout(() => saringData(), 500);
             }
 
-            // Ambil dan tampilkan media di jendela baru
             const respon = await fetch(url);
             const isiHtml = await respon.text();
 
