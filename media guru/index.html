@@ -2,119 +2,184 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Masuk - CBT B-TEK</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Beranda - CBT B-TEK</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background: #f0f4f8;
-            background-image: radial-gradient(#d7e1ec 1px, transparent 1px);
-            background-size: 20px 20px;
-            margin: 0; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-        .container { 
-            background: white; 
-            padding: 45px 35px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
-            width: 100%; 
-            max-width: 400px; 
-            text-align: center; 
-            border-top: 6px solid #6e8efb;
-        }
-        .karakter { font-size: 55px; margin-bottom: 10px; line-height: 1; }
-        h2 { margin: 0 0 10px 0; color: #2f3542; font-size: 24px; }
-        p.subtitle { color: #747d8c; font-size: 14px; margin-bottom: 35px; line-height: 1.5; }
-        
-        /* TOMBOL GOOGLE UTAMA */
-        .btn-google { 
-            width: 100%;
-            background: white; 
-            color: #333; 
-            border: 2px solid #e1e8ed; 
-            border-radius: 12px;
-            padding: 15px;
-            font-weight: 600;
-            font-size: 15px;
+        body {
             font-family: 'Poppins', sans-serif;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 12px; 
+            margin: 0;
+            padding: 0;
+            background: #f8fafc;
+            color: #1e293b;
+            scroll-behavior: smooth; /* Efek scroll halus */
+        }
+
+        /* --- HEADER / NAVBAR --- */
+        header {
+            background: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3742fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        nav a:hover {
+            color: #3742fa;
+        }
+        .btn-login-nav {
+            background: linear-gradient(135deg, #1e90ff, #3742fa);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
             cursor: pointer;
             transition: 0.3s;
         }
-        .btn-google:hover { 
-            background: #f8fafc; 
-            border-color: #6e8efb;
-            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.15);
+        .btn-login-nav:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(55, 66, 250, 0.3);
         }
-        .btn-google img { width: 22px; }
-        
-        /* Tombol kembali ke Beranda */
-        .kembali { 
-            display: inline-block; 
-            margin-top: 30px; 
-            color: #64748b; 
-            font-size: 13px; 
-            text-decoration: none; 
-            font-weight: 600; 
-            transition: 0.3s; 
+
+        /* --- SECTION: BERANDA (HERO) --- */
+        .hero {
+            padding: 150px 50px 100px 50px;
+            text-align: center;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
         }
-        .kembali:hover { color: #3742fa; }
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #0f172a;
+        }
+        .hero h1 span {
+            color: #3742fa;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #475569;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+        }
+        .hero img {
+            width: 100%;
+            max-width: 500px;
+            margin-top: 30px;
+        }
+
+        /* --- SECTION: TENTANG --- */
+        .tentang {
+            padding: 80px 50px;
+            text-align: center;
+            background: white;
+        }
+        .tentang h2 {
+            font-size: 32px;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+        .tentang p {
+            font-size: 16px;
+            color: #475569;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        .fitur-grid {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .fitur-card {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 15px;
+            width: 250px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+        }
+        .fitur-card h3 { color: #3742fa; }
+
+        /* Footer */
+        footer {
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="karakter">👋🏫</div>
-    <h2>Selamat Datang!</h2>
-    <p class="subtitle">Masuk dengan cepat menggunakan akun Google (Gmail atau Belajar.id) Anda.</p>
+    <!-- BAGIAN ATAS (HEADER) -->
+    <header>
+        <div class="logo">🏫 CBT B-TEK</div>
+        <nav>
+            <a href="#beranda">Beranda</a>
+            <a href="#tentang">Tentang Kami</a>
+        </nav>
+        <button class="btn-login-nav" onclick="window.location.href='login.html'">Masuk / Login</button>
+    </header>
 
-  <!-- HANYA TOMBOL LOGIN GOOGLE -->
-    <button class="btn-google" onclick="loginDenganGoogle()">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google Logo">
-        Lanjutkan dengan Google
-    </button>
-    
-    <!-- TOMBOL KEMBALI -->
-    <a href="index.html" class="kembali">← Kembali ke Beranda</a>
-</div>
+    <!-- BAGIAN BERANDA -->
+    <section id="beranda" class="hero">
+        <h1>Ubah Cara Belajar dengan <span>Media Interaktif</span></h1>
+        <p>Platform penyedia media pembelajaran interaktif berbasis web untuk guru modern. Dapatkan kemudahan mengajar dengan 1 klik.</p>
+        <button class="btn-login-nav" style="padding: 15px 40px; font-size: 18px;" onclick="window.location.href='login.html'">Mulai Gratis Sekarang</button>
+    </section>
 
-<script>
-    const SUPABASE_URL = 'https://luutehtjtsvivdyipjpy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dXRlaHRqdHN2aXZkeWlwanB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjc5MDgsImV4cCI6MjEwNTY0MzkwOH0.74C0F1UmOOe53ObtIrqnh84MYeTfgW0EQXSgrhLyIeY';
-    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <!-- BAGIAN TENTANG -->
+    <section id="tentang" class="tentang">
+        <h2>Tentang CBT B-TEK</h2>
+        <p>CBT B-TEK hadir sebagai solusi digital untuk membantu para pendidik di seluruh Indonesia. Kami menyediakan berbagai macam modul, kuis, dan media pembelajaran interaktif yang sudah disesuaikan dengan kurikulum pendidikan saat ini.</p>
+        
+        <div class="fitur-grid">
+            <div class="fitur-card">
+                <h3>🚀 Akses Cepat</h3>
+                <p>Buka media pembelajaran langsung dari browser tanpa perlu menginstal aplikasi tambahan.</p>
+            </div>
+            <div class="fitur-card">
+                <h3>🎁 Freemium</h3>
+                <p>Dapatkan 5 kuota akses gratis saat pertama kali mendaftar untuk mencoba kehebatan sistem kami.</p>
+            </div>
+            <div class="fitur-card">
+                <h3>📱 Responsif</h3>
+                <p>Tampilan yang menyesuaikan dengan sempurna baik dibuka melalui HP, Tablet, maupun Laptop.</p>
+            </div>
+        </div>
+    </section>
 
-    // FUNGSI LOGIN GOOGLE SAJA
-    async function loginDenganGoogle() {
-        const btn = document.querySelector('.btn-google');
-        btn.innerHTML = '⏳ Menghubungkan...';
-        btn.disabled = true;
-
-        const { data, error } = await client.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                // Mengarahkan langsung ke portal setelah login sukses
-                redirectTo: window.location.origin + '/portal.html'
-            }
-        });
-
-        if (error) {
-            alert("Gagal terhubung dengan Google: " + error.message);
-            btn.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo"> Lanjutkan dengan Google';
-            btn.disabled = false;
-        }
-    }
-</script>
+    <footer>
+        &copy; 2026 CBT B-TEK. Semua Hak Dilindungi.
+    </footer>
 
 </body>
 </html>
