@@ -21,53 +21,55 @@
         }
         .container { 
             background: white; 
-            padding: 40px 30px; 
+            padding: 45px 35px; 
             border-radius: 20px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
             width: 100%; 
             max-width: 400px; 
             text-align: center; 
             border-top: 6px solid #6e8efb;
-            position: relative;
         }
         .karakter { font-size: 55px; margin-bottom: 10px; line-height: 1; }
         h2 { margin: 0 0 10px 0; color: #2f3542; font-size: 24px; }
-        p.subtitle { color: #747d8c; font-size: 13px; margin-bottom: 25px; line-height: 1.5; }
+        p.subtitle { color: #747d8c; font-size: 14px; margin-bottom: 35px; line-height: 1.5; }
         
-        input { 
-            width: 100%; 
-            padding: 14px 15px; 
-            margin-bottom: 15px; 
+        /* TOMBOL GOOGLE UTAMA */
+        .btn-google { 
+            width: 100%;
+            background: white; 
+            color: #333; 
             border: 2px solid #e1e8ed; 
-            border-radius: 12px; 
-            font-family: 'Poppins', sans-serif; 
-            font-size: 14px; 
-            box-sizing: border-box; 
+            border-radius: 12px;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 12px; 
+            cursor: pointer;
             transition: 0.3s;
-            background: #f8f9fa;
         }
-        input:focus { outline: none; border-color: #6e8efb; background: white; }
+        .btn-google:hover { 
+            background: #f8fafc; 
+            border-color: #6e8efb;
+            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.15);
+            transform: translateY(-2px);
+        }
+        .btn-google img { width: 22px; }
         
-        button { 
-            width: 100%; 
-            padding: 14px; 
-            margin-bottom: 12px; 
-            border: none; 
-            border-radius: 12px; 
+        /* Tombol kembali ke Beranda */
+        .kembali { 
+            display: inline-block; 
+            margin-top: 30px; 
+            color: #64748b; 
+            font-size: 13px; 
+            text-decoration: none; 
             font-weight: 600; 
-            font-size: 15px; 
-            cursor: pointer; 
-            font-family: 'Poppins', sans-serif; 
             transition: 0.3s; 
-            color: white; 
         }
-        .btn-login { background: linear-gradient(135deg, #1e90ff, #3742fa); }
-        .btn-login:hover { box-shadow: 0 5px 15px rgba(55, 66, 250, 0.4); transform: translateY(-2px); }
-        
-        .btn-daftar { background: linear-gradient(135deg, #10b981, #059669); }
-        .btn-daftar:hover { box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4); transform: translateY(-2px); }
-        
-        .status { margin-top: 15px; font-size: 13px; font-weight: 600; }
+        .kembali:hover { color: #3742fa; }
     </style>
 </head>
 <body>
@@ -75,15 +77,16 @@
 <div class="container">
     <div class="karakter">👋🏫</div>
     <h2>Selamat Datang!</h2>
-    <p class="subtitle">Masuk menggunakan email Anda untuk mulai menjelajahi media interaktif CBT B-TEK.</p>
+    <p class="subtitle">Masuk dengan cepat menggunakan akun Google (Gmail atau Belajar.id) Anda.</p>
 
-    <input type="email" id="email" placeholder="Alamat Email Anda" required>
-    <input type="password" id="password" placeholder="Kata Sandi (minimal 6 karakter)" required>
-
-    <button class="btn-login" onclick="prosesMasuk()">Masuk (Login)</button>
-    <button class="btn-daftar" onclick="prosesDaftar()">Daftar Akun Baru</button>
-
-    <p id="pesanStatus" class="status"></p>
+  <!-- HANYA TOMBOL LOGIN GOOGLE -->
+    <button class="btn-google" onclick="loginDenganGoogle()">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google Logo">
+        Lanjutkan dengan Google
+    </button>
+    
+    <!-- TOMBOL KEMBALI -->
+    <a href="index.html" class="kembali">← Kembali ke Beranda</a>
 </div>
 
 <script>
@@ -91,65 +94,24 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dXRlaHRqdHN2aXZkeWlwanB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjc5MDgsImV4cCI6MjEwNTY0MzkwOH0.74C0F1UmOOe53ObtIrqnh84MYeTfgW0EQXSgrhLyIeY';
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function prosesDaftar() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const status = document.getElementById('pesanStatus');
+    // FUNGSI LOGIN GOOGLE SAJA
+    async function loginDenganGoogle() {
+        const btn = document.querySelector('.btn-google');
+        btn.innerHTML = '⏳ Menghubungkan...';
+        btn.disabled = true;
 
-        // --- SISTEM ANTI KECURANGAN (JEJAK DIGITAL) ---
-        // Mengecek apakah HP/Laptop ini sudah pernah dipakai mendaftar
-        if (localStorage.getItem('pernah_daftar_btek') === 'sudah') {
-            alert("⛔ PERINGATAN!\n\nPerangkat ini (HP/Laptop) sudah pernah digunakan untuk mengklaim kuota gratis.\n\nSilakan gunakan akun lama Anda untuk Login, atau hubungi Admin untuk Upgrade Premium.");
-            return; // Hentikan proses pendaftaran
-        }
-        // ----------------------------------------------
-
-        if (!email || password.length < 6) {
-            alert("Harap isi Email dengan benar dan Password minimal 6 karakter!");
-            return;
-        }
-
-        status.innerText = "⏳ Memproses pendaftaran...";
-        status.style.color = "#3742fa";
-
-        const { data, error } = await client.auth.signUp({ email: email, password: password });
+        const { data, error } = await client.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                // Mengarahkan langsung ke portal setelah login sukses
+                redirectTo: window.location.origin + '/portal.html'
+            }
+        });
 
         if (error) {
-            status.innerText = "❌ Gagal: " + error.message;
-            status.style.color = "#ff4757";
-        } else {
-            // --- TANAM JEJAK DIGITAL SETELAH BERHASIL ---
-            localStorage.setItem('pernah_daftar_btek', 'sudah');
-            // ----------------------------------------------
-
-            status.innerText = "✅ Berhasil Mendaftar!";
-            status.style.color = "#10b981";
-            alert("Pendaftaran berhasil! Sistem telah memberi Anda saldo 5 akses gratis. Silakan klik tombol 'Masuk (Login)'.");
-        }
-    }
-
-    async function prosesMasuk() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const status = document.getElementById('pesanStatus');
-
-        if (!email || !password) {
-            alert("Harap isi Email dan Password!");
-            return;
-        }
-
-        status.innerText = "🚀 Mencoba masuk...";
-        status.style.color = "#3742fa";
-
-        const { data, error } = await client.auth.signInWithPassword({ email: email, password: password });
-
-        if (error) {
-            status.innerText = "❌ Gagal: Email/Password salah.";
-            status.style.color = "#ff4757";
-        } else {
-            status.innerText = "✅ Berhasil Masuk! Mengalihkan...";
-            status.style.color = "#10b981";
-            window.location.href = "portal.html";
+            alert("Gagal terhubung dengan Google: " + error.message);
+            btn.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google Logo"> Lanjutkan dengan Google';
+            btn.disabled = false;
         }
     }
 </script>
