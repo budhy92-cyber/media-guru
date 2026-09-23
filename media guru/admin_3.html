@@ -16,7 +16,7 @@
             color: #333;
         }
         .container { 
-            max-width: 550px; 
+            max-width: 600px; 
             background: white; 
             padding: 35px 30px; 
             border-radius: 20px; 
@@ -29,7 +29,7 @@
         .header-admin p { color: #747d8c; font-size: 14px; margin: 0; }
         .karakter { font-size: 50px; line-height: 1; }
 
-        label { display: block; font-weight: 600; margin-bottom: 8px; color: #2f3542; font-size: 14px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: #2f3542; font-size: 14px; text-align: left; }
         input, select, textarea { 
             width: 100%; 
             padding: 12px 15px; 
@@ -53,7 +53,7 @@
             cursor: pointer; 
             padding: 15px; 
             border-radius: 12px; 
-            font-size: 16px; 
+            font-size: 14px; 
             font-family: 'Poppins', sans-serif;
             transition: 0.3s;
             margin-top: 10px;
@@ -62,11 +62,26 @@
         .file-input-wrapper { background: #fff3e0; padding: 15px; border-radius: 10px; border: 2px dashed #ff9f43; margin-bottom: 20px; text-align: center; }
         .file-input-wrapper input { margin-bottom: 0; border: none; background: transparent; }
 
-        /* Tombol Tab Baru */
-        .tab-btn { flex: 1; margin-top: 0; border-radius: 8px; padding: 12px; font-size: 14px; }
+        /* Navigasi Tiga Tab */
+        .tab-container { display: flex; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
+        .tab-btn { flex: 1; margin-top: 0; border-radius: 8px; padding: 12px 10px; font-size: 13px; min-width: 120px; }
         .tab-aktif { background: linear-gradient(135deg, #ff9f43, #ff6b81); color: white; }
         .tab-nonaktif { background: #cbd5e1; color: #333; }
         .tab-nonaktif:hover { background: #94a3b8; transform: translateY(0); box-shadow: none; }
+
+        /* Modal Overlay untuk Form Edit */
+        .modal-overlay { 
+            display: none; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.6); z-index: 9999; 
+            justify-content: center; align-items: center; 
+            padding: 20px; box-sizing: border-box;
+        }
+        .modal-content { 
+            background: white; padding: 30px; border-radius: 20px; 
+            width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; 
+            position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
@@ -78,13 +93,14 @@
         <p>Kelola media interaktif dan pantau pengguna.</p>
     </div>
 
-    <!-- Pilihan Navigasi Tab -->
-    <div style="display: flex; gap: 10px; margin-bottom: 25px;">
-        <button id="btnTabUpload" class="tab-btn tab-aktif" onclick="bukaTab('upload')">📤 Unggah Media</button>
-        <button id="btnTabStat" class="tab-btn tab-nonaktif" onclick="bukaTab('stat')">📊 Statistik Guru</button>
+    <!-- Pilihan Navigasi Tab (Sekarang ada 3) -->
+    <div class="tab-container">
+        <button id="btnTabUpload" class="tab-btn tab-aktif" onclick="bukaTab('upload')">📤 Unggah</button>
+        <button id="btnTabKelola" class="tab-btn tab-nonaktif" onclick="bukaTab('kelola')">📝 Kelola</button>
+        <button id="btnTabStat" class="tab-btn tab-nonaktif" onclick="bukaTab('stat')">📊 Statistik</button>
     </div>
 
-    <!-- AREA UNGGAH MEDIA (KODE ASLI) -->
+    <!-- TAB 1: AREA UNGGAH MEDIA -->
     <div id="formMedia">
         <label>📌 Judul Media</label>
         <input type="text" id="judul" placeholder="Contoh: Kuis Interaktif Tata Surya" required>
@@ -104,10 +120,16 @@
 
         <label>📚 Mata Pelajaran</label>
         <select id="mapel">
-            <option value="pai">PAI & Budi Pekerti</option>
-            <option value="tematik">Tematik</option>
-            <option value="matematika">Matematika</option>
-            <option value="ipas">IPAS</option>
+            <option value="Pendidikan Agama Islam">Pendidikan Agama Islam</option>
+            <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+            <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+            <option value="Matematika">Matematika</option>
+            <option value="IPAS">IPAS</option>
+            <option value="Bahasa Inggris">Bahasa Inggris</option>
+            <option value="Seni Rupa">Seni Rupa</option>
+            <option value="Seni Musik">Seni Musik</option>
+            <option value="Bahasa Makassar">Bahasa Makassar</option>
+            <option value="Koding dan Kecerdasan Artifisial">Koding dan Kecerdasan Artifisial</option>
         </select>
 
         <label>📂 Unggah File Media (.html)</label>
@@ -119,7 +141,14 @@
         <p id="statusMssg" style="font-weight: 600; text-align: center; margin-top: 20px; font-size: 14px;"></p>
     </div>
 
-    <!-- AREA STATISTIK BARU -->
+    <!-- TAB 2: AREA KELOLA & EDIT MEDIA -->
+    <div id="panelKelola" style="display: none;">
+        <div id="tempatDaftarMedia" style="text-align: center;">
+            <!-- List Media akan muncul di sini -->
+        </div>
+    </div>
+
+    <!-- TAB 3: AREA STATISTIK -->
     <div id="panelStatistik" style="display: none;">
         <div id="tempatStatistik">
             <p style="text-align:center; color:#747d8c;">Klik segarkan untuk memuat data...</p>
@@ -129,28 +158,160 @@
 
 </div>
 
+<!-- JENDELA POP-UP UNTUK EDIT MEDIA -->
+<div class="modal-overlay" id="modalEdit">
+    <div class="modal-content">
+        <h3 style="margin-top:0; color:#2f3542; text-align:center; margin-bottom:20px;">✏️ Edit Data Media</h3>
+        <input type="hidden" id="editId">
+        
+        <label>📌 Judul Media</label>
+        <input type="text" id="editJudul" required>
+
+        <label>📝 Deskripsi Singkat</label>
+        <textarea id="editDeskripsi" rows="3" required></textarea>
+
+        <label>🏫 Target Kelas</label>
+        <select id="editKelas">
+            <option value="kelas-1">Kelas 1</option>
+            <option value="kelas-2">Kelas 2</option>
+            <option value="kelas-3">Kelas 3</option>
+            <option value="kelas-4">Kelas 4</option>
+            <option value="kelas-5">Kelas 5</option>
+            <option value="kelas-6">Kelas 6</option>
+        </select>
+
+        <label>📚 Mata Pelajaran</label>
+        <select id="editMapel">
+            <option value="Pendidikan Agama Islam">Pendidikan Agama Islam</option>
+            <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+            <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+            <option value="Matematika">Matematika</option>
+            <option value="IPAS">IPAS</option>
+            <option value="Bahasa Inggris">Bahasa Inggris</option>
+            <option value="Seni Rupa">Seni Rupa</option>
+            <option value="Seni Musik">Seni Musik</option>
+            <option value="Bahasa Makassar">Bahasa Makassar</option>
+            <option value="Koding dan Kecerdasan Artifisial">Koding dan Kecerdasan Artifisial</option>
+        </select>
+
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button id="btnSimpanEdit" onclick="simpanEdit()" style="background:linear-gradient(135deg, #10b981, #059669); margin:0;">💾 Simpan Perubahan</button>
+            <button onclick="tutupModal()" style="background:#cbd5e1; color:#333; margin:0;">Batal</button>
+        </div>
+    </div>
+</div>
+
 <script>
     const SUPABASE_URL = 'https://luutehtjtsvivdyipjpy.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dXRlaHRqdHN2aXZkeWlwanB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjc5MDgsImV4cCI6MjEwNTY0MzkwOH0.74C0F1UmOOe53ObtIrqnh84MYeTfgW0EQXSgrhLyIeY';
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Fungsi Pindah Tab
+    let dataKelolaMedia = []; 
+
     function bukaTab(tab) {
-        if(tab === 'upload') {
-            document.getElementById('formMedia').style.display = 'block';
-            document.getElementById('panelStatistik').style.display = 'none';
-            document.getElementById('btnTabUpload').className = 'tab-btn tab-aktif';
-            document.getElementById('btnTabStat').className = 'tab-btn tab-nonaktif';
+        document.getElementById('formMedia').style.display = tab === 'upload' ? 'block' : 'none';
+        document.getElementById('panelKelola').style.display = tab === 'kelola' ? 'block' : 'none';
+        document.getElementById('panelStatistik').style.display = tab === 'stat' ? 'block' : 'none';
+        
+        document.getElementById('btnTabUpload').className = tab === 'upload' ? 'tab-btn tab-aktif' : 'tab-btn tab-nonaktif';
+        document.getElementById('btnTabKelola').className = tab === 'kelola' ? 'tab-btn tab-aktif' : 'tab-btn tab-nonaktif';
+        document.getElementById('btnTabStat').className = tab === 'stat' ? 'tab-btn tab-aktif' : 'tab-btn tab-nonaktif';
+        
+        if (tab === 'stat') muatStatistik();
+        if (tab === 'kelola') muatKelolaMedia();
+    }
+
+    async function muatKelolaMedia() {
+        const divData = document.getElementById('tempatDaftarMedia');
+        divData.innerHTML = '<p style="color:#3742fa; font-weight:600;">⏳ Memuat daftar media...</p>';
+        
+        const { data, error } = await client.from('daftar_media').select('*').order('id', { ascending: false });
+        
+        if (error) { divData.innerHTML = '<p style="color:red;">Gagal memuat data.</p>'; return; }
+        if (data.length === 0) { divData.innerHTML = '<p>Belum ada media yang diunggah.</p>'; return; }
+        
+        dataKelolaMedia = data; 
+        
+        let html = '';
+        data.forEach(item => {
+            html += `
+            <div style="background:#f8f9fa; padding:15px 20px; border-radius:12px; margin-bottom:15px; border:1px solid #e1e8ed; text-align:left; position:relative;">
+                <h4 style="margin:0 0 5px 0; color:#2f3542; font-size:16px;">${item.judul}</h4>
+                <p style="margin:0 0 15px 0; font-size:12px; color:#747d8c;">
+                    <span style="background:#eccc68; padding:2px 8px; border-radius:4px; color:#333;">${item.kelas.toUpperCase()}</span> 
+                    <span style="background:#7bed9f; padding:2px 8px; border-radius:4px; color:#333;">${item.mapel.toUpperCase()}</span>
+                </p>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="siapkanEdit('${item.id}')" style="background:#1e90ff; padding:8px; font-size:13px; margin:0;">✏️ Edit</button>
+                    <button onclick="hapusMedia('${item.id}')" style="background:#ff4757; padding:8px; font-size:13px; margin:0;">🗑️ Hapus</button>
+                </div>
+            </div>
+            `;
+        });
+        divData.innerHTML = html;
+    }
+
+    function siapkanEdit(id) {
+        const item = dataKelolaMedia.find(m => String(m.id) === String(id));
+        if (!item) return;
+        
+        document.getElementById('editId').value = item.id;
+        document.getElementById('editJudul').value = item.judul;
+        document.getElementById('editDeskripsi').value = item.deskripsi;
+        document.getElementById('editKelas').value = item.kelas;
+        document.getElementById('editMapel').value = item.mapel;
+        
+        document.getElementById('modalEdit').style.display = 'flex'; 
+    }
+
+    function tutupModal() {
+        document.getElementById('modalEdit').style.display = 'none';
+    }
+
+    async function simpanEdit() {
+        const id = document.getElementById('editId').value;
+        const judul = document.getElementById('editJudul').value;
+        const deskripsi = document.getElementById('editDeskripsi').value;
+        const kelas = document.getElementById('editKelas').value;
+        const mapel = document.getElementById('editMapel').value;
+        const btn = document.getElementById('btnSimpanEdit');
+        
+        if(!judul || !deskripsi) { alert("Judul dan Deskripsi tidak boleh kosong!"); return; }
+
+        btn.innerText = '⏳ Menyimpan...';
+        btn.disabled = true;
+        
+        const { error } = await client.from('daftar_media').update({
+            judul: judul,
+            deskripsi: deskripsi,
+            kelas: kelas,
+            mapel: mapel
+        }).eq('id', id);
+        
+        btn.innerText = '💾 Simpan Perubahan';
+        btn.disabled = false;
+        
+        if(error) {
+            alert('Gagal menyimpan: ' + error.message);
         } else {
-            document.getElementById('formMedia').style.display = 'none';
-            document.getElementById('panelStatistik').style.display = 'block';
-            document.getElementById('btnTabStat').className = 'tab-btn tab-aktif';
-            document.getElementById('btnTabUpload').className = 'tab-btn tab-nonaktif';
-            muatStatistik();
+            alert('✅ Berhasil! Data media telah diperbarui.');
+            tutupModal();
+            muatKelolaMedia(); 
+        }
+    }
+    
+    async function hapusMedia(id) {
+        const konfirmasi = confirm("⚠️ PERINGATAN!\n\nApakah Anda yakin ingin menghapus media ini dari katalog?\nData yang dihapus tidak dapat dikembalikan.");
+        if(!konfirmasi) return;
+        
+        const { error } = await client.from('daftar_media').delete().eq('id', id);
+        if(error) {
+            alert('Gagal menghapus: ' + error.message);
+        } else {
+            muatKelolaMedia(); 
         }
     }
 
-    // Fungsi Tarik Data Statistik
     async function muatStatistik() {
         const divStat = document.getElementById('tempatStatistik');
         divStat.innerHTML = '<p style="text-align:center; color:#3742fa; font-weight:600;">⏳ Menarik data dari server...</p>';
@@ -183,7 +344,6 @@
         }
     }
 
-    // Fungsi Unggah (Asli Tidak Diubah)
     document.getElementById('btnSubmit').addEventListener('click', async function() {
         const btn = document.getElementById('btnSubmit');
         const status = document.getElementById('statusMssg');
