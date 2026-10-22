@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Media Interaktif CBT B-TEK</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Desain Latar & Font Dasar */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: #f0f4f8; 
+            background-image: radial-gradient(#d7e1ec 1px, transparent 1px);
+            background-size: 20px 20px;
+            margin: 0; 
+            padding: 20px; 
+            color: #333;
+        }
+
+        /* Navigasi Atas */
+        .navbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: linear-gradient(135deg, #6e8efb, #a777e3); 
+            color: white;
+            padding: 14px 24px; 
+            border-radius: 14px; 
+            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3); 
+            margin-bottom: 30px; 
+            max-width: 1000px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .akun-info { 
+            font-weight: 600; 
+            font-size: 14px; 
+            display: flex; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+        }
+        .badge-admin-tag {
+            background: #ff4757;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(255, 71, 87, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .kuota-badge { 
+            background: #ff9f43; 
+            color: white; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 13px; 
+            box-shadow: 0 2px 5px rgba(255, 159, 67, 0.4);
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-nav-custom {
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        .btn-dev {
+            background: #10b981;
+            color: white;
+        }
+        .btn-dev:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+        .btn-admin {
+            background: #ff9f43;
+            color: white;
+            box-shadow: 0 2px 6px rgba(255, 159, 67, 0.3);
+        }
+        .btn-admin:hover {
+            background: #ff793f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 121, 63, 0.4);
+        }
+        .btn-logout { 
+            background: #ff4757; 
+            color: white; 
+        }
+        .btn-logout:hover { 
+            background: #ff6b81; 
+            transform: scale(1.04); 
+        }
+
+        /* Area Judul */
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            position: relative;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 22px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .header h1 { 
+            font-size: 28px; 
+            color: #2f3542; 
+            margin-bottom: 5px;
+            background: -webkit-linear-gradient(#6e8efb, #a777e3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p { color: #57606f; font-size: 14.5px; margin: 0; }
+        .karakter { font-size: 45px; position: absolute; top: -20px; }
+        .karakter-kiri { left: 20px; transform: rotate(-10deg); }
+        .karakter-kanan { right: 20px; transform: rotate(10deg); }
+
+        /* AREA PENCARIAN & FILTER */
+        .filter-container {
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            border-top: 4px solid #1dd1a1;
+        }
+        .filter-container input, .filter-container select {
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+            flex: 1;
+            min-width: 150px;
+            background: #f8fafc;
+        }
+        .filter-container input:focus, .filter-container select:focus {
+            border-color: #1dd1a1;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(29, 209, 161, 0.15);
+        }
+        .filter-container input {
+            flex: 2;
+        }
+
+        /* Grid Katalog */
+        .grid-container { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 25px; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            padding-bottom: 50px;
+        }
+
+        /* Desain Kartu Media */
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
+            display: flex; 
+            flex-direction: column; 
+            transition: all 0.3s ease;
+            border-top: 6px solid #1dd1a1; 
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+        }
+        .badge-container { z-index: 1; margin-bottom: 12px; }
+        .badge { 
+            display: inline-block; 
+            padding: 5px 10px; 
+            border-radius: 6px; 
+            font-size: 11px; 
+            font-weight: bold;
+            margin-right: 6px; 
+            text-transform: uppercase;
+        }
+        .badge-kelas { background: #eccc68; color: #2f3542; }
+        .badge-mapel { background: #7bed9f; color: #2f3542; }
+        .judul { font-size: 18px; font-weight: 700; margin: 0 0 10px 0; color: #2f3542; z-index: 1; }
+        .deskripsi { font-size: 13px; color: #747d8c; margin-bottom: 25px; flex-grow: 1; line-height: 1.6; z-index: 1; }
+        
+        .btn-buka { 
+            background: linear-gradient(135deg, #1e90ff, #3742fa); 
+            color: white; 
+            text-align: center; 
+            padding: 12px; 
+            border-radius: 25px; 
+            font-weight: 600; 
+            font-family: 'Poppins', sans-serif;
+            border: none; 
+            cursor: pointer; 
+            width: 100%; 
+            transition: 0.3s;
+            z-index: 1;
+        }
+        .btn-buka:hover { 
+            background: linear-gradient(135deg, #3742fa, #1e90ff); 
+            box-shadow: 0 5px 15px rgba(55, 66, 250, 0.4);
+        }
+        
+        .data-kosong {
+            text-align: center;
+            width: 100%;
+            grid-column: 1 / -1;
+            color: #ff4757;
+            font-weight: bold;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        /* Animasi Skeleton */
+        @keyframes skeletonLoading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+            border-top: 6px solid #e1e8ed !important;
+            height: 220px;
+        }
+
+        /* MODAL PROFIL PENGEMBANG */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: fadeIn 0.25s ease;
+        }
+        .modal-card {
+            background: white;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 520px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-banner {
+            background: linear-gradient(135deg, #1e90ff, #70a1ff, #a777e3);
+            height: 110px;
+            position: relative;
+        }
+        .btn-close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.85);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #333;
+            transition: 0.2s;
+        }
+        .btn-close-modal:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+        .dev-body {
+            padding: 0 30px 30px 30px;
+            text-align: center;
+            position: relative;
+        }
+        .dev-avatar-wrapper {
+            width: 90px;
+            height: 90px;
+            margin: -45px auto 12px auto;
+            position: relative;
+        }
+        .dev-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+        }
+        .dev-verified {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: #10b981;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .dev-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+        .dev-handle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #64748b;
+            font-size: 13.5px;
+            font-weight: 500;
+            margin: 4px 0 12px 0;
+            text-decoration: none;
+            background: #f8fafc;
+            padding: 3px 12px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        .dev-handle:hover {
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+        .dev-title {
+            color: #3742fa;
+            font-weight: 600;
+            font-size: 13.5px;
+            margin-bottom: 12px;
+        }
+        .dev-bio {
+            color: #475569;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        .dev-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 22px;
+        }
+        .skill-pill {
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 11.5px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #dbeafe;
+        }
+        .dev-links {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-link-action {
+            flex: 1;
+            padding: 11px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: 0.25s;
+        }
+        .btn-gh {
+            background: #24292e;
+            color: white;
+        }
+        .btn-gh:hover {
+            background: #0f1419;
+            transform: translateY(-2px);
+        }
+        .btn-wa {
+            background: #25d366;
+            color: white;
+        }
+        .btn-wa:hover {
+            background: #1eb855;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .portal-footer {
+            text-align: center;
+            padding: 20px 0 10px 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+        .portal-footer a {
+            color: #3742fa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="akun-info">
+        <span>Halo, <strong id="teksEmail">Memuat...</strong></span>
+        <span id="badgeAdminArea"></span>
+        <span class="kuota-badge">🚀 Kuota: <strong id="teksKuota">-</strong></span>
+    </div>
+    <div class="nav-actions">
+        <!-- Tombol Profil Pengembang -->
+        <button class="btn-nav-custom btn-dev" onclick="bukaModalDev()">
+            <span>👨‍💻</span> Profil Pengembang
+        </button>
+        
+        <!-- Tombol Pengaturan Admin (Otomatis muncul untuk admin) -->
+        <a href="admin_3.html" class="btn-nav-custom btn-admin" id="btnAdminNav" style="display: none;">
+            <span>⚙️</span> Atur Halaman
+        </a>
+        
+        <button class="btn-nav-custom btn-logout" onclick="prosesLogout()">Keluar</button>
+    </div>
+</div>
+
+<!-- HEADER UTAMA -->
+<div class="header">
+    <div class="karakter karakter-kiri">👨‍🏫</div>
+    <div class="karakter karakter-kanan">👩‍🎓</div>
+    <h1>Katalog Media B-TEK</h1>
+    <p>Pilih dan eksplorasi media interaktif kurikulum digital di bawah ini.</p>
+</div>
+
+<!-- BARIS FILTER & PENCARIAN -->
+<div class="filter-container">
+    <input type="text" id="inputCari" placeholder="🔍 Cari judul atau materi pembelajaran..." onkeyup="saringData()">
+    
+    <select id="filterKelas" onchange="saringData()">
+        <option value="semua">-- Semua Kelas --</option>
+        <option value="kelas-1">Kelas 1</option>
+        <option value="kelas-2">Kelas 2</option>
+        <option value="kelas-3">Kelas 3</option>
+        <option value="kelas-4">Kelas 4</option>
+        <option value="kelas-5">Kelas 5</option>
+        <option value="kelas-6">Kelas 6</option>
+    </select>
+    
+    <select id="filterMapel" onchange="saringData()">
+        <option value="semua">-- Semua Mapel --</option>
+        <option value="Pendidikan Agama Islam">Pendidikan Agama Islam</option>
+        <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+        <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+        <option value="Matematika">Matematika</option>
+        <option value="IPAS">IPAS</option>
+        <option value="Bahasa Inggris">Bahasa Inggris</option>
+        <option value="Seni Rupa">Seni Rupa</option>
+        <option value="Seni Musik">Seni Musik</option>
+        <option value="Bahasa Makassar">Bahasa Makassar</option>
+        <option value="Koding dan Kecerdasan Artifisial">Koding dan Kecerdasan Artifisial</option>
+    </select>
+</div>
+
+<!-- CONTAINER KATALOG MEDIA -->
+<div class="grid-container" id="katalogMedia"></div>
+
+<!-- FOOTER -->
+<div class="portal-footer">
+    Dikembangkan oleh <a href="javascript:void(0)" onclick="bukaModalDev()">Budi Yanto (budhy92-cyber)</a> &bull; CBT B-TEK &copy; 2026
+</div>
+
+<!-- MODAL PROFIL PENGEMBANG -->
+<div class="modal-overlay" id="modalDev" onclick="tutupModalDevLuar(event)">
+    <div class="modal-card">
+        <div class="modal-banner">
+            <button class="btn-close-modal" onclick="tutupModalDev()">✕</button>
+        </div>
+        <div class="dev-body">
+            <div class="dev-avatar-wrapper">
+                <div class="dev-avatar">👨‍💻</div>
+                <div class="dev-verified" title="Pengembang Terverifikasi">✓</div>
+            </div>
+            <h3 class="dev-name">Budi Yanto</h3>
+            <a href="https://github.com/budhy92-cyber" target="_blank" class="dev-handle">
+                <svg height="15" width="15" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                budhy92-cyber
+            </a>
+            <div class="dev-title">Lead Developer & EdTech Specialist &bull; CBT B-TEK</div>
+            <p class="dev-bio">
+                Pengembang perangkat lunak dan pemerhati pendidikan teknologi digital. Berfokus pada transformasi pembelajaran modern melalui perancangan aplikasi CBT dan media interaktif berbasis web yang responsif, edukatif, serta mudah diakses oleh tenaga pendidik dan siswa di seluruh Indonesia.
+            </p>
+            
+            <div class="dev-skills">
+                <span class="skill-pill">🌐 HTML5 / CSS3</span>
+                <span class="skill-pill">⚡ JavaScript ES6+</span>
+                <span class="skill-pill">🗄️ Supabase DB</span>
+                <span class="skill-pill">☁️ Cloud Storage</span>
+                <span class="skill-pill">💻 CBT Systems</span>
+                <span class="skill-pill">🐙 Git & GitHub</span>
+            </div>
+
+            <div class="dev-links">
+                <a href="https://github.com/budhy92-cyber" target="_blank" class="btn-link-action btn-gh">
+                    <span>🐙</span> Kunjungi GitHub
+                </a>
+                <a href="https://wa.me/6281234567890?text=Halo%20Budi%20Yanto,%20saya%20tertarik%20dengan%20pengembangan%20media%20CBT%20B-TEK" target="_blank" class="btn-link-action btn-wa">
+                    <span>💬</span> WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://luutehtjtsvivdyipjpy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dXRlaHRqdHN2aXZkeWlwanB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjc5MDgsImV4cCI6MjEwNTY0MzkwOH0.74C0F1UmOOe53ObtIrqnh84MYeTfgW0EQXSgrhLyIeY';
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // DAFTAR EMAIL DENGAN HAK ADMIN
+    const ADMIN_EMAILS = [
+        'budhy92@gmail.com',
+        'admin@sekolah.com',
+        'admin@btek.com',
+        'budiyantobudi677@gmail.com'
+    ];
+
+    let dataUser = null;
+    let sisaKuota = 0;
+    let semuaDataMedia = []; 
+    let riwayatBuka = []; 
+    let userIsAdmin = false;
+
+    async function cekLogin() {
+        const { data: { session }, error } = await client.auth.getSession();
+        const adminSessionFlag = localStorage.getItem('btek_admin_session') === 'true';
+        const savedAdminUser = JSON.parse(localStorage.getItem('btek_admin_user') || 'null');
+
+        if (!session && !adminSessionFlag) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        if (session) {
+            dataUser = session.user;
+        } else if (adminSessionFlag && savedAdminUser) {
+            dataUser = {
+                id: 'admin-local-id',
+                email: savedAdminUser.email || 'budhy92@gmail.com',
+                user_metadata: { full_name: savedAdminUser.name || 'Budi Yanto' }
+            };
+        }
+
+        const emailPengguna = (dataUser.email || '').toLowerCase();
+        userIsAdmin = adminSessionFlag || ADMIN_EMAILS.includes(emailPengguna);
+
+        const namaPendek = emailPengguna.split('@')[0];
+        document.getElementById('teksEmail').innerText = namaPendek;
+        
+        // Tampilkan fitur Super Admin jika akun admin
+        if (userIsAdmin) {
+            document.getElementById('badgeAdminArea').innerHTML = '<span class="badge-admin-tag">👑 ADMIN</span>';
+            document.getElementById('btnAdminNav').style.display = 'inline-flex';
+            document.getElementById('teksKuota').innerText = '♾️ Unlimited';
+            sisaKuota = 99999;
+        } else {
+            document.getElementById('btnAdminNav').style.display = 'none';
+            await muatProfilGuru();
+        }
+
+        riwayatBuka = JSON.parse(localStorage.getItem('riwayat_btek_' + dataUser.id)) || [];
+        await muatKatalog();
+    }
+
+    async function muatProfilGuru() {
+        try {
+            const { data, error } = await client.from('profil_guru').select('sisa_kuota').eq('id', dataUser.id).single();
+            if (data) {
+                sisaKuota = parseInt(data.sisa_kuota);
+                document.getElementById('teksKuota').innerText = sisaKuota;
+            }
+        } catch (e) {
+            console.warn('Profil guru belum ada di database, menggunakan default.');
+        }
+    }
+
+    function tampilkanSkeleton() {
+        const katalog = document.getElementById('katalogMedia');
+        katalog.innerHTML = '';
+        for(let i=0; i<6; i++) {
+            katalog.innerHTML += `<div class="card skeleton"></div>`;
+        }
+    }
+
+    async function muatKatalog() {
+        tampilkanSkeleton(); 
+        
+        const { data, error } = await client.from('daftar_media').select('*').order('id', { ascending: false });
+        
+        if (data) {
+            semuaDataMedia = data; 
+            saringData(); 
+        } else {
+            document.getElementById('katalogMedia').innerHTML = '<div class="data-kosong">Belum ada media yang diunggah.</div>';
+        }
+    }
+
+    function saringData() {
+        const kataKunci = document.getElementById('inputCari').value.toLowerCase();
+        const kelasPilihan = document.getElementById('filterKelas').value;
+        const mapelPilihan = document.getElementById('filterMapel').value;
+        const katalog = document.getElementById('katalogMedia');
+        
+        katalog.innerHTML = ''; 
+
+        const dataTersaring = semuaDataMedia.filter(item => {
+            const cocokKataKunci = item.judul.toLowerCase().includes(kataKunci) || item.deskripsi.toLowerCase().includes(kataKunci);
+            const cocokKelas = (kelasPilihan === 'semua') || (item.kelas === kelasPilihan);
+            const cocokMapel = (mapelPilihan === 'semua') || (item.mapel === mapelPilihan);
+            return cocokKataKunci && cocokKelas && cocokMapel;
+        });
+
+        if (dataTersaring.length === 0) {
+            katalog.innerHTML = `<div class="data-kosong">Data tidak ditemukan. Coba kata kunci atau filter lain.</div>`;
+            return;
+        }
+
+        dataTersaring.forEach(item => {
+            const idMediaString = String(item.id);
+            const sudahPernah = riwayatBuka.includes(idMediaString);
+            
+            const teksTombol = userIsAdmin ? '▶ Buka (Akses Admin)' : (sudahPernah ? '▶ Buka Lagi (Gratis)' : '▶ Buka Media');
+            const warnaTombol = userIsAdmin 
+                ? 'background: linear-gradient(135deg, #ff9f43, #ff6b81);' 
+                : (sudahPernah ? 'background: linear-gradient(135deg, #a29bfe, #6c5ce7);' : '');
+            const badgeRiwayat = sudahPernah ? `<span class="badge" style="background:#a29bfe; color:white;">RIWAYAT</span>` : '';
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            card.innerHTML = `
+                <div class="badge-container">
+                    <span class="badge badge-kelas">${(item.kelas || '').replace('-', ' ').toUpperCase()}</span>
+                    <span class="badge badge-mapel">${(item.mapel || '').toUpperCase()}</span>
+                    ${badgeRiwayat}
+                </div>
+                <h3 class="judul">${item.judul}</h3>
+                <p class="deskripsi">${item.deskripsi}</p>
+                <button class="btn-buka" id="btn_${item.id}" style="${warnaTombol}" onclick="bukaMedia('${item.file_url}', 'btn_${item.id}', '${item.id}')">${teksTombol}</button>
+            `;
+            katalog.appendChild(card);
+        });
+    }
+
+    async function bukaMedia(url, idTombol, idMedia) {
+        const idMediaString = String(idMedia);
+        const sudahPernah = riwayatBuka.includes(idMediaString);
+
+        // Jika bukan admin dan kuota habis
+        if (!userIsAdmin && sisaKuota <= 0 && !sudahPernah) {
+            const mauLangganan = confirm("MAAF, KUOTA GRATIS ANDA HABIS!\n\nSilakan Upgrade Premium untuk mendapatkan akses semua media tanpa batas.\n\nKlik 'OK' untuk menghubungi Admin via WhatsApp.");
+            if (mauLangganan) {
+                const nomorWA = "6281234567890"; 
+                const pesan = `Halo Admin CBT B-TEK, saya ingin Upgrade Premium agar bisa mengakses semua media interaktif. Akun email saya: ${dataUser.email}`;
+                window.location.href = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
+            }
+            return;
+        }
+
+        const tombol = document.getElementById(idTombol);
+        const teksAsli = tombol.innerText;
+        tombol.innerText = "⏳ Membuka...";
+        tombol.disabled = true;
+
+        const jendelaBaru = window.open("", "_blank");
+        if (jendelaBaru) {
+            jendelaBaru.document.write(`
+                <h2 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#3742fa;">
+                    ⏳ Menyiapkan Media Pembelajaran CBT B-TEK...
+                </h2>
+            `);
+        } else {
+            alert("⚠️ Peringatan: Browser Anda memblokir pop-up! Izinkan pop-up untuk situs ini agar media dapat terbuka.");
+            tombol.innerText = teksAsli;
+            tombol.disabled = false;
+            return;
+        }
+
+        try {
+            // Hanya potong kuota jika bukan admin dan belum pernah buka
+            if (!userIsAdmin && !sudahPernah) {
+                sisaKuota -= 1;
+                document.getElementById('teksKuota').innerText = sisaKuota;
+                await client.from('profil_guru').update({ sisa_kuota: sisaKuota }).eq('id', dataUser.id);
+                
+                riwayatBuka.push(idMediaString);
+                localStorage.setItem('riwayat_btek_' + dataUser.id, JSON.stringify(riwayatBuka));
+                
+                setTimeout(() => saringData(), 500);
+            }
+
+            const respon = await fetch(url);
+            const isiHtml = await respon.text();
+
+            jendelaBaru.document.open();
+            jendelaBaru.document.write(isiHtml);
+            jendelaBaru.document.close();
+
+        } catch (error) {
+            jendelaBaru.close();
+            alert("Gagal memuat media. Pastikan koneksi internet stabil.");
+        } finally {
+            tombol.innerText = teksAsli;
+            tombol.disabled = false;
+        }
+    }
+
+    async function prosesLogout() {
+        localStorage.removeItem('btek_admin_session');
+        localStorage.removeItem('btek_admin_user');
+        await client.auth.signOut();
+        window.location.href = "login.html";
+    }
+
+    // FUNGSI MODAL PENGEMBANG
+    function bukaModalDev() {
+        document.getElementById('modalDev').style.display = 'flex';
+    }
+
+    function tutupModalDev() {
+        document.getElementById('modalDev').style.display = 'none';
+    }
+
+    function tutupModalDevLuar(event) {
+        if (event.target.id === 'modalDev') {
+            tutupModalDev();
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') tutupModalDev();
+    });
+
+    cekLogin();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - CBT B-TEK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8fafc;
+            color: #1e293b;
+            scroll-behavior: smooth;
+        }
+
+        /* --- HEADER / NAVBAR --- */
+        header {
+            background: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 1000;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: #3742fa;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        nav {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+        nav a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 14.5px;
+            transition: 0.3s;
+        }
+        nav a:hover {
+            color: #3742fa;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn-login-nav {
+            background: linear-gradient(135deg, #1e90ff, #3742fa);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .btn-login-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(55, 66, 250, 0.3);
+        }
+
+        /* --- SECTION: BERANDA (HERO) --- */
+        .hero {
+            padding: 140px 50px 90px 50px;
+            text-align: center;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+        }
+        .hero h1 {
+            font-size: 44px;
+            margin-bottom: 20px;
+            color: #0f172a;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.25;
+        }
+        .hero h1 span {
+            color: #3742fa;
+        }
+        .hero p {
+            font-size: 17px;
+            color: #475569;
+            max-width: 650px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+        }
+
+        /* --- SECTION: TENTANG --- */
+        .tentang {
+            padding: 70px 50px;
+            text-align: center;
+            background: white;
+        }
+        .tentang h2 {
+            font-size: 30px;
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+        .tentang p.sub-tentang {
+            font-size: 15.5px;
+            color: #475569;
+            max-width: 750px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        .fitur-grid {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .fitur-card {
+            background: #f8fafc;
+            padding: 30px 25px;
+            border-radius: 16px;
+            width: 260px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            transition: 0.3s;
+            text-align: left;
+        }
+        .fitur-card:hover {
+            transform: translateY(-5px);
+            border-color: #6e8efb;
+            box-shadow: 0 10px 25px rgba(110, 142, 251, 0.12);
+        }
+        .fitur-card h3 { 
+            color: #3742fa; 
+            margin-top: 0;
+            font-size: 18px;
+        }
+        .fitur-card p {
+            color: #64748b;
+            font-size: 13.5px;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        /* --- SECTION: PROFIL PENGEMBANG --- */
+        .pengembang-section {
+            padding: 70px 50px;
+            background: #f1f5f9;
+            text-align: center;
+        }
+        .pengembang-section h2 {
+            font-size: 30px;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+        .pengembang-section p.sub-lead {
+            color: #64748b;
+            font-size: 15px;
+            max-width: 600px;
+            margin: 0 auto 35px auto;
+        }
+        .dev-card-wrapper {
+            max-width: 580px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .dev-card-wrapper:hover {
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        .dev-top-bg {
+            background: linear-gradient(135deg, #3742fa, #6e8efb, #a777e3);
+            height: 90px;
+        }
+        .dev-content {
+            padding: 0 35px 35px 35px;
+            position: relative;
+        }
+        .dev-img-box {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: white;
+            margin: -42px auto 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            border: 4px solid white;
+        }
+        .dev-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+        }
+        .dev-handle-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            color: #334155;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            margin: 6px 0 12px 0;
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+        }
+        .dev-handle-badge:hover {
+            color: #3742fa;
+            border-color: #3742fa;
+        }
+        .dev-role-text {
+            color: #3742fa;
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .dev-bio-text {
+            color: #475569;
+            font-size: 13.5px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        .dev-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        .tag-pill {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        .btn-dev-github {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #24292e;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13.5px;
+            transition: 0.25s;
+        }
+        .btn-dev-github:hover {
+            background: #0f1419;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 25px 20px;
+            font-size: 13.5px;
+        }
+        footer a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .hero { padding: 110px 20px 60px 20px; }
+            .hero h1 { font-size: 32px; }
+            .tentang, .pengembang-section { padding: 50px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BAGIAN ATAS (HEADER) -->
+    <header>
+        <div class="logo">🏫 CBT B-TEK</div>
+        <nav>
+            <a href="#beranda">Beranda</a>
+            <a href="#tentang">Tentang Kami</a>
+            <a href="#pengembang">Profil Pengembang</a>
+        </nav>
+        <div class="header-actions">
+            <button class="btn-login-nav" onclick="window.location.href='login.html'">Masuk / Login</button>
+        </div>
+    </header>
+
+    <!-- BAGIAN BERANDA -->
+    <section id="beranda" class="hero">
+        <h1>Ubah Cara Belajar dengan <span>Media Interaktif</span></h1>
+        <p>Platform penyedia media pembelajaran interaktif berbasis web untuk guru modern. Dapatkan kemudahan mengajar dengan 1 klik.</p>
+        <button class="btn-login-nav" style="padding: 14px 35px; font-size: 16px;" onclick="window.location.href='login.html'">Mulai Sekarang Gratis 🚀</button>
+    </section>
+
+    <!-- BAGIAN TENTANG -->
+    <section id="tentang" class="tentang">
+        <h2>Tentang CBT B-TEK</h2>
+        <p class="sub-tentang">CBT B-TEK hadir sebagai solusi digital untuk membantu para pendidik di seluruh Indonesia. Kami menyediakan berbagai macam modul, kuis, dan media pembelajaran interaktif yang sudah disesuaikan dengan kurikulum pendidikan saat ini.</p>
+        
+        <div class="fitur-grid">
+            <div class="fitur-card">
+                <h3>🚀 Akses Cepat</h3>
+                <p>Buka media pembelajaran langsung dari browser tanpa perlu menginstal aplikasi tambahan.</p>
+            </div>
+            <div class="fitur-card">
+                <h3>🎁 Akses Freemium</h3>
+                <p>Dapatkan kuota akses gratis saat pertama kali mendaftar untuk mencoba kehebatan sistem media interaktif kami.</p>
+            </div>
+            <div class="fitur-card">
+                <h3>📱 Responsif & Ringan</h3>
+                <p>Tampilan yang menyesuaikan dengan sempurna baik dibuka melalui HP, Tablet, maupun Laptop.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- BAGIAN PROFIL PENGEMBANG -->
+    <section id="pengembang" class="pengembang-section">
+        <h2>Profil Pengembang</h2>
+        <p class="sub-lead">Sosok di balik arsitektur dan pengembangan ekosistem platform CBT B-TEK.</p>
+
+        <div class="dev-card-wrapper">
+            <div class="dev-top-bg"></div>
+            <div class="dev-content">
+                <div class="dev-img-box">👨‍💻</div>
+                <h3 class="dev-name">Budi Yanto</h3>
+                <a href="https://github.com/budhy92-cyber" target="_blank" class="dev-handle-badge">
+                    <svg height="15" width="15" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    budhy92-cyber
+                </a>
+                <div class="dev-role-text">Lead Developer & EdTech Specialist &bull; CBT B-TEK</div>
+                <p class="dev-bio-text">
+                    Berdedikasi dalam modernisasi pendidikan berbasis teknologi digital. Mengembangkan media pembelajaran interaktif berbasis web, sistem CBT, serta integrasi database cloud storage untuk menciptakan pengalaman belajar yang menyenangkan, interaktif, dan mudah diakses oleh guru serta murid di mana saja.
+                </p>
+                <div class="dev-tags">
+                    <span class="tag-pill">HTML5</span>
+                    <span class="tag-pill">CSS3</span>
+                    <span class="tag-pill">JavaScript</span>
+                    <span class="tag-pill">Supabase</span>
+                    <span class="tag-pill">Cloud Storage</span>
+                    <span class="tag-pill">Git / GitHub</span>
+                </div>
+                <a href="https://github.com/budhy92-cyber" target="_blank" class="btn-dev-github">
+                    <span>🐙</span> Lihat Portofolio di GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        &copy; 2026 CBT B-TEK &bull; Dikembangkan oleh <a href="https://github.com/budhy92-cyber" target="_blank">Budi Yanto (budhy92-cyber)</a>. Semua Hak Dilindungi.
+    </footer>
+
+</body>
+</html>
