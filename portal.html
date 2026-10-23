@@ -6,6 +6,14 @@
     <title>Portal Media Interaktif CBT B-TEK</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            corePlugins: {
+                preflight: false,
+            }
+        }
+    </script>
     <style>
         /* Desain Latar & Font Dasar */
         body { 
@@ -522,49 +530,68 @@
 
 <!-- FOOTER -->
 <div class="portal-footer">
-    Dikembangkan oleh <a href="javascript:void(0)" onclick="bukaModalDev()">Budi Yanto (budhy92-cyber)</a> &bull; CBT B-TEK &copy; 2026
+    <div style="font-weight: 700; margin-bottom: 6px; font-size: 14.5px; color: #334155;">
+        Media Guru Btek By Pak Guru Budi
+    </div>
+    <div>
+        Dikembangkan oleh <a href="javascript:void(0)" onclick="bukaModalDev()">Budianto, S.Pd., Gr. (budhy92-cyber)</a> &bull; CBT B-TEK &copy; 2026
+    </div>
 </div>
 
 <!-- MODAL PROFIL PENGEMBANG -->
 <div class="modal-overlay" id="modalDev" onclick="tutupModalDevLuar(event)">
-    <div class="modal-card">
-        <div class="modal-banner">
-            <button class="btn-close-modal" onclick="tutupModalDev()">✕</button>
-        </div>
-        <div class="dev-body">
-            <div class="dev-avatar-wrapper">
-                <div class="dev-avatar">👨‍💻</div>
-                <div class="dev-verified" title="Pengembang Terverifikasi">✓</div>
+    <div class="modal-card" style="max-width: 680px; width: 95%; border-radius: 1rem; overflow: hidden; position: relative; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.25); margin: 20px auto; background: white;">
+        <button class="btn-close-modal" onclick="tutupModalDev()" style="position: absolute; top: 14px; right: 14px; z-index: 20; background: rgba(255,255,255,0.85); border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: 0.2s;">✕</button>
+
+        <!-- Komponen Tentang Pengembang -->
+        <div class="w-full bg-white text-left" style="margin: 0;">
+          
+          <!-- Header Banner Gradient -->
+          <div class="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 px-6 py-5 text-white flex items-center space-x-4 pr-16">
+            <!-- Avatar / Foto Profil -->
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjN7Tkp_mrLUI08LBDae0lwxep_1ttgb6WmqZGdFrlr9GVsKCUALROMP4ApAby5ltYt2okqx6gUWf2ugzO5VijYfftrpeX1RIXnHUFqqlSQzGHu5j-oUq_a-ouzDSiui3ZXuvi7IxIlp7jOQuhSJkRmc_cfgvGiRh-NexAlXtDcw4gd4cpTqfrrQ8wdjnU/s320/Desain%20Tanpa%20Judul%20-%202026-10-23T080551.135.png" alt="Budianto, S.Pd., Gr." class="h-16 w-16 rounded-full object-cover border-2 border-white/60 shadow-inner shrink-0 bg-white/20">
+            <div>
+              <span class="inline-block px-2.5 py-0.5 bg-blue-800/60 text-blue-100 text-[11px] font-semibold tracking-wider uppercase rounded-full mb-1">
+                Tentang Pengembang
+              </span>
+              <h2 class="text-xl font-bold tracking-tight text-white" style="margin: 0; color: white;">Budianto, S.Pd., Gr.</h2>
+              <p class="text-xs text-blue-100 font-medium" style="margin: 2px 0 0 0; color: #dbeafe;">Guru Kelas SD &bull; UPTD SPF SD Inpres Tangkala II, Kota Makassar</p>
             </div>
-            <h3 class="dev-name">Budi Yanto</h3>
-            <a href="https://github.com/budhy92-cyber" target="_blank" class="dev-handle">
-                <svg height="15" width="15" viewBox="0 0 16 16" fill="currentColor">
-                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-                </svg>
-                budhy92-cyber
-            </a>
-            <div class="dev-title">Lead Developer & EdTech Specialist &bull; CBT B-TEK</div>
-            <p class="dev-bio">
-                Pengembang perangkat lunak dan pemerhati pendidikan teknologi digital. Berfokus pada transformasi pembelajaran modern melalui perancangan aplikasi CBT dan media interaktif berbasis web yang responsif, edukatif, serta mudah diakses oleh tenaga pendidik dan siswa di seluruh Indonesia.
+          </div>
+
+          <!-- Isi Biodata (Gaya Profesional & Formal) -->
+          <div class="p-6 sm:p-8 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed text-justify">
+            <p>
+              <strong class="text-slate-900 font-semibold">Budianto, S.Pd., Gr.</strong> adalah seorang pendidik profesional yang bertugas sebagai Guru Kelas di <strong class="text-slate-900 font-medium">UPTD SPF SD Inpres Tangkala II, Kota Makassar</strong>. Ketertarikannya yang mendalam pada dunia Teknologi Informasi (IT) dan komputer telah tumbuh sejak bangku SMA, mendorongnya untuk terus berinovasi mengintegrasikan teknologi ke dalam dunia pendidikan.
             </p>
-            
-            <div class="dev-skills">
-                <span class="skill-pill">🌐 HTML5 / CSS3</span>
-                <span class="skill-pill">⚡ JavaScript ES6+</span>
-                <span class="skill-pill">🗄️ Supabase DB</span>
-                <span class="skill-pill">☁️ Cloud Storage</span>
-                <span class="skill-pill">💻 CBT Systems</span>
-                <span class="skill-pill">🐙 Git & GitHub</span>
+            <p>
+              Hingga saat ini, beliau telah merancang dan mengembangkan berbagai solusi digital pendidikan yang alhamdulillah telah digunakan secara luas oleh banyak sekolah dan pendidik, di antaranya aplikasi ujian berbasis komputer <strong class="text-blue-700 font-semibold">CBT B-TEK</strong>, <strong class="text-emerald-700 font-semibold">Aplikasi Presensi (Absensi+)</strong>, serta <strong class="text-indigo-700 font-semibold">Gammara App</strong> (sistem presensi terpadu untuk guru dan murid). Selain fokus mengembangkan aplikasi, beliau juga aktif berbagi wawasan literasi digital melalui komunitas <strong class="text-slate-900 font-medium">Blogger Maros</strong> dan <strong class="text-slate-900 font-medium">Blogger Makassar</strong>.
+            </p>
+          </div>
+
+          <!-- Footer Highlight Karya & Komunitas -->
+          <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2 text-left">Karya Aplikasi:</span>
+              <div class="flex flex-wrap gap-2">
+                <span class="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200/60 text-xs font-semibold rounded-lg">
+                  💻 CBT B-TEK
+                </span>
+                <span class="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-xs font-semibold rounded-lg">
+                  ✅ Absensi+
+                </span>
+                <span class="inline-flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/60 text-xs font-semibold rounded-lg">
+                  📱 Gammara App
+                </span>
+              </div>
             </div>
 
-            <div class="dev-links">
-                <a href="https://github.com/budhy92-cyber" target="_blank" class="btn-link-action btn-gh">
-                    <span>🐙</span> Kunjungi GitHub
-                </a>
-                <a href="https://wa.me/6281234567890?text=Halo%20Budi%20Yanto,%20saya%20tertarik%20dengan%20pengembangan%20media%20CBT%20B-TEK" target="_blank" class="btn-link-action btn-wa">
-                    <span>💬</span> WhatsApp
-                </a>
+            <div class="sm:text-right border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-200/60">
+              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Komunitas:</span>
+              <p class="text-xs font-semibold text-slate-600" style="margin: 0;">✍️ Blogger Maros &amp; Blogger Makassar</p>
             </div>
+          </div>
+
         </div>
     </div>
 </div>
