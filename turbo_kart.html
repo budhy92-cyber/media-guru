@@ -299,8 +299,13 @@
                         </div>
                         <div>
                             <select id="selectQuickGeminiModel" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white">
+                                <option value="gemini-3.8-flash" selected>Gemini 3.8 Flash (Versi 3.8 Terbaru)</option>
+                                <option value="gemini-3.8-pro">Gemini 3.8 Pro</option>
+                                <option value="gemini-3.7-flash">Gemini 3.7 Flash</option>
+                                <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+                                <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
+                                <option value="gemini-3.0-flash">Gemini 3.0 Flash</option>
                                 <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-                                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
                                 <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
                                 <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
                             </select>
@@ -2720,7 +2725,7 @@ Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A"
             box.classList.toggle('hidden');
             if (!box.classList.contains('hidden')) {
                 const curKey = localStorage.getItem('gemini_api_key') || '';
-                const curModel = localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
+                const curModel = localStorage.getItem('gemini_model') || 'gemini-3.8-flash';
                 document.getElementById('inputQuickGeminiKey').value = curKey;
                 document.getElementById('selectQuickGeminiModel').value = curModel;
             }
@@ -2744,7 +2749,7 @@ Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A"
         function updateQuickAiKeyBadge() {
             const badge = document.getElementById('aiKeyBadgeInfo');
             const key = localStorage.getItem('gemini_api_key') || '';
-            const model = localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
+            const model = localStorage.getItem('gemini_model') || 'gemini-3.8-flash';
             if (key && key.length > 8) {
                 const masked = key.slice(0, 6) + '...' + key.slice(-4);
                 badge.innerHTML = `🟢 <strong>Gemini AI Terhubung:</strong> Model <code class="text-indigo-300 font-bold">${model}</code> (${masked})`;
@@ -2923,9 +2928,21 @@ Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A"
                 return;
             }
 
-            const savedModel = localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
-            // Urutan model auto-fallback
-            const fallbackChain = [savedModel, 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+            const savedModel = localStorage.getItem('gemini_model') || 'gemini-3.8-flash';
+            // Urutan model auto-fallback: Mulai dari 3.8 kemudian versi terdekat di bawahnya (3.7, 3.6, dst)
+            const fallbackChain = [
+                savedModel,
+                'gemini-3.8-flash',
+                'gemini-3.8-pro',
+                'gemini-3.7-flash',
+                'gemini-3.6-flash',
+                'gemini-3.5-flash',
+                'gemini-3.0-flash',
+                'gemini-2.5-flash',
+                'gemini-2.5-pro',
+                'gemini-2.0-flash',
+                'gemini-1.5-flash'
+            ];
             const uniqueModels = [...new Set(fallbackChain)];
 
             const statusEl = document.getElementById('aiGenerateStatus');
@@ -2956,6 +2973,7 @@ Instruksi Wajib:
             let success = false;
             let resultQuestions = [];
             let lastError = '';
+            let successModel = '';
 
             for (const model of uniqueModels) {
                 try {
@@ -2977,7 +2995,7 @@ Instruksi Wajib:
                     if (!response.ok) {
                         const errData = await response.json().catch(() => ({}));
                         lastError = errData.error ? errData.error.message : `HTTP ${response.status}`;
-                        console.warn(`Gemini model ${model} gagal (${lastError}), mencoba model cadangan...`);
+                        console.warn(`Gemini model ${model} belum tersedia/gagal (${lastError}), mencoba versi di bawahnya...`);
                         continue;
                     }
 
@@ -2988,6 +3006,7 @@ Instruksi Wajib:
                         const parsed = JSON.parse(cleanJson);
                         if (Array.isArray(parsed) && parsed.length > 0) {
                             resultQuestions = parsed;
+                            successModel = model;
                             success = true;
                             break;
                         }
@@ -3023,7 +3042,7 @@ Instruksi Wajib:
                 }
 
                 renderDaftarSoalAktif();
-                statusEl.innerHTML = `🎉 <strong>Berhasil!</strong> ${added} butir soal telah dibuat oleh Gemini AI dan siap disimpan di bawah.`;
+                statusEl.innerHTML = `🎉 <strong>Berhasil!</strong> ${added} butir soal telah dibuat oleh Gemini AI (Model: <strong class="text-indigo-300 font-mono">${successModel}</strong>) dan siap disimpan di bawah.`;
                 setTimeout(() => {
                     statusEl.classList.add('hidden');
                 }, 6000);
