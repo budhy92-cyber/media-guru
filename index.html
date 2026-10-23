@@ -1,419 +1,497 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beranda - CBT B-TEK</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>CBT B-TEK - Media Pembelajaran Interaktif & Gim Edukasi</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            corePlugins: {
-                preflight: false,
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
             }
         }
     </script>
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f8fafc;
-            color: #1e293b;
-            scroll-behavior: smooth;
-        }
-
-        /* --- HEADER / NAVBAR --- */
-        header {
-            background: white;
-            padding: 15px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            box-sizing: border-box;
-            z-index: 1000;
-        }
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            color: #3742fa;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        nav {
-            display: flex;
-            gap: 25px;
-            align-items: center;
-        }
-        nav a {
-            text-decoration: none;
-            color: #64748b;
-            font-weight: 600;
-            font-size: 14.5px;
-            transition: 0.3s;
-        }
-        nav a:hover {
-            color: #3742fa;
-        }
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .btn-login-nav {
-            background: linear-gradient(135deg, #1e90ff, #3742fa);
-            color: white;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 14px;
-        }
-        .btn-login-nav:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(55, 66, 250, 0.3);
-        }
-
-        /* --- SECTION: BERANDA (HERO) --- */
-        .hero {
-            padding: 140px 50px 90px 50px;
-            text-align: center;
-            background: linear-gradient(135deg, #e0eafc, #cfdef3);
-        }
-        .hero h1 {
-            font-size: 44px;
-            margin-bottom: 20px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
             color: #0f172a;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.25;
+            -webkit-tap-highlight-color: transparent;
         }
-        .hero h1 span {
-            color: #3742fa;
+        .hero-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+            background-size: 28px 28px;
         }
-        .hero p {
-            font-size: 17px;
-            color: #475569;
-            max-width: 650px;
-            margin: 0 auto 30px auto;
-            line-height: 1.6;
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
         }
-
-        /* --- SECTION: TENTANG --- */
-        .tentang {
-            padding: 70px 50px;
-            text-align: center;
-            background: white;
-        }
-        .tentang h2 {
-            font-size: 30px;
-            color: #0f172a;
-            margin-bottom: 15px;
-        }
-        .tentang p.sub-tentang {
-            font-size: 15.5px;
-            color: #475569;
-            max-width: 750px;
-            margin: 0 auto;
-            line-height: 1.8;
-        }
-        .fitur-grid {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-        .fitur-card {
-            background: #f8fafc;
-            padding: 30px 25px;
-            border-radius: 16px;
-            width: 260px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            border: 1px solid #e2e8f0;
-            transition: 0.3s;
-            text-align: left;
-        }
-        .fitur-card:hover {
-            transform: translateY(-5px);
-            border-color: #6e8efb;
-            box-shadow: 0 10px 25px rgba(110, 142, 251, 0.12);
-        }
-        .fitur-card h3 { 
-            color: #3742fa; 
-            margin-top: 0;
-            font-size: 18px;
-        }
-        .fitur-card p {
-            color: #64748b;
-            font-size: 13.5px;
-            line-height: 1.6;
-            margin-bottom: 0;
-        }
-
-        /* --- SECTION: PROFIL PENGEMBANG --- */
-        .pengembang-section {
-            padding: 70px 50px;
-            background: #f1f5f9;
-            text-align: center;
-        }
-        .pengembang-section h2 {
-            font-size: 30px;
-            color: #0f172a;
-            margin-bottom: 10px;
-        }
-        .pengembang-section p.sub-lead {
-            color: #64748b;
-            font-size: 15px;
-            max-width: 600px;
-            margin: 0 auto 35px auto;
-        }
-        .dev-card-wrapper {
-            max-width: 580px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
-            border: 1px solid #e2e8f0;
-            text-align: center;
-            transition: 0.3s;
-        }
-        .dev-card-wrapper:hover {
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-        .dev-top-bg {
-            background: linear-gradient(135deg, #3742fa, #6e8efb, #a777e3);
-            height: 90px;
-        }
-        .dev-content {
-            padding: 0 35px 35px 35px;
-            position: relative;
-        }
-        .dev-img-box {
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
-            background: white;
-            margin: -42px auto 12px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            border: 4px solid white;
-        }
-        .dev-name {
-            font-size: 22px;
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0;
-        }
-        .dev-handle-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #f1f5f9;
-            color: #334155;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            text-decoration: none;
-            margin: 6px 0 12px 0;
-            border: 1px solid #e2e8f0;
-            transition: 0.2s;
-        }
-        .dev-handle-badge:hover {
-            color: #3742fa;
-            border-color: #3742fa;
-        }
-        .dev-role-text {
-            color: #3742fa;
-            font-size: 13.5px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-        .dev-bio-text {
-            color: #475569;
-            font-size: 13.5px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            text-align: justify;
-        }
-        .dev-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            justify-content: center;
-            margin-bottom: 25px;
-        }
-        .tag-pill {
-            background: #e0f2fe;
-            color: #0369a1;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
-        .btn-dev-github {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #24292e;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 13.5px;
-            transition: 0.25s;
-        }
-        .btn-dev-github:hover {
-            background: #0f1419;
-            transform: translateY(-2px);
-        }
-
-        /* Footer */
-        footer {
-            background: #0f172a;
-            color: #94a3b8;
-            text-align: center;
-            padding: 25px 20px;
-            font-size: 13.5px;
-        }
-        footer a {
-            color: #60a5fa;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            header { padding: 15px 20px; }
-            .hero { padding: 110px 20px 60px 20px; }
-            .hero h1 { font-size: 32px; }
-            .tentang, .pengembang-section { padding: 50px 20px; }
+        .animate-float {
+            animation: floatSlow 4s ease-in-out infinite;
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
 
-    <!-- BAGIAN ATAS (HEADER) -->
-    <header>
-        <div class="logo">🏫 CBT B-TEK</div>
-        <nav>
-            <a href="#beranda">Beranda</a>
-            <a href="#tentang">Tentang Kami</a>
-            <a href="#pengembang">Profil Pengembang</a>
-        </nav>
-        <div class="header-actions">
-            <button class="btn-login-nav" onclick="window.location.href='login.html'">Masuk / Login</button>
+    <!-- ================= NAVBAR / HEADER ================= -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs transition-all duration-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+                
+                <!-- Logo & Brand -->
+                <a href="#beranda" class="flex items-center gap-2.5 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center text-white text-xl shadow-md shadow-blue-500/20 group-hover:scale-105 transition transform">
+                        🏫
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-display font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 group-hover:text-blue-600 transition">CBT B-TEK</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700 hidden sm:inline-block">v2.0</span>
+                        </div>
+                        <p class="text-[11px] font-semibold text-slate-500 leading-none">Media Guru Edukasi</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav Links -->
+                <nav class="hidden md:flex items-center gap-7">
+                    <a href="#beranda" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">Beranda</a>
+                    <a href="#game3d" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition flex items-center gap-1">
+                        <span>🏎️</span> Gim Balap 3D <span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-700 text-[10px] font-bold">Baru</span>
+                    </a>
+                    <a href="#fitur" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">Fitur Platform</a>
+                    <a href="#pengembang" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">Profil Pengembang</a>
+                </nav>
+
+                <!-- Desktop Header Actions -->
+                <div class="hidden sm:flex items-center gap-3">
+                    <a href="turbo_kart.html" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition">
+                        <span>🎮</span> Main Game 3D
+                    </a>
+                    <a href="login.html" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 transition transform active:scale-95">
+                        <span>Masuk Guru / Siswa</span>
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Hamburger Button -->
+                <div class="flex items-center gap-2 md:hidden">
+                    <a href="login.html" class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 shadow-sm">
+                        Masuk
+                    </a>
+                    <button id="btnMobileMenuToggle" type="button" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition focus:outline-none" aria-label="Buka Menu">
+                        <svg id="iconMenuOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                        <svg id="iconMenuClose" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200 px-4 pt-3 pb-5 space-y-2.5 animate-fadeIn">
+            <a href="#beranda" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-blue-600 transition">
+                🏠 Beranda
+            </a>
+            <a href="turbo_kart.html" class="block px-3 py-2.5 rounded-xl text-sm font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 transition flex items-center justify-between">
+                <span class="flex items-center gap-2"><span>🏎️</span> Turbo Kart Edu-GP 3D</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-200 text-amber-900">MAIN SEKARANG</span>
+            </a>
+            <a href="#fitur" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-blue-600 transition">
+                ✨ Fitur Platform
+            </a>
+            <a href="#pengembang" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-blue-600 transition">
+                👨‍💻 Profil Pengembang
+            </a>
+            <div class="pt-2 border-t border-slate-200 flex flex-col gap-2">
+                <a href="login.html" class="w-full text-center py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-sm shadow-md">
+                    🚀 Masuk ke Akun Guru / Siswa
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- BAGIAN BERANDA -->
-    <section id="beranda" class="hero">
-        <h1>Ubah Cara Belajar dengan <span>Media Interaktif</span></h1>
-        <p>Platform penyedia media pembelajaran interaktif berbasis web untuk guru modern. Dapatkan kemudahan mengajar dengan 1 klik.</p>
-        <button class="btn-login-nav" style="padding: 14px 35px; font-size: 16px;" onclick="window.location.href='login.html'">Mulai Sekarang Gratis 🚀</button>
-    </section>
+    <!-- ================= HERO SECTION ================= -->
+    <section id="beranda" class="relative pt-28 sm:pt-36 pb-16 sm:pb-24 hero-pattern overflow-hidden">
+        <!-- Dekorasi Blur Latar Belakang -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[600px] h-[340px] sm:h-[600px] bg-gradient-to-tr from-blue-400/20 via-indigo-300/20 to-emerald-300/15 rounded-full blur-3xl pointer-events-none -z-10"></div>
 
-    <!-- BAGIAN TENTANG -->
-    <section id="tentang" class="tentang">
-        <h2>Tentang CBT B-TEK</h2>
-        <p class="sub-tentang">CBT B-TEK hadir sebagai solusi digital untuk membantu para pendidik di seluruh Indonesia. Kami menyediakan berbagai macam modul, kuis, dan media pembelajaran interaktif yang sudah disesuaikan dengan kurikulum pendidikan saat ini.</p>
-        
-        <div class="fitur-grid">
-            <div class="fitur-card">
-                <h3>🚀 Akses Cepat</h3>
-                <p>Buka media pembelajaran langsung dari browser tanpa perlu menginstal aplikasi tambahan.</p>
-            </div>
-            <div class="fitur-card">
-                <h3>🎁 Akses Freemium</h3>
-                <p>Dapatkan kuota akses gratis saat pertama kali mendaftar untuk mencoba kehebatan sistem media interaktif kami.</p>
-            </div>
-            <div class="fitur-card">
-                <h3>📱 Responsif & Ringan</h3>
-                <p>Tampilan yang menyesuaikan dengan sempurna baik dibuka melalui HP, Tablet, maupun Laptop.</p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto">
+                
+                <!-- Pill Badge Edukasi -->
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold mb-6 shadow-xs animate-float">
+                    <span class="flex h-2 w-2 rounded-full bg-blue-600 animate-ping"></span>
+                    <span>Platform Media Pembelajaran Digital SD • Kurikulum Merdeka</span>
+                </div>
+
+                <!-- Headline Utama -->
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-display font-extrabold text-slate-950 tracking-tight leading-[1.15] mb-5 sm:mb-6">
+                    Ubah Cara Belajar dengan <br class="hidden sm:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500">
+                        Media Interaktif & Game 3D
+                    </span>
+                </h1>
+
+                <!-- Subtitle / Deskripsi -->
+                <p class="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 sm:mb-10 max-w-2xl mx-auto">
+                    Aplikasi pembelajaran berbasis web terintegrasi untuk guru dan siswa. Dilengkapi sistem ujian CBT, presensi terpadu, serta game edukasi multiplayer 3D inovatif.
+                </p>
+
+                <!-- Tombol Aksi Cepat (Ramah Ponsel & Desktop) -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 max-w-md mx-auto">
+                    <a href="login.html" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <span>🚀 Masuk ke Portal Media</span>
+                    </a>
+                    <a href="turbo_kart.html" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base border-2 border-slate-200 hover:border-slate-300 shadow-sm transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <span>🏎️ Mainkan Game 3D</span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Gratis</span>
+                    </a>
+                </div>
+
+                <!-- Garis Kepercayaan / Stats Mini -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-12 sm:mt-16 pt-8 sm:pt-10 border-t border-slate-200/80">
+                    <div class="p-3 bg-white/70 backdrop-blur-xs rounded-xl border border-slate-200/60 shadow-2xs">
+                        <div class="font-display font-extrabold text-xl sm:text-2xl text-blue-600">100%</div>
+                        <div class="text-[11px] font-semibold text-slate-500">Berbasis Web Ringan</div>
+                    </div>
+                    <div class="p-3 bg-white/70 backdrop-blur-xs rounded-xl border border-slate-200/60 shadow-2xs">
+                        <div class="font-display font-extrabold text-xl sm:text-2xl text-indigo-600">1 - 6</div>
+                        <div class="text-[11px] font-semibold text-slate-500">Pemain Split-Screen 3D</div>
+                    </div>
+                    <div class="p-3 bg-white/70 backdrop-blur-xs rounded-xl border border-slate-200/60 shadow-2xs">
+                        <div class="font-display font-extrabold text-xl sm:text-2xl text-emerald-600">Kelas 1-6</div>
+                        <div class="text-[11px] font-semibold text-slate-500">Tingkat Sekolah Dasar</div>
+                    </div>
+                    <div class="p-3 bg-white/70 backdrop-blur-xs rounded-xl border border-slate-200/60 shadow-2xs">
+                        <div class="font-display font-extrabold text-xl sm:text-2xl text-amber-600">Multi-Mapel</div>
+                        <div class="text-[11px] font-semibold text-slate-500">+ Tambah Soal Sendiri</div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- BAGIAN PROFIL PENGEMBANG -->
-    <section id="pengembang" class="pengembang-section">
-        <h2>Profil Pengembang</h2>
-        <p class="sub-lead">Sosok di balik perancangan dan arsitektur ekosistem Media Pembelajaran CBT B-TEK.</p>
+    <!-- ================= SHOWCASE KHUSUS: GAME 3D TURBO KART ================= -->
+    <section id="game3d" class="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
+        <!-- Glow Efek -->
+        <div class="absolute -top-32 -right-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        <!-- Komponen Tentang Pengembang -->
-        <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-200 my-6 text-left">
-          
-          <!-- Header Banner Gradient -->
-          <div class="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 px-6 py-5 text-white flex items-center space-x-4">
-            <!-- Avatar / Foto Profil -->
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjN7Tkp_mrLUI08LBDae0lwxep_1ttgb6WmqZGdFrlr9GVsKCUALROMP4ApAby5ltYt2okqx6gUWf2ugzO5VijYfftrpeX1RIXnHUFqqlSQzGHu5j-oUq_a-ouzDSiui3ZXuvi7IxIlp7jOQuhSJkRmc_cfgvGiRh-NexAlXtDcw4gd4cpTqfrrQ8wdjnU/s320/Desain%20Tanpa%20Judul%20-%202026-10-23T080551.135.png" alt="Budianto, S.Pd., Gr." class="h-16 w-16 rounded-full object-cover border-2 border-white/60 shadow-inner shrink-0 bg-white/20">
-            <div>
-              <span class="inline-block px-2.5 py-0.5 bg-blue-800/60 text-blue-100 text-[11px] font-semibold tracking-wider uppercase rounded-full mb-1">
-                Tentang Pengembang
-              </span>
-              <h2 class="text-xl font-bold tracking-tight text-white" style="margin: 0; color: white;">Budianto, S.Pd., Gr.</h2>
-              <p class="text-xs text-blue-100 font-medium" style="margin: 2px 0 0 0; color: #dbeafe;">Guru Kelas SD &bull; UPTD SPF SD Inpres Tangkala II, Kota Makassar</p>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-700 rounded-3xl p-6 sm:p-10 shadow-2xl">
+                <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+                    
+                    <!-- Kiri: Penjelasan Gim -->
+                    <div class="flex-1 text-left space-y-4">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-bold">
+                            <span>🎮 INOVASI TERBARU</span>
+                            <span>•</span>
+                            <span>Edu-GP 3D Multiplayer</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-4xl font-display font-black text-white leading-tight">
+                            Turbo Kart Edu-GP 3D: <br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-rose-400">
+                                Balapan Sambil Asah Pengetahuan
+                            </span>
+                        </h2>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            Game balap mobil 3D edukasi pertama yang menggabungkan adu kecepatan sirkuit dengan menjawab soal kuis pelajaran! Mendukung 1 hingga 6 pembalap sekaligus di satu layar gawai (*split-screen multi-viewport*).
+                        </p>
+                        
+                        <!-- Poin Fitur Gim -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-lg">🔢</span>
+                                <div>
+                                    <div class="font-bold text-xs sm:text-sm text-white">Soal Pecahan & Multi-Mapel</div>
+                                    <div class="text-[11px] text-slate-400">Pecahan visual kue pie, bar, matematika dasar, IPAS, & Pancasila.</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-lg">✍️</span>
+                                <div>
+                                    <div class="font-bold text-xs sm:text-sm text-white">Tambah Soal Sendiri</div>
+                                    <div class="text-[11px] text-slate-400">Guru bebas membuat mata pelajaran & bank soal khusus kelasnya!</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-lg">🎁</span>
+                                <div>
+                                    <div class="font-bold text-xs sm:text-sm text-white">2 Kotak Misteri Taktis</div>
+                                    <div class="text-[11px] text-slate-400">Mega Star 🌟, Tumpahan Oli 🛢️, Magnet 🧲, Petir ⚡, & Roket 🚀.</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-lg">🛣️</span>
+                                <div>
+                                    <div class="font-bold text-xs sm:text-sm text-white">5 Bentuk Sirkuit 3D</div>
+                                    <div class="text-[11px] text-slate-400">Sirkuit Lurus, Oval GP, Berkelok S, Bukit Gelombang, & Ekstrem Z.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CTA Langsung Main -->
+                        <div class="pt-4 flex flex-col sm:flex-row items-center gap-3">
+                            <a href="turbo_kart.html" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 hover:from-amber-300 hover:to-rose-400 text-slate-950 font-black text-sm sm:text-base shadow-lg shadow-orange-500/25 transition transform active:scale-95 text-center flex items-center justify-center gap-2">
+                                <span>🏁 Buka & Mainkan Game Sekarang</span>
+                                <span>→</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Kanan: Mockup Kartu Preview Game -->
+                    <div class="w-full lg:w-96 shrink-0 bg-slate-950 border border-slate-700/80 rounded-2xl p-4 shadow-xl">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                            </div>
+                            <span class="text-[11px] font-mono text-slate-400">turbo_kart_3d.web</span>
+                        </div>
+                        <div class="py-6 text-center space-y-3">
+                            <div class="text-6xl animate-bounce">🏎️💨</div>
+                            <div class="font-display font-black text-lg text-amber-300">TURBO KART EDU-GP</div>
+                            <p class="text-xs text-slate-400 px-2">
+                                Siap dimainkan langsung di Browser Chrome, Edge, Safari di HP, Tablet, Laptop, atau Proyektor Kelas tanpa install aplikasi!
+                            </p>
+                            <div class="flex items-center justify-center gap-1.5 text-xs text-emerald-400 font-bold">
+                                <span>✅ Split-Screen 3D Siap Digunakan</span>
+                            </div>
+                        </div>
+                        <a href="turbo_kart.html" class="block w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-center font-bold text-xs text-sky-300 transition">
+                            Coba Simulasi Balapan 3D ⚡
+                        </a>
+                    </div>
+
+                </div>
             </div>
-          </div>
+        </div>
+    </section>
 
-          <!-- Isi Biodata (Gaya Profesional & Formal) -->
-          <div class="p-6 sm:p-8 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed text-justify">
-            <p>
-              <strong class="text-slate-900 font-semibold">Budianto, S.Pd., Gr.</strong> adalah seorang pendidik profesional yang bertugas sebagai Guru Kelas di <strong class="text-slate-900 font-medium">UPTD SPF SD Inpres Tangkala II, Kota Makassar</strong>. Ketertarikannya yang mendalam pada dunia Teknologi Informasi (IT) dan komputer telah tumbuh sejak bangku SMA, mendorongnya untuk terus berinovasi mengintegrasikan teknologi ke dalam dunia pendidikan.
-            </p>
-            <p>
-              Hingga saat ini, beliau telah merancang dan mengembangkan berbagai solusi digital pendidikan yang alhamdulillah telah digunakan secara luas oleh banyak sekolah dan pendidik, di antaranya aplikasi ujian berbasis komputer <strong class="text-blue-700 font-semibold">CBT B-TEK</strong>, <strong class="text-emerald-700 font-semibold">Aplikasi Presensi (Absensi+)</strong>, serta <strong class="text-indigo-700 font-semibold">Gammara App</strong> (sistem presensi terpadu untuk guru dan murid). Selain fokus mengembangkan aplikasi, beliau juga aktif berbagi wawasan literasi digital melalui komunitas <strong class="text-slate-900 font-medium">Blogger Maros</strong> dan <strong class="text-slate-900 font-medium">Blogger Makassar</strong>.
-            </p>
-          </div>
+    <!-- ================= BENTO GRID FITUR PLATFORM ================= -->
+    <section id="fitur" class="py-16 sm:py-24 bg-white border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            <div class="max-w-2xl mx-auto mb-12 sm:mb-16">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+                    Ekosistem Lengkap
+                </span>
+                <h2 class="text-2xl sm:text-4xl font-display font-extrabold text-slate-900 mt-3 mb-4">
+                    Solusi Terintegrasi Pembelajaran Digital
+                </h2>
+                <p class="text-sm sm:text-base text-slate-600">
+                    Dirancang dari pengalaman nyata guru di dalam kelas untuk menjawab kebutuhan belajar modern yang praktis dan efisien.
+                </p>
+            </div>
 
-          <!-- Footer Highlight Karya & Komunitas -->
-          <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2 text-left">Karya Aplikasi:</span>
-              <div class="flex flex-wrap gap-2">
-                <span class="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200/60 text-xs font-semibold rounded-lg">
-                  💻 CBT B-TEK
+            <!-- Grid Kartu Modern -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                
+                <!-- Kartu 1: CBT B-TEK -->
+                <div class="p-6 sm:p-8 rounded-3xl bg-slate-50 border border-slate-200/80 hover:border-blue-400 hover:shadow-lg transition duration-200 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl mb-5 shadow-md shadow-blue-500/20">
+                            💻
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-slate-900 mb-2">CBT B-TEK</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            Sistem asesmen & ujian berbasis komputer yang cepat, aman, dan anti-ribet. Penilaian instan dengan analisis capaian nilai murid yang akurat.
+                        </p>
+                    </div>
+                    <div class="flex items-center text-xs font-bold text-blue-600 gap-1 pt-2">
+                        <span>Asesmen Digital Modern</span>
+                        <span>→</span>
+                    </div>
+                </div>
+
+                <!-- Kartu 2: Absensi+ & Gammara App -->
+                <div class="p-6 sm:p-8 rounded-3xl bg-slate-50 border border-slate-200/80 hover:border-emerald-400 hover:shadow-lg transition duration-200 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl mb-5 shadow-md shadow-emerald-500/20">
+                            📱
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-slate-900 mb-2">Presensi (Absensi+)</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            Sistem presensi terpadu untuk pendidik dan murid. Dilengkapi rekapitulasi kehadiran otomatis dan notifikasi terstruktur untuk manajemen kelas.
+                        </p>
+                    </div>
+                    <div class="flex items-center text-xs font-bold text-emerald-600 gap-1 pt-2">
+                        <span>Terintegrasi Gammara App</span>
+                        <span>→</span>
+                    </div>
+                </div>
+
+                <!-- Kartu 3: Cloud & Responsif HP -->
+                <div class="p-6 sm:p-8 rounded-3xl bg-slate-50 border border-slate-200/80 hover:border-indigo-400 hover:shadow-lg transition duration-200 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-2xl mb-5 shadow-md shadow-indigo-500/20">
+                            ☁️
+                        </div>
+                        <h3 class="text-xl font-display font-bold text-slate-900 mb-2">Cloud Database Supabase</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            Seluruh media interaktif, akun guru, dan rekapitulasi tersimpan aman di database PostgreSQL & cloud storage berkecepatan tinggi.
+                        </p>
+                    </div>
+                    <div class="flex items-center text-xs font-bold text-indigo-600 gap-1 pt-2">
+                        <span>Akses Cepat 24/7</span>
+                        <span>→</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= BAGIAN PROFIL PENGEMBANG ================= -->
+    <section id="pengembang" class="py-16 sm:py-24 bg-slate-100">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            
+            <div class="mb-8">
+                <span class="text-xs font-bold uppercase tracking-wider text-blue-700 bg-blue-100/80 px-3 py-1 rounded-full border border-blue-200">
+                    Sosok Inovator
                 </span>
-                <span class="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-xs font-semibold rounded-lg">
-                  ✅ Absensi+
-                </span>
-                <span class="inline-flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/60 text-xs font-semibold rounded-lg">
-                  📱 Gammara App
-                </span>
+                <h2 class="text-2xl sm:text-4xl font-display font-extrabold text-slate-900 mt-2 mb-2">
+                    Profil Pengembang
+                </h2>
+                <p class="text-sm text-slate-600 max-w-lg mx-auto">
+                    Arsitek di balik perancangan dan pengembangan ekosistem platform CBT B-TEK.
+                </p>
+            </div>
+
+            <!-- Komponen Tentang Pengembang -->
+            <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 my-6 text-left">
+              
+              <!-- Header Banner Gradient -->
+              <div class="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 px-6 py-5 text-white flex items-center space-x-4">
+                <!-- Avatar / Foto Profil -->
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjN7Tkp_mrLUI08LBDae0lwxep_1ttgb6WmqZGdFrlr9GVsKCUALROMP4ApAby5ltYt2okqx6gUWf2ugzO5VijYfftrpeX1RIXnHUFqqlSQzGHu5j-oUq_a-ouzDSiui3ZXuvi7IxIlp7jOQuhSJkRmc_cfgvGiRh-NexAlXtDcw4gd4cpTqfrrQ8wdjnU/s320/Desain%20Tanpa%20Judul%20-%202026-10-23T080551.135.png" alt="Budianto, S.Pd., Gr." class="h-16 w-16 rounded-full object-cover border-2 border-white/60 shadow-inner shrink-0 bg-white/20">
+                <div>
+                  <span class="inline-block px-2.5 py-0.5 bg-blue-800/60 text-blue-100 text-[11px] font-semibold tracking-wider uppercase rounded-full mb-1">
+                    Tentang Pengembang
+                  </span>
+                  <h2 class="text-xl font-bold tracking-tight text-white mb-0" style="margin: 0; color: white;">Budianto, S.Pd., Gr.</h2>
+                  <p class="text-xs text-blue-100 font-medium" style="margin: 2px 0 0 0; color: #dbeafe;">Guru Kelas SD &bull; UPTD SPF SD Inpres Tangkala II, Kota Makassar</p>
+                </div>
               </div>
-            </div>
 
-            <div class="sm:text-right border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-200/60">
-              <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Komunitas:</span>
-              <p class="text-xs font-semibold text-slate-600" style="margin: 0;">✍️ Blogger Maros &amp; Blogger Makassar</p>
+              <!-- Isi Biodata (Gaya Profesional & Formal) -->
+              <div class="p-6 sm:p-8 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed text-justify">
+                <p>
+                  <strong class="text-slate-900 font-semibold">Budianto, S.Pd., Gr.</strong> adalah seorang pendidik profesional yang bertugas sebagai Guru Kelas di <strong class="text-slate-900 font-medium">UPTD SPF SD Inpres Tangkala II, Kota Makassar</strong>. Ketertarikannya yang mendalam pada dunia Teknologi Informasi (IT) dan komputer telah tumbuh sejak bangku SMA, mendorongnya untuk terus berinovasi mengintegrasikan teknologi ke dalam dunia pendidikan.
+                </p>
+                <p>
+                  Hingga saat ini, beliau telah merancang dan mengembangkan berbagai solusi digital pendidikan yang alhamdulillah telah digunakan secara luas oleh banyak sekolah dan pendidik, di antaranya aplikasi ujian berbasis komputer <strong class="text-blue-700 font-semibold">CBT B-TEK</strong>, <strong class="text-emerald-700 font-semibold">Aplikasi Presensi (Absensi+)</strong>, serta <strong class="text-indigo-700 font-semibold">Gammara App</strong> (sistem presensi terpadu untuk guru dan murid). Selain fokus mengembangkan aplikasi, beliau juga aktif berbagi wawasan literasi digital melalui komunitas <strong class="text-slate-900 font-medium">Blogger Maros</strong> dan <strong class="text-slate-900 font-medium">Blogger Makassar</strong>.
+                </p>
+              </div>
+
+              <!-- Footer Highlight Karya & Komunitas -->
+              <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2 text-left">Karya Aplikasi:</span>
+                  <div class="flex flex-wrap gap-2">
+                    <span class="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200/60 text-xs font-semibold rounded-lg">
+                      💻 CBT B-TEK
+                    </span>
+                    <span class="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-xs font-semibold rounded-lg">
+                      ✅ Absensi+
+                    </span>
+                    <span class="inline-flex items-center px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/60 text-xs font-semibold rounded-lg">
+                      📱 Gammara App
+                    </span>
+                  </div>
+                </div>
+
+                <div class="sm:text-right border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-200/60">
+                  <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Komunitas:</span>
+                  <p class="text-xs font-semibold text-slate-600" style="margin: 0;">✍️ Blogger Maros &amp; Blogger Makassar</p>
+                </div>
+              </div>
+
             </div>
-          </div>
 
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer>
-        <div style="font-weight: 700; font-size: 16px; color: #f8fafc; margin-bottom: 8px; letter-spacing: 0.5px;">
-            Media Guru Btek By Pak Guru Budi
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-slate-950 text-slate-400 py-12 sm:py-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800/80">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xl">
+                        🏫
+                    </div>
+                    <div>
+                        <div class="font-display font-extrabold text-lg text-white">Media Guru Btek By Pak Guru Budi</div>
+                        <div class="text-xs text-slate-500">Mencerdaskan Generasi dengan Pembelajaran Interaktif</div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold">
+                    <a href="#beranda" class="hover:text-white transition">Beranda</a>
+                    <a href="turbo_kart.html" class="hover:text-amber-400 transition">Game 3D Edu-GP</a>
+                    <a href="login.html" class="hover:text-white transition">Masuk Akun</a>
+                    <a href="https://github.com/budhy92-cyber" target="_blank" class="hover:text-white transition">GitHub</a>
+                </div>
+            </div>
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+                <p>&copy; 2026 CBT B-TEK &bull; Media Guru Btek By Pak Guru Budi. Semua Hak Dilindungi.</p>
+                <p class="text-slate-400">Didukung oleh Komunitas Blogger Maros &amp; Blogger Makassar</p>
+            </div>
         </div>
-        <p style="margin: 0; color: #94a3b8; font-size: 13.5px;">
-            &copy; 2026 CBT B-TEK &bull; Dikembangkan oleh <a href="#pengembang" style="color: #60a5fa; text-decoration: none; font-weight: 600;">Budianto, S.Pd., Gr.</a>. Semua Hak Dilindungi.
-        </p>
     </footer>
 
+    <!-- Script Hamburger Mobile Menu -->
+    <script>
+        const btnToggle = document.getElementById('btnMobileMenuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const iconOpen = document.getElementById('iconMenuOpen');
+        const iconClose = document.getElementById('iconMenuClose');
+
+        function toggleMobileMenu() {
+            const isHidden = mobileMenu.classList.contains('hidden');
+            if (isHidden) {
+                mobileMenu.classList.remove('hidden');
+                iconOpen.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+            }
+        }
+
+        if (btnToggle) {
+            btnToggle.addEventListener('click', toggleMobileMenu);
+        }
+    </script>
 </body>
 </html>
