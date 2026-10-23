@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Media Interaktif CBT B-TEK</title>
+    <title>Portal Media Interaktif - CBT B-TEK</title>
+    
+    <!-- Supabase JS & Google Fonts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -14,245 +20,334 @@
             }
         }
     </script>
+
     <style>
-        /* Desain Latar & Font Dasar */
         body { 
-            font-family: 'Poppins', sans-serif; 
-            background: #f0f4f8; 
-            background-image: radial-gradient(#d7e1ec 1px, transparent 1px);
-            background-size: 20px 20px;
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+            background-size: 24px 24px;
             margin: 0; 
-            padding: 20px; 
-            color: #333;
+            padding: 16px; 
+            color: #0f172a;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Navigasi Atas */
-        .navbar { 
+        .portal-wrapper {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        /* Navigasi Atas Modern */
+        .portal-navbar { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            background: linear-gradient(135deg, #6e8efb, #a777e3); 
-            color: white;
-            padding: 14px 24px; 
-            border-radius: 14px; 
-            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.3); 
-            margin-bottom: 30px; 
-            max-width: 1000px; 
-            margin-left: auto; 
-            margin-right: auto; 
+            background: white;
+            color: #0f172a;
+            padding: 14px 20px; 
+            border-radius: 18px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04); 
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px; 
             flex-wrap: wrap;
             gap: 12px;
         }
-        .akun-info { 
+        .user-info-group { 
             font-weight: 600; 
-            font-size: 14px; 
+            font-size: 13.5px; 
             display: flex; 
             align-items: center; 
             flex-wrap: wrap; 
             gap: 8px; 
         }
+        .user-greeting {
+            color: #475569;
+        }
+        .user-greeting strong {
+            color: #0f172a;
+        }
         .badge-admin-tag {
-            background: #ff4757;
+            background: #ef4444;
             color: white;
             padding: 3px 10px;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 6px rgba(255, 71, 87, 0.4);
-            animation: pulse 2s infinite;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
         }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .kuota-pill { 
+            background: #f1f5f9; 
+            color: #2563eb; 
+            padding: 4px 12px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: 700;
+            border: 1px solid #dbeafe;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        .kuota-badge { 
-            background: #ff9f43; 
-            color: white; 
-            padding: 5px 12px; 
-            border-radius: 20px; 
-            font-size: 13px; 
-            box-shadow: 0 2px 5px rgba(255, 159, 67, 0.4);
-        }
-        .nav-actions {
+        .nav-button-group {
             display: flex;
             align-items: center;
             gap: 8px;
             flex-wrap: wrap;
         }
-        .btn-nav-custom {
+        .btn-nav-action {
             border: none;
             padding: 8px 14px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            transition: 0.3s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 12.5px;
+            transition: all 0.25s ease;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             text-decoration: none;
         }
-        .btn-dev {
-            background: #10b981;
-            color: white;
+        .btn-nav-dev {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
         }
-        .btn-dev:hover {
-            background: #059669;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        .btn-nav-dev:hover {
+            background: #dbeafe;
+            transform: translateY(-1px);
         }
-        .btn-admin {
-            background: #ff9f43;
-            color: white;
-            box-shadow: 0 2px 6px rgba(255, 159, 67, 0.3);
+        .btn-nav-admin {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
         }
-        .btn-admin:hover {
-            background: #ff793f;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 121, 63, 0.4);
+        .btn-nav-admin:hover {
+            background: #fde68a;
+            transform: translateY(-1px);
         }
-        .btn-logout { 
-            background: #ff4757; 
-            color: white; 
+        .btn-nav-logout { 
+            background: #fee2e2; 
+            color: #dc2626; 
+            border: 1px solid #fecaca;
         }
-        .btn-logout:hover { 
-            background: #ff6b81; 
-            transform: scale(1.04); 
+        .btn-nav-logout:hover { 
+            background: #fecaca; 
+            transform: translateY(-1px);
         }
 
-        /* Area Judul */
-        .header { 
+        /* Header Judul Halaman Portal */
+        .portal-header-box { 
             text-align: center; 
-            margin-bottom: 30px; 
-            position: relative;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 22px;
+            margin-bottom: 24px; 
+            padding: 28px 20px;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
         }
-        .header h1 { 
-            font-size: 28px; 
-            color: #2f3542; 
-            margin-bottom: 5px;
-            background: -webkit-linear-gradient(#6e8efb, #a777e3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .portal-header-box h1 { 
+            font-size: 26px; 
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+            color: #0f172a; 
+            margin: 0 0 6px 0;
+            letter-spacing: -0.5px;
         }
-        .header p { color: #57606f; font-size: 14.5px; margin: 0; }
-        .karakter { font-size: 45px; position: absolute; top: -20px; }
-        .karakter-kiri { left: 20px; transform: rotate(-10deg); }
-        .karakter-kanan { right: 20px; transform: rotate(10deg); }
+        .portal-header-box p { 
+            color: #64748b; 
+            font-size: 14px; 
+            margin: 0; 
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
 
-        /* AREA PENCARIAN & FILTER */
-        .filter-container {
-            max-width: 1000px;
-            margin: 0 auto 30px auto;
+        /* ================= KOTAK FITUR KHUSUS GIM PEMBELAJARAN ================= */
+        .showcase-game-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #172554 100%);
+            border: 1px solid #334155;
+            border-radius: 22px;
+            padding: 24px 24px;
+            margin-bottom: 28px;
+            color: white;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .game-card-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            background: rgba(251, 191, 36, 0.15);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            color: #fde047;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .game-card-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            margin: 0 0 6px 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        .game-card-desc {
+            font-size: 13px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            max-width: 780px;
+        }
+        .game-features-pill-row {
             display: flex;
-            gap: 15px;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+        .game-pill {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e2e8f0;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .btn-launch-game {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            color: #0f172a;
+            font-weight: 800;
+            font-size: 13.5px;
+            padding: 12px 24px;
+            border-radius: 14px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+            transition: all 0.25s ease;
+        }
+        .btn-launch-game:hover {
+            background: linear-gradient(135deg, #fbbf24, #f97316);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Area Pencarian & Filter */
+        .filter-container {
+            display: flex;
+            gap: 12px;
             flex-wrap: wrap;
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-            border-top: 4px solid #1dd1a1;
+            padding: 18px;
+            border-radius: 18px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
         }
         .filter-container input, .filter-container select {
-            padding: 12px 15px;
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
+            padding: 11px 15px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 13.5px;
             outline: none;
-            transition: 0.3s;
+            transition: all 0.2s ease;
             flex: 1;
-            min-width: 150px;
+            min-width: 160px;
             background: #f8fafc;
+            color: #0f172a;
         }
         .filter-container input:focus, .filter-container select:focus {
-            border-color: #1dd1a1;
+            border-color: #3b82f6;
             background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(29, 209, 161, 0.15);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
         }
         .filter-container input {
             flex: 2;
+            min-width: 220px;
         }
 
         /* Grid Katalog */
         .grid-container { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-            gap: 25px; 
-            max-width: 1000px; 
-            margin: 0 auto; 
-            padding-bottom: 50px;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); 
+            gap: 20px; 
+            padding-bottom: 40px;
         }
 
-        /* Desain Kartu Media */
+        /* Desain Kartu Media Modern */
         .card { 
             background: white; 
-            padding: 25px; 
-            border-radius: 16px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
+            padding: 22px; 
+            border-radius: 18px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04); 
+            border: 1px solid #e2e8f0;
             display: flex; 
             flex-direction: column; 
-            transition: all 0.3s ease;
-            border-top: 6px solid #1dd1a1; 
+            transition: all 0.25s ease;
             position: relative;
-            overflow: hidden;
         }
         .card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+            border-color: #bfdbfe;
         }
-        .badge-container { z-index: 1; margin-bottom: 12px; }
+        .badge-container { margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
         .badge { 
             display: inline-block; 
-            padding: 5px 10px; 
-            border-radius: 6px; 
+            padding: 4px 9px; 
+            border-radius: 8px; 
             font-size: 11px; 
-            font-weight: bold;
-            margin-right: 6px; 
+            font-weight: 700;
             text-transform: uppercase;
         }
-        .badge-kelas { background: #eccc68; color: #2f3542; }
-        .badge-mapel { background: #7bed9f; color: #2f3542; }
-        .judul { font-size: 18px; font-weight: 700; margin: 0 0 10px 0; color: #2f3542; z-index: 1; }
-        .deskripsi { font-size: 13px; color: #747d8c; margin-bottom: 25px; flex-grow: 1; line-height: 1.6; z-index: 1; }
+        .badge-kelas { background: #eff6ff; color: #1d4ed8; border: 1px solid #dbeafe; }
+        .badge-mapel { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .judul { font-size: 16px; font-weight: 700; margin: 0 0 8px 0; color: #0f172a; line-height: 1.4; }
+        .deskripsi { font-size: 12.5px; color: #64748b; margin-bottom: 20px; flex-grow: 1; line-height: 1.55; }
         
         .btn-buka { 
-            background: linear-gradient(135deg, #1e90ff, #3742fa); 
+            background: linear-gradient(135deg, #2563eb, #1d4ed8); 
             color: white; 
             text-align: center; 
-            padding: 12px; 
-            border-radius: 25px; 
-            font-weight: 600; 
-            font-family: 'Poppins', sans-serif;
+            padding: 10px 16px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 13px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             border: none; 
             cursor: pointer; 
             width: 100%; 
-            transition: 0.3s;
-            z-index: 1;
+            transition: all 0.25s ease;
+            box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
         }
         .btn-buka:hover { 
-            background: linear-gradient(135deg, #3742fa, #1e90ff); 
-            box-shadow: 0 5px 15px rgba(55, 66, 250, 0.4);
+            background: linear-gradient(135deg, #1d4ed8, #1e40af); 
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.35);
+            transform: translateY(-1px);
         }
         
         .data-kosong {
             text-align: center;
             width: 100%;
             grid-column: 1 / -1;
-            color: #ff4757;
-            font-weight: bold;
-            padding: 30px;
+            color: #ef4444;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 35px 20px;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            border-radius: 18px;
+            border: 1px dashed #cbd5e1;
         }
 
         /* Animasi Skeleton */
@@ -264,8 +359,8 @@
             background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
             background-size: 200% 100%;
             animation: skeletonLoading 1.5s infinite;
-            border-top: 6px solid #e1e8ed !important;
-            height: 220px;
+            border: 1px solid #e2e8f0 !important;
+            height: 200px;
         }
 
         /* MODAL PROFIL PENGEMBANG */
@@ -273,280 +368,190 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.65);
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(4px);
             z-index: 99999;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
             box-sizing: border-box;
-            animation: fadeIn 0.25s ease;
+            animation: fadeIn 0.2s ease;
         }
         .modal-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 20px;
             width: 100%;
-            max-width: 520px;
+            max-width: 680px;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
             position: relative;
-            animation: slideUp 0.3s ease;
+            animation: slideUp 0.25s ease;
         }
         @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
+            from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
-        }
-        .modal-banner {
-            background: linear-gradient(135deg, #1e90ff, #70a1ff, #a777e3);
-            height: 110px;
-            position: relative;
         }
         .btn-close-modal {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255,255,255,0.85);
+            top: 14px;
+            right: 14px;
+            background: rgba(255,255,255,0.9);
             border: none;
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             transition: 0.2s;
+            z-index: 30;
         }
         .btn-close-modal:hover {
             background: white;
-            transform: scale(1.1);
-        }
-        .dev-body {
-            padding: 0 30px 30px 30px;
-            text-align: center;
-            position: relative;
-        }
-        .dev-avatar-wrapper {
-            width: 90px;
-            height: 90px;
-            margin: -45px auto 12px auto;
-            position: relative;
-        }
-        .dev-avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-            background: #f1f5f9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 42px;
-        }
-        .dev-verified {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            background: #10b981;
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .dev-name {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0;
-        }
-        .dev-handle {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #64748b;
-            font-size: 13.5px;
-            font-weight: 500;
-            margin: 4px 0 12px 0;
-            text-decoration: none;
-            background: #f8fafc;
-            padding: 3px 12px;
-            border-radius: 20px;
-            border: 1px solid #e2e8f0;
-        }
-        .dev-handle:hover {
-            color: #0f172a;
-            border-color: #94a3b8;
-        }
-        .dev-title {
-            color: #3742fa;
-            font-weight: 600;
-            font-size: 13.5px;
-            margin-bottom: 12px;
-        }
-        .dev-bio {
-            color: #475569;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            text-align: justify;
-        }
-        .dev-skills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            justify-content: center;
-            margin-bottom: 22px;
-        }
-        .skill-pill {
-            background: #eff6ff;
-            color: #1d4ed8;
-            font-size: 11.5px;
-            font-weight: 600;
-            padding: 4px 10px;
-            border-radius: 6px;
-            border: 1px solid #dbeafe;
-        }
-        .dev-links {
-            display: flex;
-            gap: 10px;
-        }
-        .btn-link-action {
-            flex: 1;
-            padding: 11px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 13px;
-            font-family: 'Poppins', sans-serif;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: 0.25s;
-        }
-        .btn-gh {
-            background: #24292e;
-            color: white;
-        }
-        .btn-gh:hover {
-            background: #0f1419;
-            transform: translateY(-2px);
-        }
-        .btn-wa {
-            background: #25d366;
-            color: white;
-        }
-        .btn-wa:hover {
-            background: #1eb855;
-            transform: translateY(-2px);
+            transform: scale(1.08);
         }
 
         /* Footer */
         .portal-footer {
             text-align: center;
-            padding: 20px 0 10px 0;
+            padding: 24px 0 16px 0;
             color: #64748b;
             font-size: 13px;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 20px;
         }
         .portal-footer a {
-            color: #3742fa;
+            color: #2563eb;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 12px; }
+            .portal-navbar { padding: 12px 14px; }
+            .filter-container { padding: 14px; }
+            .showcase-game-card { padding: 18px 16px; }
+            .game-card-title { font-size: 18px; }
+            .btn-launch-game { width: 100%; }
         }
     </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
-    <div class="akun-info">
-        <span>Halo, <strong id="teksEmail">Memuat...</strong></span>
-        <span id="badgeAdminArea"></span>
-        <span class="kuota-badge">🚀 Kuota: <strong id="teksKuota">-</strong></span>
-    </div>
-    <div class="nav-actions">
-        <!-- Tombol Main Game 3D -->
-        <a href="turbo_kart.html" class="btn-nav-custom" style="background: #f59e0b; color: #1e1b4b; font-weight: 700;">
-            <span>🏎️</span> Balap 3D Edu-GP
-        </a>
+<div class="portal-wrapper">
 
-        <!-- Tombol Profil Pengembang -->
-        <button class="btn-nav-custom btn-dev" onclick="bukaModalDev()">
-            <span>👨‍💻</span> Profil Pengembang
-        </button>
+    <!-- NAVBAR ATAS BERSIH (TANPA LINK GIM DI ATAS) -->
+    <div class="portal-navbar">
+        <div class="user-info-group">
+            <span class="user-greeting">Halo, <strong id="teksEmail">Memuat...</strong></span>
+            <span id="badgeAdminArea"></span>
+            <span class="kuota-pill">🚀 Kuota: <strong id="teksKuota">-</strong></span>
+        </div>
+        <div class="nav-button-group">
+            <!-- Tombol Profil Pengembang -->
+            <button class="btn-nav-action btn-nav-dev" onclick="bukaModalDev()">
+                <span>👨‍💻</span> Profil Pengembang
+            </button>
+            
+            <!-- Tombol Pengaturan Admin (Otomatis muncul untuk admin) -->
+            <a href="admin_3.html" class="btn-nav-action btn-nav-admin" id="btnAdminNav" style="display: none;">
+                <span>⚙️</span> Atur Halaman
+            </a>
+            
+            <!-- Tombol Logout -->
+            <button class="btn-nav-action btn-nav-logout" onclick="prosesLogout()">
+                <span>🚪</span> Keluar
+            </button>
+        </div>
+    </div>
+
+    <!-- HEADER UTAMA -->
+    <div class="portal-header-box">
+        <h1>Katalog Media Pembelajaran B-TEK</h1>
+        <p>Pilih, cari, dan eksplorasi modul serta media interaktif kurikulum digital di bawah ini.</p>
+    </div>
+
+    <!-- ================= SUBJUDUL & KOTAK GIM PEMBELAJARAN ================= -->
+    <div class="showcase-game-card">
+        <div class="game-card-badge">
+            <span>🎮 GIM PEMBELAJARAN BISA TAMBAHKAN SOAL</span>
+        </div>
+        <h2 class="game-card-title">
+            🏎️ Turbo Kart Edu-GP 3D: Balap Edukasi Interaktif
+        </h2>
+        <p class="game-card-desc">
+            Gim balap 3D multiplayer di mana murid beradu kecepatan sirkuit dengan menjawab soal kuis! Mendukung 1 hingga 6 pemain split-screen, soal pecahan visual, matematika dasar, IPAS, Pancasila, serta <strong>fitur bagi guru untuk membuat materi dan menambahkan bank soal sendiri</strong> langsung dari dalam gim!
+        </p>
         
-        <!-- Tombol Pengaturan Admin (Otomatis muncul untuk admin) -->
-        <a href="admin_3.html" class="btn-nav-custom btn-admin" id="btnAdminNav" style="display: none;">
-            <span>⚙️</span> Atur Halaman
-        </a>
+        <div class="game-features-pill-row">
+            <span class="game-pill">✨ Soal Pecahan Original 16 Bagian</span>
+            <span class="game-pill">➕ Buat &amp; Kelola Soal Sendiri</span>
+            <span class="game-pill">👥 1 - 6 Pemain Split-Screen</span>
+            <span class="game-pill">🎁 2 Kotak Misteri Taktis</span>
+            <span class="game-pill">🛣️ 5 Variasi Sirkuit 3D</span>
+        </div>
+
+        <div>
+            <a href="turbo_kart.html" class="btn-launch-game">
+                <span>🏎️ Mainkan Turbo Kart Edu-GP 3D Sekarang</span>
+                <span>→</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- BARIS PENCARIAN & FILTER -->
+    <div class="filter-container">
+        <input type="text" id="inputCari" placeholder="🔍 Cari judul atau materi media pembelajaran..." onkeyup="saringData()">
         
-        <button class="btn-nav-custom btn-logout" onclick="prosesLogout()">Keluar</button>
+        <select id="filterKelas" onchange="saringData()">
+            <option value="semua">-- Semua Kelas (SD) --</option>
+            <option value="kelas-1">Kelas 1</option>
+            <option value="kelas-2">Kelas 2</option>
+            <option value="kelas-3">Kelas 3</option>
+            <option value="kelas-4">Kelas 4</option>
+            <option value="kelas-5">Kelas 5</option>
+            <option value="kelas-6">Kelas 6</option>
+        </select>
+        
+        <select id="filterMapel" onchange="saringData()">
+            <option value="semua">-- Semua Mata Pelajaran --</option>
+            <option value="Pendidikan Agama Islam">Pendidikan Agama Islam</option>
+            <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
+            <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+            <option value="Matematika">Matematika</option>
+            <option value="IPAS">IPAS</option>
+            <option value="Bahasa Inggris">Bahasa Inggris</option>
+            <option value="Seni Rupa">Seni Rupa</option>
+            <option value="Seni Musik">Seni Musik</option>
+            <option value="Bahasa Makassar">Bahasa Makassar</option>
+            <option value="Koding dan Kecerdasan Artifisial">Koding dan Kecerdasan Artifisial</option>
+        </select>
     </div>
-</div>
 
-<!-- HEADER UTAMA -->
-<div class="header">
-    <div class="karakter karakter-kiri">👨‍🏫</div>
-    <div class="karakter karakter-kanan">👩‍🎓</div>
-    <h1>Katalog Media B-TEK</h1>
-    <p>Pilih dan eksplorasi media interaktif kurikulum digital di bawah ini.</p>
-</div>
+    <!-- CONTAINER KATALOG MEDIA INTERAKTIF -->
+    <div class="grid-container" id="katalogMedia"></div>
 
-<!-- BARIS FILTER & PENCARIAN -->
-<div class="filter-container">
-    <input type="text" id="inputCari" placeholder="🔍 Cari judul atau materi pembelajaran..." onkeyup="saringData()">
-    
-    <select id="filterKelas" onchange="saringData()">
-        <option value="semua">-- Semua Kelas --</option>
-        <option value="kelas-1">Kelas 1</option>
-        <option value="kelas-2">Kelas 2</option>
-        <option value="kelas-3">Kelas 3</option>
-        <option value="kelas-4">Kelas 4</option>
-        <option value="kelas-5">Kelas 5</option>
-        <option value="kelas-6">Kelas 6</option>
-    </select>
-    
-    <select id="filterMapel" onchange="saringData()">
-        <option value="semua">-- Semua Mapel --</option>
-        <option value="Pendidikan Agama Islam">Pendidikan Agama Islam</option>
-        <option value="Pendidikan Pancasila">Pendidikan Pancasila</option>
-        <option value="Bahasa Indonesia">Bahasa Indonesia</option>
-        <option value="Matematika">Matematika</option>
-        <option value="IPAS">IPAS</option>
-        <option value="Bahasa Inggris">Bahasa Inggris</option>
-        <option value="Seni Rupa">Seni Rupa</option>
-        <option value="Seni Musik">Seni Musik</option>
-        <option value="Bahasa Makassar">Bahasa Makassar</option>
-        <option value="Koding dan Kecerdasan Artifisial">Koding dan Kecerdasan Artifisial</option>
-    </select>
-</div>
-
-<!-- CONTAINER KATALOG MEDIA -->
-<div class="grid-container" id="katalogMedia"></div>
-
-<!-- FOOTER -->
-<div class="portal-footer">
-    <div style="font-weight: 700; margin-bottom: 6px; font-size: 14.5px; color: #334155;">
-        Media Guru Btek By Pak Guru Budi
+    <!-- FOOTER RESMI -->
+    <div class="portal-footer">
+        <div style="font-weight: 800; margin-bottom: 4px; font-size: 14.5px; color: #0f172a;">
+            Media Guru Btek By Pak Guru Budi
+        </div>
+        <div>
+            Dikembangkan oleh <a href="javascript:void(0)" onclick="bukaModalDev()">Budianto, S.Pd., Gr. (budhy92-cyber)</a> &bull; CBT B-TEK &copy; 2026
+        </div>
     </div>
-    <div>
-        Dikembangkan oleh <a href="javascript:void(0)" onclick="bukaModalDev()">Budianto, S.Pd., Gr. (budhy92-cyber)</a> &bull; CBT B-TEK &copy; 2026
-    </div>
+
 </div>
 
 <!-- MODAL PROFIL PENGEMBANG -->
 <div class="modal-overlay" id="modalDev" onclick="tutupModalDevLuar(event)">
-    <div class="modal-card" style="max-width: 680px; width: 95%; border-radius: 1rem; overflow: hidden; position: relative; border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.25); margin: 20px auto; background: white;">
-        <button class="btn-close-modal" onclick="tutupModalDev()" style="position: absolute; top: 14px; right: 14px; z-index: 20; background: rgba(255,255,255,0.85); border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transition: 0.2s;">✕</button>
+    <div class="modal-card">
+        <button class="btn-close-modal" onclick="tutupModalDev()" title="Tutup">✕</button>
 
         <!-- Komponen Tentang Pengembang -->
         <div class="w-full bg-white text-left" style="margin: 0;">
@@ -710,19 +715,18 @@
         });
 
         if (dataTersaring.length === 0) {
-            katalog.innerHTML = `<div class="data-kosong">Data tidak ditemukan. Coba kata kunci atau filter lain.</div>`;
+            katalog.innerHTML = `<div class="data-kosong">Data tidak ditemukan. Coba kata kunci pencarian atau filter lain.</div>`;
             return;
         }
 
         dataTersaring.forEach(item => {
             const idMediaString = String(item.id);
             const sudahPernah = riwayatBuka.includes(idMediaString);
-            
             const teksTombol = userIsAdmin ? '▶ Buka (Akses Admin)' : (sudahPernah ? '▶ Buka Lagi (Gratis)' : '▶ Buka Media');
             const warnaTombol = userIsAdmin 
-                ? 'background: linear-gradient(135deg, #ff9f43, #ff6b81);' 
-                : (sudahPernah ? 'background: linear-gradient(135deg, #a29bfe, #6c5ce7);' : '');
-            const badgeRiwayat = sudahPernah ? `<span class="badge" style="background:#a29bfe; color:white;">RIWAYAT</span>` : '';
+                ? 'background: linear-gradient(135deg, #f59e0b, #ef4444);' 
+                : (sudahPernah ? 'background: linear-gradient(135deg, #8b5cf6, #6366f1);' : '');
+            const badgeRiwayat = sudahPernah ? `<span class="badge" style="background:#ede9fe; color:#6d28d9; border:1px solid #ddd6fe;">RIWAYAT</span>` : '';
 
             const card = document.createElement('div');
             card.className = 'card';
@@ -764,7 +768,7 @@
         const jendelaBaru = window.open("", "_blank");
         if (jendelaBaru) {
             jendelaBaru.document.write(`
-                <h2 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#3742fa;">
+                <h2 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#2563eb;">
                     ⏳ Menyiapkan Media Pembelajaran CBT B-TEK...
                 </h2>
             `);
@@ -776,7 +780,6 @@
         }
 
         try {
-            // Hanya potong kuota jika bukan admin dan belum pernah buka
             if (!userIsAdmin && !sudahPernah) {
                 sisaKuota -= 1;
                 document.getElementById('teksKuota').innerText = sisaKuota;
@@ -811,7 +814,6 @@
         window.location.href = "login.html";
     }
 
-    // FUNGSI MODAL PENGEMBANG
     function bukaModalDev() {
         document.getElementById('modalDev').style.display = 'flex';
     }
