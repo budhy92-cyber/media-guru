@@ -271,6 +271,12 @@
             <option value="Koding dan Kecerdasan Artifisial">Koding dan Kecerdasan Artifisial</option>
         </select>
 
+        <label>🏷️ Tipe Akses Media</label>
+        <select id="tipeAkses">
+            <option value="token">🪙 Memerlukan 1 Token (Default / Premium)</option>
+            <option value="gratis">🎁 Gratis (Bebas Akses Tanpa Token)</option>
+        </select>
+
         <label>📂 Unggah File Media (.html)</label>
         <div class="file-input-wrapper">
             <input type="file" id="fileHtml" accept=".html" required>
@@ -548,7 +554,8 @@
                     <tr>
                         <th>No</th>
                         <th>Email Guru</th>
-                        <th>Sisa Kuota</th>
+                        <th>Saldo Token</th>
+                        <th>Masa Uji Coba</th>
                         <th>Aksi Cepat</th>
                     </tr>
                 </thead>
@@ -556,20 +563,36 @@
             `;
 
             data.forEach((g, idx) => {
-                const badgeKuota = g.sisa_kuota >= 100 
-                    ? '<span style="color:#10b981; font-weight:bold;">♾️ Unlimited (' + g.sisa_kuota + ')</span>' 
-                    : (g.sisa_kuota <= 0 
+                const kuotaVal = g.sisa_kuota !== null && g.sisa_kuota !== undefined ? g.sisa_kuota : 5;
+                const badgeKuota = kuotaVal >= 100 
+                    ? '<span style="color:#10b981; font-weight:bold;">♾️ Unlimited</span>' 
+                    : (kuotaVal <= 0 
                         ? '<span style="color:#ff4757; font-weight:bold;">Habis (0)</span>' 
-                        : '<span style="color:#f59e0b; font-weight:bold;">' + g.sisa_kuota + ' Tiket</span>');
+                        : '<span style="color:#f59e0b; font-weight:bold;">' + kuotaVal + ' Token</span>');
+
+                // Hitung trial 14 hari
+                let statusTrial = '<span style="color:#64748b;">-</span>';
+                if (g.created_at || g.tgl_daftar) {
+                    const tglMs = new Date(g.created_at || g.tgl_daftar).getTime();
+                    const sisaMs = (tglMs + 14 * 24 * 60 * 60 * 1000) - Date.now();
+                    const sisaHari = Math.max(0, Math.ceil(sisaMs / (1000 * 60 * 60 * 24)));
+                    statusTrial = sisaMs > 0 
+                        ? `<span style="color:#10b981; font-weight:bold;">Aktif (${sisaHari} Hari)</span>`
+                        : `<span style="color:#ef4444; font-weight:bold;">Selesai (0 Hari)</span>`;
+                } else {
+                    statusTrial = '<span style="color:#10b981; font-weight:bold;">Aktif (14 Hari)</span>';
+                }
 
                 html += `
                 <tr>
                     <td>${idx + 1}</td>
-                    <td><strong>${g.email}</strong></td>
+                    <td><strong>${g.email || '-'}</strong></td>
                     <td>${badgeKuota}</td>
+                    <td>${statusTrial}</td>
                     <td>
-                        <button class="btn-aksi-sm btn-plus-kuota" onclick="ubahKuotaGuru('${g.id}', ${g.sisa_kuota + 5})">+5 Kuota</button>
+                        <button class="btn-aksi-sm btn-plus-kuota" onclick="ubahKuotaGuru('${g.id}', ${kuotaVal + 5})">+5 Token</button>
                         <button class="btn-aksi-sm btn-unlimited" onclick="ubahKuotaGuru('${g.id}', 999)">Unlimited</button>
+                        <a href="https://wa.me/628525390541?text=Halo%20Admin%2C%20bantuan%20akun%20guru%20${encodeURIComponent(g.email || '')}" target="_blank" class="btn-aksi-sm" style="background:#25d366; color:white; text-decoration:none; padding:5px 8px; border-radius:6px; font-size:11px; font-weight:bold; display:inline-block;">💬 WA</a>
                     </td>
                 </tr>
                 `;
@@ -671,11 +694,18 @@
                 .getPublicUrl(namaFile);
             
             const fileUrl = publicUrlData.publicUrl;
+            const tipeAkses = document.getElementById('tipeAkses').value;
 
             status.innerText = "Menyimpan data (Tahap 2/2)...";
-            const { error: dbError } = await client
+            let { error: dbError } = await client
                 .from('daftar_media')
-                .insert([{ judul, deskripsi, kelas, mapel, file_url: fileUrl }]);
+                .insert([{ judul, deskripsi, kelas, mapel, file_url: fileUrl, tipe_akses: tipeAkses }]);
+
+            if (dbError && dbError.message && dbError.message.includes('tipe_akses')) {
+                // Fallback jika kolom tipe_akses belum ada di tabel daftar_media
+                const res = await client.from('daftar_media').insert([{ judul, deskripsi, kelas, mapel, file_url: fileUrl }]);
+                dbError = res.error;
+            }
 
             if (dbError) throw dbError;
 

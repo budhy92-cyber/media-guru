@@ -89,6 +89,18 @@
             align-items: center;
             gap: 4px;
         }
+        .trial-pill {
+            background: #fefce8;
+            color: #a16207;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            border: 1px solid #fef08a;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
         .nav-button-group {
             display: flex;
             align-items: center;
@@ -108,6 +120,15 @@
             align-items: center;
             gap: 6px;
             text-decoration: none;
+        }
+        .btn-nav-wa {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+        .btn-nav-wa:hover {
+            background: #d1fae5;
+            transform: translateY(-1px);
         }
         .btn-nav-dev {
             background: #eff6ff;
@@ -459,9 +480,15 @@
         <div class="user-info-group">
             <span class="user-greeting">Halo, <strong id="teksEmail">Memuat...</strong></span>
             <span id="badgeAdminArea"></span>
-            <span class="kuota-pill">🚀 Kuota: <strong id="teksKuota">-</strong></span>
+            <span id="badgeTrialArea" class="trial-pill">⏳ Uji Coba: <strong id="teksTrial">-</strong></span>
+            <span class="kuota-pill">🪙 Token: <strong id="teksKuota">-</strong></span>
         </div>
         <div class="nav-button-group">
+            <!-- Tombol WhatsApp Resmi -->
+            <a href="https://wa.me/628525390541?text=Halo%20Admin%20CBT%20B-TEK%2C%20saya%20ingin%20konsultasi%20%2F%20upgrade%20akun%20Media%20Guru" target="_blank" rel="noopener" class="btn-nav-action btn-nav-wa" title="Hubungi Admin WhatsApp (08525390541)">
+                <span>💬</span> Hubungi Admin WA
+            </a>
+
             <!-- Tombol Pengaturan AI Gemini -->
             <button class="btn-nav-action btn-nav-ai" onclick="bukaModalApiKey()">
                 <span>🤖</span> Pengaturan AI
@@ -503,18 +530,22 @@
         </p>
         
         <div class="game-features-pill-row">
+            <span class="game-pill" style="background:#fef3c7; color:#b45309; border-color:#fde68a;">⏳ Bebas Diakses 14 Hari Masa Uji Coba</span>
+            <span class="game-pill" style="background:#fee2e2; color:#b91c1c; border-color:#fecaca;">🚫 Tidak Bisa Pakai Token Biasa (Khusus Berbayar)</span>
             <span class="game-pill">✨ Soal Pecahan Original 16 Bagian</span>
-            <span class="game-pill">➕ Buat &amp; Kelola Soal Sendiri</span>
+            <span class="game-pill">➕ Buat &amp; Kelola Soal Sendiri (Gemini AI)</span>
             <span class="game-pill">👥 1 - 6 Pemain Split-Screen</span>
-            <span class="game-pill">🎁 2 Kotak Misteri Taktis</span>
             <span class="game-pill">🛣️ 5 Variasi Sirkuit 3D</span>
         </div>
 
-        <div>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
             <button type="button" onclick="bukaGimBalapProteksi()" class="btn-launch-game" style="border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; font-family: inherit;">
-                <span>🏎️ Mainkan Turbo Kart Edu-GP 3D Sekarang</span>
+                <span id="labelTombolGim">🏎️ Mainkan Turbo Kart Edu-GP 3D (Uji Coba 14 Hari Aktif)</span>
                 <span>→</span>
             </button>
+            <a href="https://wa.me/628525390541?text=Halo%20Admin%20CBT%20B-TEK%2C%20saya%20ingin%20berlangganan%20Gim%20Balap%203D%20Turbo%20Kart" target="_blank" rel="noopener" style="padding: 11px 18px; border-radius: 14px; background: #ecfdf5; color: #047857; border: 1.5px solid #a7f3d0; font-weight: 700; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s;">
+                <span>💬</span> Beli Lisensi via WA (08525390541)
+            </a>
         </div>
     </div>
 
@@ -728,11 +759,65 @@
         'budiyantobudi677@gmail.com'
     ];
 
+    const NOMOR_WA_ADMIN = '628525390541';
     let dataUser = null;
-    let sisaKuota = 0;
+    let sisaKuota = 5;
+    let sisaHariTrial = 14;
+    let isTrialActive = true;
+    let mediaTerbukaPermanen = [];
     let semuaDataMedia = []; 
     let riwayatBuka = []; 
     let userIsAdmin = false;
+
+    function hitungMasaUjiCoba(tglDaftarStr) {
+        if (userIsAdmin) {
+            sisaHariTrial = 999;
+            isTrialActive = true;
+            const badgeTrial = document.getElementById('badgeTrialArea');
+            if (badgeTrial) {
+                badgeTrial.style.background = '#ecfdf5';
+                badgeTrial.style.color = '#047857';
+                badgeTrial.style.borderColor = '#a7f3d0';
+                badgeTrial.innerHTML = `👑 Status: <strong>Akses Admin Penuh</strong>`;
+            }
+            const labelGim = document.getElementById('labelTombolGim');
+            if (labelGim) {
+                labelGim.textContent = '🏎️ Mainkan Turbo Kart Edu-GP 3D (Akses Admin)';
+            }
+            return;
+        }
+
+        const tglDaftar = tglDaftarStr ? new Date(tglDaftarStr).getTime() : Date.now();
+        const batasTrialMs = 14 * 24 * 60 * 60 * 1000; // 14 hari
+        const waktuBerakhir = tglDaftar + batasTrialMs;
+        const sisaMs = waktuBerakhir - Date.now();
+        sisaHariTrial = Math.max(0, Math.ceil(sisaMs / (1000 * 60 * 60 * 24)));
+        isTrialActive = sisaMs > 0;
+
+        const badgeTrial = document.getElementById('badgeTrialArea');
+        if (badgeTrial) {
+            if (isTrialActive) {
+                badgeTrial.style.background = '#fefce8';
+                badgeTrial.style.color = '#a16207';
+                badgeTrial.style.borderColor = '#fef08a';
+                badgeTrial.innerHTML = `⏳ Uji Coba: <strong>Sisa ${sisaHariTrial} Hari</strong>`;
+            } else {
+                badgeTrial.style.background = '#fef2f2';
+                badgeTrial.style.color = '#dc2626';
+                badgeTrial.style.borderColor = '#fecaca';
+                badgeTrial.innerHTML = `⚠️ Uji Coba: <strong>Selesai (0 Hari)</strong>`;
+            }
+        }
+
+        const labelGim = document.getElementById('labelTombolGim');
+        if (labelGim) {
+            if (isTrialActive) {
+                labelGim.textContent = `🏎️ Mainkan Turbo Kart Edu-GP 3D (Uji Coba: Sisa ${sisaHariTrial} Hari)`;
+            } else {
+                labelGim.textContent = '🔒 Turbo Kart Edu-GP 3D (Uji Coba 14 Hari Berakhir - Perlu Lisensi)';
+            }
+        }
+    }
 
     async function cekLogin() {
         const { data: { session }, error } = await client.auth.getSession();
@@ -766,6 +851,7 @@
             document.getElementById('btnAdminNav').style.display = 'inline-flex';
             document.getElementById('teksKuota').innerText = '♾️ Unlimited';
             sisaKuota = 99999;
+            hitungMasaUjiCoba(null);
         } else {
             document.getElementById('btnAdminNav').style.display = 'none';
             await muatProfilGuru();
@@ -776,14 +862,50 @@
     }
 
     async function muatProfilGuru() {
+        const userCreatedAt = dataUser.created_at || (dataUser.user_metadata ? dataUser.user_metadata.created_at : null) || new Date().toISOString();
+
+        // Muat riwayat media terbuka permanen dari localStorage
+        mediaTerbukaPermanen = JSON.parse(localStorage.getItem('media_terbuka_' + dataUser.id)) || [];
+
         try {
-            const { data, error } = await client.from('profil_guru').select('sisa_kuota').eq('id', dataUser.id).single();
+            const { data, error } = await client.from('profil_guru').select('*').eq('id', dataUser.id).single();
             if (data) {
-                sisaKuota = parseInt(data.sisa_kuota);
+                // Token awal 5 jika belum ada
+                sisaKuota = data.sisa_kuota !== null && data.sisa_kuota !== undefined ? parseInt(data.sisa_kuota) : 5;
                 document.getElementById('teksKuota').innerText = sisaKuota;
+
+                const tglDaftar = data.created_at || data.tgl_daftar || userCreatedAt;
+                hitungMasaUjiCoba(tglDaftar);
+
+                // Sinkronkan riwayat media terbuka jika ada di DB
+                if (data.media_terbuka && Array.isArray(data.media_terbuka)) {
+                    data.media_terbuka.forEach(id => {
+                        const strId = String(id);
+                        if (!mediaTerbukaPermanen.includes(strId)) mediaTerbukaPermanen.push(strId);
+                    });
+                    localStorage.setItem('media_terbuka_' + dataUser.id, JSON.stringify(mediaTerbukaPermanen));
+                }
+            } else {
+                // PENGGUNA BARU: Inisialisasi otomatis dengan 5 token gratis
+                sisaKuota = 5;
+                document.getElementById('teksKuota').innerText = sisaKuota;
+                hitungMasaUjiCoba(userCreatedAt);
+
+                try {
+                    await client.from('profil_guru').insert([{
+                        id: dataUser.id,
+                        email: dataUser.email,
+                        sisa_kuota: 5
+                    }]);
+                } catch (errIns) {
+                    console.warn('Inisialisasi profil_guru baru:', errIns);
+                }
             }
         } catch (e) {
-            console.warn('Profil guru belum ada di database, menggunakan default.');
+            console.warn('Gagal memuat profil_guru, menggunakan default 5 token:', e);
+            sisaKuota = 5;
+            document.getElementById('teksKuota').innerText = sisaKuota;
+            hitungMasaUjiCoba(userCreatedAt);
         }
     }
 
@@ -830,12 +952,33 @@
 
         dataTersaring.forEach(item => {
             const idMediaString = String(item.id);
-            const sudahPernah = riwayatBuka.includes(idMediaString);
-            const teksTombol = userIsAdmin ? '▶ Buka (Akses Admin)' : (sudahPernah ? '▶ Buka Lagi (Gratis)' : '▶ Buka Media');
-            const warnaTombol = userIsAdmin 
-                ? 'background: linear-gradient(135deg, #f59e0b, #ef4444);' 
-                : (sudahPernah ? 'background: linear-gradient(135deg, #8b5cf6, #6366f1);' : '');
-            const badgeRiwayat = sudahPernah ? `<span class="badge" style="background:#ede9fe; color:#6d28d9; border:1px solid #ddd6fe;">RIWAYAT</span>` : '';
+            // Cek apakah media ini gratis atau pakai token
+            const isMediaGratis = item.tipe_akses === 'gratis' || item.is_gratis === true || (item.judul && item.judul.toLowerCase().includes('gratis')) || (item.id % 2 === 1);
+            
+            // Cek apakah media sudah pernah dibuka dengan token (milik sendiri selamanya)
+            const isSudahMilikSendiri = mediaTerbukaPermanen.includes(idMediaString) || riwayatBuka.includes(idMediaString);
+
+            let badgeTipeAkses = '';
+            let teksTombol = '';
+            let warnaTombol = '';
+
+            if (userIsAdmin) {
+                badgeTipeAkses = `<span class="badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a;">👑 AKSES ADMIN</span>`;
+                teksTombol = '▶ Buka (Akses Admin)';
+                warnaTombol = 'background: linear-gradient(135deg, #f59e0b, #ef4444);';
+            } else if (isMediaGratis) {
+                badgeTipeAkses = `<span class="badge" style="background:#ecfdf5; color:#047857; border:1px solid #a7f3d0;">🎁 GRATIS</span>`;
+                teksTombol = '▶ Buka Media (Gratis)';
+                warnaTombol = 'background: linear-gradient(135deg, #10b981, #059669);';
+            } else if (isSudahMilikSendiri) {
+                badgeTipeAkses = `<span class="badge" style="background:#f5f3ff; color:#7c3aed; border:1px solid #ddd6fe;">✅ MILIK ANDA (SELAMANYA)</span>`;
+                teksTombol = '▶ Buka Kembali (Milik Anda)';
+                warnaTombol = 'background: linear-gradient(135deg, #8b5cf6, #6366f1);';
+            } else {
+                badgeTipeAkses = `<span class="badge" style="background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe;">🪙 1 TOKEN</span>`;
+                teksTombol = '🪙 Buka (Pakai 1 Token)';
+                warnaTombol = 'background: linear-gradient(135deg, #2563eb, #1d4ed8);';
+            }
 
             const card = document.createElement('div');
             card.className = 'card';
@@ -844,11 +987,11 @@
                 <div class="badge-container">
                     <span class="badge badge-kelas">${(item.kelas || '').replace('-', ' ').toUpperCase()}</span>
                     <span class="badge badge-mapel">${(item.mapel || '').toUpperCase()}</span>
-                    ${badgeRiwayat}
+                    ${badgeTipeAkses}
                 </div>
                 <h3 class="judul">${item.judul}</h3>
                 <p class="deskripsi">${item.deskripsi}</p>
-                <button class="btn-buka" id="btn_${item.id}" style="${warnaTombol}" onclick="bukaMedia('${item.file_url}', 'btn_${item.id}', '${item.id}')">${teksTombol}</button>
+                <button class="btn-buka" id="btn_${item.id}" style="${warnaTombol}" onclick="bukaMedia('${item.file_url}', 'btn_${item.id}', '${item.id}', ${isMediaGratis})">${teksTombol}</button>
             `;
             katalog.appendChild(card);
         });
@@ -861,31 +1004,61 @@
             return;
         }
 
+        // Pengecekan Masa Uji Coba 14 Hari untuk Gim Balapan 3D (Tidak bisa pakai token biasa)
+        if (!userIsAdmin && !isTrialActive) {
+            const pesanWA = `Halo Admin CBT B-TEK (08525390541), masa uji coba 14 hari akun saya telah selesai. Saya ingin berlangganan akses Gim Balap 3D Turbo Kart Edu-GP. Email saya: ${dataUser.email}`;
+            const chatWA = confirm(
+                "🔒 MASA UJI COBA 14 HARI TELAH BERAKHIR!\n\n" +
+                "Gim Balap 3D Turbo Kart Edu-GP dan fitur Pembuat Soal AI adalah layanan khusus pembelajaran interaktif berbayar (tidak dapat dibuka dengan token biasa).\n\n" +
+                "Klik 'OK' untuk menghubungi Admin via WhatsApp (08525390541) untuk mengaktifkan lisensi akses penuh."
+            );
+            if (chatWA) {
+                window.open(`https://wa.me/${NOMOR_WA_ADMIN}?text=${encodeURIComponent(pesanWA)}`, '_blank');
+            }
+            return;
+        }
+
         const ticket = 'btek_race_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
         const userIdentifier = dataUser ? (dataUser.email || dataUser.id) : (userIsAdmin ? 'admin_btek' : 'guru');
 
         sessionStorage.setItem('btek_active_game_ticket', JSON.stringify({
             token: ticket,
             timestamp: Date.now(),
-            user: userIdentifier
+            user: userIdentifier,
+            trialActive: isTrialActive || userIsAdmin,
+            sisaHari: sisaHariTrial
         }));
 
         window.location.href = 'turbo_kart.html?ticket=' + encodeURIComponent(ticket);
     }
 
-    async function bukaMedia(url, idTombol, idMedia) {
+    async function bukaMedia(url, idTombol, idMedia, isMediaGratis) {
         const idMediaString = String(idMedia);
-        const sudahPernah = riwayatBuka.includes(idMediaString);
+        const isSudahMilikSendiri = mediaTerbukaPermanen.includes(idMediaString) || riwayatBuka.includes(idMediaString);
 
-        // Jika bukan admin dan kuota habis
-        if (!userIsAdmin && sisaKuota <= 0 && !sudahPernah) {
-            const mauLangganan = confirm("MAAF, KUOTA GRATIS ANDA HABIS!\n\nSilakan Upgrade Premium untuk mendapatkan akses semua media tanpa batas.\n\nKlik 'OK' untuk menghubungi Admin via WhatsApp.");
-            if (mauLangganan) {
-                const nomorWA = "6281234567890"; 
-                const pesan = `Halo Admin CBT B-TEK, saya ingin Upgrade Premium agar bisa mengakses semua media interaktif. Akun email saya: ${dataUser.email}`;
-                window.location.href = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
+        // Jika bukan admin dan media berbayar dan belum milik sendiri
+        if (!userIsAdmin && !isMediaGratis && !isSudahMilikSendiri) {
+            if (sisaKuota <= 0) {
+                const pesanWA = `Halo Admin CBT B-TEK (08525390541), token akun saya habis (0 token). Saya ingin menambah token / upgrade paket premium. Email saya: ${dataUser.email}`;
+                const bukaWA = confirm(
+                    "MAAF, TOKEN ANDA TELAH HABIS!\n\n" +
+                    "Saldo Token Anda saat ini: 0 Token.\n" +
+                    "Media pembelajaran ini memerlukan 1 token untuk dibuka selamanya.\n\n" +
+                    "Klik 'OK' untuk menghubungi Admin via WhatsApp (08525390541) untuk menambah token atau berlangganan."
+                );
+                if (bukaWA) {
+                    window.open(`https://wa.me/${NOMOR_WA_ADMIN}?text=${encodeURIComponent(pesanWA)}`, '_blank');
+                }
+                return;
             }
-            return;
+
+            const konfirmasiBuka = confirm(
+                `MEDIA PEMBELAJARAN INI MEMERLUKAN 1 TOKEN.\n\n` +
+                `Sisa Saldo Token Anda: ${sisaKuota} Token.\n\n` +
+                `Setelah dibuka, media ini akan SELAMANYA TERBUKA untuk akun Anda tanpa perlu token lagi di kemudian hari.\n\n` +
+                `Gunakan 1 token untuk membuka sekarang?`
+            );
+            if (!konfirmasiBuka) return;
         }
 
         const tombol = document.getElementById(idTombol);
@@ -908,15 +1081,28 @@
         }
 
         try {
-            if (!userIsAdmin && !sudahPernah) {
+            // Potong token jika media berbayar & belum milik sendiri & bukan admin
+            if (!userIsAdmin && !isMediaGratis && !isSudahMilikSendiri) {
                 sisaKuota -= 1;
                 document.getElementById('teksKuota').innerText = sisaKuota;
-                await client.from('profil_guru').update({ sisa_kuota: sisaKuota }).eq('id', dataUser.id);
                 
-                riwayatBuka.push(idMediaString);
-                localStorage.setItem('riwayat_btek_' + dataUser.id, JSON.stringify(riwayatBuka));
+                // Simpan ID media ke daftar terbuka permanen milik akun (selamanya terbuka)
+                if (!mediaTerbukaPermanen.includes(idMediaString)) {
+                    mediaTerbukaPermanen.push(idMediaString);
+                    localStorage.setItem('media_terbuka_' + dataUser.id, JSON.stringify(mediaTerbukaPermanen));
+                }
+                if (!riwayatBuka.includes(idMediaString)) {
+                    riwayatBuka.push(idMediaString);
+                    localStorage.setItem('riwayat_btek_' + dataUser.id, JSON.stringify(riwayatBuka));
+                }
+
+                // Update database Supabase
+                await client.from('profil_guru').update({ 
+                    sisa_kuota: sisaKuota,
+                    media_terbuka: mediaTerbukaPermanen
+                }).eq('id', dataUser.id).catch(e => console.warn('Update profil_guru:', e));
                 
-                setTimeout(() => saringData(), 500);
+                setTimeout(() => saringData(), 300);
             }
 
             const respon = await fetch(url);

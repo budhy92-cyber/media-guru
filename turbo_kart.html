@@ -653,6 +653,57 @@ Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A"
                 return false;
             }
 
+            // 3. Cek Masa Uji Coba 14 Hari (Balapan 3D Berbayar - Tidak Bisa Pakai Token Biasa)
+            let sisaHariTrial = 14;
+            let trialAktif = true;
+
+            if (!adminSession) {
+                let userCreatedAt = null;
+                if (storedTicket && storedTicket.timestamp) {
+                    if (storedTicket.trialActive !== undefined) {
+                        trialAktif = storedTicket.trialActive;
+                        sisaHariTrial = storedTicket.sisaHari || 14;
+                    }
+                }
+
+                if (window.supabase) {
+                    try {
+                        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                        const { data: { session } } = await client.auth.getSession();
+                        if (session && session.user) {
+                            userCreatedAt = session.user.created_at || (session.user.user_metadata ? session.user.user_metadata.created_at : null);
+                            if (userCreatedAt) {
+                                const tglDaftarMs = new Date(userCreatedAt).getTime();
+                                const batasTrialMs = 14 * 24 * 60 * 60 * 1000;
+                                const sisaMs = (tglDaftarMs + batasTrialMs) - Date.now();
+                                sisaHariTrial = Math.max(0, Math.ceil(sisaMs / (1000 * 60 * 60 * 24)));
+                                trialAktif = sisaMs > 0;
+                            }
+                        }
+                    } catch(e) {
+                        console.warn('Gagal cek trial user:', e);
+                    }
+                }
+
+                if (!trialAktif) {
+                    if (shieldSpinner) shieldSpinner.classList.add('hidden');
+                    if (shieldTitle) shieldTitle.textContent = "🔒 Masa Uji Coba 14 Hari Telah Selesai";
+                    if (shieldDesc) shieldDesc.innerHTML = "Gim Balapan 3D dan fitur Pembuat Soal AI adalah layanan khusus interaktif berbayar (tidak bisa memakai token biasa). Silakan hubungi Admin CBT B-TEK via WhatsApp untuk mengaktifkan lisensi akses penuh tanpa batas.";
+                    if (shieldAction) {
+                        shieldAction.innerHTML = `
+                            <a href="https://wa.me/628525390541?text=${encodeURIComponent('Halo Admin CBT B-TEK (08525390541), masa uji coba 14 hari akun saya telah selesai. Saya ingin berlangganan lisensi Gim Balap 3D Turbo Kart. Akun: ' + userIdentitas)}" target="_blank" rel="noopener" class="block w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs text-center shadow mb-2">
+                                💬 Hubungi Admin via WhatsApp (08525390541)
+                            </a>
+                            <a href="portal.html" class="block w-full py-2 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold text-center border border-slate-700">
+                                ⬅️ Kembali ke Portal Media
+                            </a>
+                        `;
+                        shieldAction.classList.remove('hidden');
+                    }
+                    return false;
+                }
+            }
+
             // Lolos verifikasi
             const shield = document.getElementById('securityShield');
             if (shield) shield.classList.add('hidden');
@@ -660,7 +711,8 @@ Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A"
             const userBadgeEl = document.getElementById('userIdentityBadge');
             if (userBadgeEl) {
                 const namaRingkas = userIdentitas.split('@')[0];
-                userBadgeEl.innerHTML = `👤 <strong>${namaRingkas}</strong>`;
+                const infoTrial = adminSession ? '<span class="text-amber-400">👑 Admin</span>' : `<span class="text-amber-300">⏳ Trial: Sisa ${sisaHariTrial} Hari</span>`;
+                userBadgeEl.innerHTML = `👤 <strong>${namaRingkas}</strong> &bull; ${infoTrial}`;
             }
 
             return true;
