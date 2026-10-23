@@ -6,6 +6,7 @@
     <title>Turbo Kart Edu-GP 3D - Balap Multi-Mapel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
@@ -49,12 +50,25 @@
 </head>
 <body class="w-screen h-screen flex flex-col bg-slate-950 overflow-hidden select-none">
 
+    <!-- ================= TABIR KEAMANAN / SECURITY SHIELD (PROTEKSI OPSI 1) ================= -->
+    <div id="securityShield" class="fixed inset-0 bg-slate-950 z-[99999] flex flex-col items-center justify-center p-4 text-center">
+        <div class="max-w-md w-full bg-slate-900 border-2 border-indigo-500/40 rounded-2xl p-6 shadow-2xl flex flex-col items-center backdrop-blur-md">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-3xl mb-4 animate-pulse">
+                🔒
+            </div>
+            <h3 class="text-white font-bold text-lg mb-1" id="securityShieldTitle">Memverifikasi Hak Akses...</h3>
+            <p class="text-xs text-slate-400 mb-4 leading-relaxed" id="securityShieldDesc">Memeriksa kredensial sesi akun CBT B-TEK dan tiket peluncuran dari portal resmi.</p>
+            <div id="securityShieldSpinner" class="w-8 h-8 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+            <div id="securityShieldAction" class="hidden mt-3 w-full"></div>
+        </div>
+    </div>
+
     <!-- BAR ATAS: INFO BAGIAN, MINIMAP GLOBAL, & KONTROL CEPAT -->
     <header class="h-12 bg-slate-900/95 border-b border-slate-800 px-2.5 flex items-center justify-between gap-2 z-30 shrink-0">
         <!-- Kiri: Brand & Info Bagian Aktif -->
         <div class="flex items-center gap-2 shrink-0">
-            <a href="index.html" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold flex items-center gap-1 transition" title="Kembali ke Beranda">
-                <span>🏠</span><span class="hidden sm:inline">Beranda</span>
+            <a href="portal.html" class="px-2.5 py-1.5 rounded-lg bg-indigo-900/60 hover:bg-indigo-800 text-indigo-200 border border-indigo-700/50 text-xs font-bold flex items-center gap-1.5 transition" title="Kembali ke Portal Media">
+                <span>⬅️</span><span class="hidden sm:inline">Portal Media</span>
             </a>
             <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-400 via-orange-500 to-rose-600 flex items-center justify-center shadow font-racing font-black text-slate-950 text-xs">
                 3D
@@ -89,6 +103,9 @@
 
         <!-- Kanan: Tombol Pengaturan, Kelola Soal, Suara, Ulang, & Fullscreen -->
         <div class="flex items-center gap-1.5 shrink-0">
+            <span id="userIdentityBadge" class="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800/80 text-slate-300 text-[11px] font-bold border border-slate-700/60">
+                👤 Memeriksa...
+            </span>
             <button id="btnManageCustomQuestions" type="button" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold flex items-center gap-1 transition shadow" title="Tambah / Kelola Soal Sendiri">
                 <span>➕</span><span class="hidden lg:inline">Buat Soal Sendiri</span>
             </button>
@@ -538,6 +555,117 @@ Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A"
     </div>
 
     <script>
+        /**
+         * ============================================================================
+         * 0. PROTEKSI AKSES SESI & TIKET PELUNCURAN RESMI (OPSI 1)
+         * ============================================================================
+         */
+        const SUPABASE_URL = 'https://luutehtjtsvivdyipjpy.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1dXRlaHRqdHN2aXZkeWlwanB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNjc5MDgsImV4cCI6MjEwNTY0MzkwOH0.74C0F1UmOOe53ObtIrqnh84MYeTfgW0EQXSgrhLyIeY';
+
+        async function verifikasiKeamananSesi() {
+            const shieldTitle = document.getElementById('securityShieldTitle');
+            const shieldDesc = document.getElementById('securityShieldDesc');
+            const shieldSpinner = document.getElementById('securityShieldSpinner');
+            const shieldAction = document.getElementById('securityShieldAction');
+
+            // 1. Cek Sesi Login Supabase & Admin
+            let userIdentitas = null;
+            const adminSession = localStorage.getItem('btek_admin_session') === 'true';
+
+            if (adminSession) {
+                const adminData = JSON.parse(localStorage.getItem('btek_admin_user') || '{}');
+                userIdentitas = adminData.name || 'Admin CBT B-TEK';
+            } else {
+                try {
+                    if (window.supabase) {
+                        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                        const { data: { session }, error } = await client.auth.getSession();
+                        if (session && session.user) {
+                            userIdentitas = session.user.email || 'Guru CBT B-TEK';
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Gagal memverifikasi sesi Supabase:', e);
+                }
+            }
+
+            // Jika tidak ada sesi login sama sekali:
+            if (!userIdentitas) {
+                if (shieldSpinner) shieldSpinner.classList.add('hidden');
+                if (shieldTitle) shieldTitle.textContent = "🚫 Akses Ditolak: Belum Masuk";
+                if (shieldDesc) shieldDesc.innerHTML = "Gim balap 3D ini terlindungi. Anda harus <strong>login</strong> ke akun Guru atau Admin CBT B-TEK terlebih dahulu.";
+                if (shieldAction) {
+                    shieldAction.innerHTML = `
+                        <a href="login.html" class="block w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs text-center shadow">
+                            🔑 Masuk ke Akun Sekarang
+                        </a>
+                    `;
+                    shieldAction.classList.remove('hidden');
+                }
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 2200);
+                return false;
+            }
+
+            // 2. Cek Tiket Peluncuran Portal (Opsi 1: Anti-Bookmark & Anti-Bagi Link Mentah)
+            const urlParams = new URLSearchParams(window.location.search);
+            const ticketParam = urlParams.get('ticket');
+            const rawStoredTicket = sessionStorage.getItem('btek_active_game_ticket');
+            let storedTicket = null;
+            try {
+                storedTicket = rawStoredTicket ? JSON.parse(rawStoredTicket) : null;
+            } catch (e) {}
+
+            const sekarang = Date.now();
+            const batasWaktuTiket = 1000 * 60 * 60 * 6; // 6 jam masa aktif sesi tab game
+            
+            let tiketValid = false;
+            if (storedTicket && storedTicket.token) {
+                const umurTiket = sekarang - (storedTicket.timestamp || 0);
+                if (umurTiket < batasWaktuTiket) {
+                    if (ticketParam) {
+                        if (storedTicket.token === ticketParam) {
+                            tiketValid = true;
+                        }
+                    } else {
+                        tiketValid = true;
+                    }
+                }
+            }
+
+            if (!tiketValid && !adminSession) {
+                if (shieldSpinner) shieldSpinner.classList.add('hidden');
+                if (shieldTitle) shieldTitle.textContent = "⚠️ Akses Terlindungi: Buka Lewat Portal";
+                if (shieldDesc) shieldDesc.innerHTML = "Tautan langsung atau bookmark tidak diizinkan. Silakan luncurkan gim secara resmi melalui <strong>Portal Media Guru</strong>.";
+                if (shieldAction) {
+                    shieldAction.innerHTML = `
+                        <a href="portal.html" class="block w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold text-xs text-center shadow">
+                            🚀 Buka Melalui Portal Media Guru
+                        </a>
+                    `;
+                    shieldAction.classList.remove('hidden');
+                }
+                setTimeout(() => {
+                    window.location.href = "portal.html";
+                }, 2500);
+                return false;
+            }
+
+            // Lolos verifikasi
+            const shield = document.getElementById('securityShield');
+            if (shield) shield.classList.add('hidden');
+            
+            const userBadgeEl = document.getElementById('userIdentityBadge');
+            if (userBadgeEl) {
+                const namaRingkas = userIdentitas.split('@')[0];
+                userBadgeEl.innerHTML = `👤 <strong>${namaRingkas}</strong>`;
+            }
+
+            return true;
+        }
+
         /**
          * ============================================================================
          * 1. SYNTHESIZER SUARA MANDIRI (WEB AUDIO API)
@@ -3183,7 +3311,11 @@ Instruksi Wajib:
             }
         }
 
-        window.onload = function() {
+        window.onload = async function() {
+            // Verifikasi hak akses keamanan sesi dan tiket portal (Proteksi Opsi 1)
+            const lolosProteksi = await verifikasiKeamananSesi();
+            if (!lolosProteksi) return;
+
             renderSetupSelectors();
 
             document.getElementById('btnStartRace').addEventListener('click', () => {

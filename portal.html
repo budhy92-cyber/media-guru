@@ -511,10 +511,10 @@
         </div>
 
         <div>
-            <a href="turbo_kart.html" class="btn-launch-game">
+            <button type="button" onclick="bukaGimBalapProteksi()" class="btn-launch-game" style="border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; font-family: inherit;">
                 <span>🏎️ Mainkan Turbo Kart Edu-GP 3D Sekarang</span>
                 <span>→</span>
-            </a>
+            </button>
         </div>
     </div>
 
@@ -852,6 +852,25 @@
             `;
             katalog.appendChild(card);
         });
+    }
+
+    function bukaGimBalapProteksi() {
+        if (!dataUser && !userIsAdmin) {
+            alert("⚠️ Akses Ditolak: Anda harus login terlebih dahulu!");
+            window.location.href = "login.html";
+            return;
+        }
+
+        const ticket = 'btek_race_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+        const userIdentifier = dataUser ? (dataUser.email || dataUser.id) : (userIsAdmin ? 'admin_btek' : 'guru');
+
+        sessionStorage.setItem('btek_active_game_ticket', JSON.stringify({
+            token: ticket,
+            timestamp: Date.now(),
+            user: userIdentifier
+        }));
+
+        window.location.href = 'turbo_kart.html?ticket=' + encodeURIComponent(ticket);
     }
 
     async function bukaMedia(url, idTombol, idMedia) {
