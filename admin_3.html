@@ -362,6 +362,12 @@
             <option value="Koding dan Kecerdasan Artifisial">Koding dan Kecerdasan Artifisial</option>
         </select>
 
+        <label>🏷️ Tipe Akses Media</label>
+        <select id="editTipeAkses">
+            <option value="token">🪙 Memerlukan 1 Token (Default / Premium)</option>
+            <option value="gratis">🎁 Gratis (Bebas Akses Tanpa Token)</option>
+        </select>
+
         <div style="display:flex; gap:10px; margin-top:10px;">
             <button id="btnSimpanEdit" onclick="simpanEdit()" class="btn-primary" style="background:linear-gradient(135deg, #10b981, #059669); margin:0;">💾 Simpan Perubahan</button>
             <button onclick="tutupModal()" style="background:#cbd5e1; color:#333; margin:0; border:none; padding:12px; border-radius:10px; font-weight:600; cursor:pointer;">Batal</button>
@@ -450,13 +456,25 @@
 
         let html = '';
         items.forEach(item => {
+            const isGratis = item.tipe_akses === 'gratis' || 
+                             (item.deskripsi && item.deskripsi.includes('[AKSES:GRATIS]')) || 
+                             (item.judul && item.judul.toLowerCase().includes('gratis'));
+            const badgeAkses = isGratis 
+                ? '<span style="background:#d1fae5; color:#065f46; border:1px solid #a7f3d0; padding:3px 8px; border-radius:6px; font-weight:bold; font-size:11px;">🎁 GRATIS</span>' 
+                : '<span style="background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; padding:3px 8px; border-radius:6px; font-weight:bold; font-size:11px;">🪙 1 TOKEN</span>';
+            const deskripsiBersih = (item.deskripsi || '').replace(/\[AKSES:(GRATIS|TOKEN)\]/g, '').trim();
+
             html += `
             <div style="background:#f8f9fa; padding:15px 20px; border-radius:12px; margin-bottom:15px; border:1px solid #e1e8ed; text-align:left; position:relative;">
-                <h4 style="margin:0 0 5px 0; color:#2f3542; font-size:16px;">${item.judul}</h4>
-                <p style="margin:0 0 12px 0; font-size:12px; color:#747d8c;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+                    <h4 style="margin:0; color:#2f3542; font-size:16px;">${item.judul}</h4>
+                    ${badgeAkses}
+                </div>
+                <p style="margin:0 0 8px 0; font-size:12px; color:#747d8c;">
                     <span style="background:#eccc68; padding:3px 8px; border-radius:4px; color:#333; font-weight:bold;">${(item.kelas || '').toUpperCase()}</span> 
                     <span style="background:#7bed9f; padding:3px 8px; border-radius:4px; color:#333; font-weight:bold;">${(item.mapel || '').toUpperCase()}</span>
                 </p>
+                <p style="margin:0 0 12px 0; font-size:12.5px; color:#475569; line-height:1.4;">${deskripsiBersih}</p>
                 <div style="display:flex; gap:10px;">
                     <button onclick="siapkanEdit('${item.id}')" style="background:#1e90ff; color:white; border:none; padding:7px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;">✏️ Edit</button>
                     <button onclick="hapusMedia('${item.id}')" style="background:#ff4757; color:white; border:none; padding:7px 14px; border-radius:8px; font-size:12.5px; font-weight:600; cursor:pointer;">🗑️ Hapus</button>
@@ -480,11 +498,16 @@
         const item = dataKelolaMedia.find(m => String(m.id) === String(id));
         if (!item) return;
         
+        const isGratis = item.tipe_akses === 'gratis' || 
+                         (item.deskripsi && item.deskripsi.includes('[AKSES:GRATIS]')) || 
+                         (item.judul && item.judul.toLowerCase().includes('gratis'));
+
         document.getElementById('editId').value = item.id;
         document.getElementById('editJudul').value = item.judul;
-        document.getElementById('editDeskripsi').value = item.deskripsi;
+        document.getElementById('editDeskripsi').value = (item.deskripsi || '').replace(/\[AKSES:(GRATIS|TOKEN)\]/g, '').trim();
         document.getElementById('editKelas').value = item.kelas;
         document.getElementById('editMapel').value = item.mapel;
+        document.getElementById('editTipeAkses').value = isGratis ? 'gratis' : 'token';
         
         document.getElementById('modalEdit').style.display = 'flex'; 
     }
@@ -495,23 +518,39 @@
 
     async function simpanEdit() {
         const id = document.getElementById('editId').value;
-        const judul = document.getElementById('editJudul').value;
-        const deskripsi = document.getElementById('editDeskripsi').value;
+        const judul = document.getElementById('editJudul').value.trim();
+        const deskripsiInput = document.getElementById('editDeskripsi').value.trim();
         const kelas = document.getElementById('editKelas').value;
         const mapel = document.getElementById('editMapel').value;
+        const tipeAkses = document.getElementById('editTipeAkses').value;
         const btn = document.getElementById('btnSimpanEdit');
         
-        if(!judul || !deskripsi) { alert("Judul dan Deskripsi tidak boleh kosong!"); return; }
+        if(!judul || !deskripsiInput) { alert("Judul dan Deskripsi tidak boleh kosong!"); return; }
+
+        const tagAkses = tipeAkses === 'gratis' ? ' [AKSES:GRATIS]' : ' [AKSES:TOKEN]';
+        const deskripsiWithTag = deskripsiInput.replace(/\[AKSES:(GRATIS|TOKEN)\]/g, '').trim() + tagAkses;
 
         btn.innerText = '⏳ Menyimpan...';
         btn.disabled = true;
         
-        const { error } = await client.from('daftar_media').update({
+        let { error } = await client.from('daftar_media').update({
             judul: judul,
-            deskripsi: deskripsi,
+            deskripsi: deskripsiWithTag,
             kelas: kelas,
-            mapel: mapel
+            mapel: mapel,
+            tipe_akses: tipeAkses
         }).eq('id', id);
+
+        if (error && error.message && error.message.includes('tipe_akses')) {
+            // Fallback jika kolom tipe_akses belum ada di tabel Supabase
+            const res = await client.from('daftar_media').update({
+                judul: judul,
+                deskripsi: deskripsiWithTag,
+                kelas: kelas,
+                mapel: mapel
+            }).eq('id', id);
+            error = res.error;
+        }
         
         btn.innerText = '💾 Simpan Perubahan';
         btn.disabled = false;
@@ -698,15 +737,17 @@
             
             const fileUrl = publicUrlData.publicUrl;
             const tipeAkses = document.getElementById('tipeAkses').value;
+            const tagAkses = tipeAkses === 'gratis' ? ' [AKSES:GRATIS]' : ' [AKSES:TOKEN]';
+            const deskripsiWithTag = deskripsi.replace(/\[AKSES:(GRATIS|TOKEN)\]/g, '').trim() + tagAkses;
 
             status.innerText = "Menyimpan data (Tahap 2/2)...";
             let { error: dbError } = await client
                 .from('daftar_media')
-                .insert([{ judul, deskripsi, kelas, mapel, file_url: fileUrl, tipe_akses: tipeAkses }]);
+                .insert([{ judul, deskripsi: deskripsiWithTag, kelas, mapel, file_url: fileUrl, tipe_akses: tipeAkses }]);
 
             if (dbError && dbError.message && dbError.message.includes('tipe_akses')) {
-                // Fallback jika kolom tipe_akses belum ada di tabel daftar_media
-                const res = await client.from('daftar_media').insert([{ judul, deskripsi, kelas, mapel, file_url: fileUrl }]);
+                // Fallback jika kolom tipe_akses belum ada di tabel daftar_media (tag [AKSES:...] tetap aman di deskripsi)
+                const res = await client.from('daftar_media').insert([{ judul, deskripsi: deskripsiWithTag, kelas, mapel, file_url: fileUrl }]);
                 dbError = res.error;
             }
 

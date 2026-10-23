@@ -962,7 +962,10 @@
         dataTersaring.forEach(item => {
             const idMediaString = String(item.id);
             // Cek apakah media ini gratis atau pakai token
-            const isMediaGratis = item.tipe_akses === 'gratis' || item.is_gratis === true || (item.judul && item.judul.toLowerCase().includes('gratis')) || (item.id % 2 === 1);
+            const isMediaGratis = item.tipe_akses === 'gratis' || 
+                                  (item.deskripsi && item.deskripsi.includes('[AKSES:GRATIS]')) || 
+                                  item.is_gratis === true || 
+                                  (item.judul && item.judul.toLowerCase().includes('gratis'));
             
             // Cek apakah media sudah pernah dibuka dengan token (milik sendiri selamanya)
             const isSudahMilikSendiri = mediaTerbukaPermanen.includes(idMediaString) || riwayatBuka.includes(idMediaString);
@@ -989,6 +992,9 @@
                 warnaTombol = 'background: linear-gradient(135deg, #2563eb, #1d4ed8);';
             }
 
+            // Bersihkan tag penanda akses agar teks deskripsi rapi
+            const deskripsiBersih = (item.deskripsi || '').replace(/\[AKSES:(GRATIS|TOKEN)\]/g, '').trim();
+
             const card = document.createElement('div');
             card.className = 'card';
             
@@ -999,7 +1005,7 @@
                     ${badgeTipeAkses}
                 </div>
                 <h3 class="judul">${item.judul}</h3>
-                <p class="deskripsi">${item.deskripsi}</p>
+                <p class="deskripsi">${deskripsiBersih}</p>
                 <button class="btn-buka" id="btn_${item.id}" style="${warnaTombol}" onclick="bukaMedia('${item.file_url}', 'btn_${item.id}', '${item.id}', ${isMediaGratis})">${teksTombol}</button>
             `;
             katalog.appendChild(card);
