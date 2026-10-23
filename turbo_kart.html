@@ -221,68 +221,284 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH & KELOLA MATA PELAJARAN / SOAL SENDIRI -->
-    <div id="customSubjectModal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-3 z-50">
-        <div class="w-full max-w-3xl bg-slate-900 border-2 border-indigo-500/50 rounded-2xl shadow-2xl p-5 max-h-[92vh] overflow-y-auto flex flex-col gap-4 text-left">
+    <!-- MODAL TAMBAH & KELOLA MATA PELAJARAN / SOAL SENDIRI DENGAN AI & KOLOM TERPISAH -->
+    <div id="customSubjectModal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 z-50">
+        <div class="w-full max-w-3xl bg-slate-900 border-2 border-indigo-500/60 rounded-2xl shadow-2xl p-4 sm:p-6 max-h-[94vh] overflow-y-auto flex flex-col gap-4 text-left">
+            
+            <!-- Header Modal -->
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div>
-                    <h2 class="font-racing font-black text-lg sm:text-xl text-indigo-300 flex items-center gap-2">
-                        <span>➕</span> Kelola Mata Pelajaran & Soal Sendiri
-                    </h2>
-                    <p class="text-xs text-slate-400">
-                        Guru/Pengguna dapat menambahkan mata pelajaran baru dan bank soal khusus sesuai materi di kelas!
-                    </p>
+                <div class="flex items-center gap-2.5">
+                    <span class="text-2xl p-2 rounded-xl bg-indigo-500/20 border border-indigo-500/30">🧠</span>
+                    <div>
+                        <h2 class="font-racing font-black text-lg sm:text-xl text-indigo-300 flex items-center gap-2">
+                            Kelola Mata Pelajaran &amp; Bank Soal
+                        </h2>
+                        <p class="text-xs text-slate-400">
+                            Buat materi &amp; bank soal kuis sendiri dengan bantuan <strong>Gemini AI</strong> atau <strong>kolom manual</strong>!
+                        </p>
+                    </div>
                 </div>
-                <button onclick="tutupModalKelolaMapel()" type="button" class="text-slate-400 hover:text-white font-bold text-lg p-1">✕</button>
+                <button onclick="tutupModalKelolaMapel()" type="button" class="text-slate-400 hover:text-white font-bold text-xl p-1.5 rounded-lg hover:bg-slate-800 transition">✕</button>
             </div>
 
-            <!-- Tab: Tambah Mapel Baru / Daftar Mapel Buatan -->
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
-                <h3 class="font-bold text-sm text-white mb-2 flex items-center gap-1.5">
-                    <span>📝</span> Formulir Tambah Mata Pelajaran Baru
-                </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3">
+            <!-- Identitas Mata Pelajaran -->
+            <div class="bg-slate-950 p-3.5 sm:p-4 rounded-xl border border-slate-800 grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <div class="sm:col-span-3">
+                    <label class="block text-xs font-bold text-indigo-300 mb-1">
+                        Nama Mata Pelajaran / Judul Materi:
+                    </label>
+                    <input type="text" id="inputCustomSubjectName" placeholder="Contoh: IPAS - Rantai Makanan &amp; Ekosistem SD Kelas 5" class="w-full bg-slate-900 border border-slate-700 focus:border-indigo-500 rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-indigo-300 mb-1">
+                        Ikon Emoji:
+                    </label>
+                    <input type="text" id="inputCustomSubjectIcon" placeholder="📚" value="📚" class="w-full bg-slate-900 border border-slate-700 focus:border-indigo-500 rounded-xl px-3 py-2 text-xs text-white text-center focus:outline-none transition">
+                </div>
+            </div>
+
+            <!-- Tab Switcher Pembuatan Soal -->
+            <div class="flex items-center gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800">
+                <button type="button" id="tabBtnAi" onclick="switchMakerTab('ai')" class="flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow">
+                    <span>✨</span> Buat Otomatis AI (Gemini)
+                </button>
+                <button type="button" id="tabBtnManual" onclick="switchMakerTab('manual')" class="flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-white">
+                    <span>✍️</span> Kolom Terpisah (Manual)
+                </button>
+                <button type="button" id="tabBtnBulk" onclick="switchMakerTab('bulk')" class="flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-white">
+                    <span>📋</span> Tempel Teks Cepat
+                </button>
+            </div>
+
+            <!-- ================= PANEL 1: BUAT SOAL DENGAN GEMINI AI ================= -->
+            <div id="panelMakerAi" class="bg-slate-950 p-4 rounded-xl border border-purple-500/30 flex flex-col gap-3.5">
+                
+                <!-- Status & Quick Bar API Key Gemini -->
+                <div class="p-3 rounded-xl bg-purple-950/40 border border-purple-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+                    <div id="aiKeyBadgeInfo" class="text-purple-200">
+                        Memeriksa API Key Gemini...
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="toggleQuickAiKeyBox()" class="px-2.5 py-1 rounded-lg bg-purple-900/60 hover:bg-purple-800 text-purple-200 border border-purple-600/50 text-[11px] font-bold">
+                            ⚙️ Atur API Key
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kotak Dropdown Input Cepat API Key (jika guru belum atur di portal) -->
+                <div id="quickAiKeyBox" class="hidden p-3.5 rounded-xl bg-slate-900 border border-purple-500/40 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-white">Pengaturan Cepat Google Gemini API Key:</span>
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="text-[11px] text-purple-300 hover:underline">
+                            Dapatkan Key Gratis ↗
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div class="sm:col-span-2">
+                            <input type="password" id="inputQuickGeminiKey" placeholder="Tempelkan API Key di sini (AIzaSy...)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white font-mono">
+                        </div>
+                        <div>
+                            <select id="selectQuickGeminiModel" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white">
+                                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                                <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+                                <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="simpanQuickGeminiKey()" class="px-3 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs">
+                            💾 Simpan Key
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Parameter Pembuatan Soal AI -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <div class="sm:col-span-2">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Mata Pelajaran / Materi:</label>
-                        <input type="text" id="inputCustomSubjectName" placeholder="Contoh: IPA - Tata Surya & Gerhana" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">
+                            Topik / Materi Pembelajaran yang Ingin Dibuat:
+                        </label>
+                        <input type="text" id="aiTopic" placeholder="Contoh: Operasi Penjumlahan &amp; Pengurangan Pecahan Biasa" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Ikon Emoji:</label>
-                        <input type="text" id="inputCustomSubjectIcon" placeholder="🪐" value="📚" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white text-center focus:outline-none focus:border-indigo-500">
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-semibold text-slate-300">
-                            Masukkan Soal Pilihan Ganda (Satu Baris Per Soal):
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">
+                            Jenjang Kelas:
                         </label>
-                        <span class="text-[11px] text-amber-300">Format: Pertanyaan | Opsi A | Opsi B | Opsi C | Opsi D | Kunci(A/B/C/D)</span>
+                        <select id="aiGrade" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                            <option value="SD Kelas 1">SD Kelas 1</option>
+                            <option value="SD Kelas 2">SD Kelas 2</option>
+                            <option value="SD Kelas 3">SD Kelas 3</option>
+                            <option value="SD Kelas 4" selected>SD Kelas 4</option>
+                            <option value="SD Kelas 5">SD Kelas 5</option>
+                            <option value="SD Kelas 6">SD Kelas 6</option>
+                            <option value="SMP / Sederajat">SMP / Sederajat</option>
+                            <option value="Umum">Umum / Semua Tingkat</option>
+                        </select>
                     </div>
-                    <textarea id="inputCustomQuestionsBulk" rows="5" placeholder="Planet terdekat dengan Matahari adalah? | Venus | Merkurius | Mars | Jupiter | B
-Benda langit yang memancarkan cahaya sendiri disebut? | Bintang | Planet | Komet | Asteroid | A
-Pusat tata surya kita adalah? | Bumi | Bulan | Matahari | Saturnus | C" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white font-mono focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
                 </div>
 
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] text-slate-400">💡 Tersimpan otomatis di browser laptop/HP Anda.</span>
-                    <button type="button" onclick="simpanMataPelajaranBaru()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-400 hover:to-blue-500 text-white font-bold text-xs shadow-md">
-                        💾 Simpan Mata Pelajaran
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">
+                            Jumlah Soal yang Dibuat:
+                        </label>
+                        <select id="aiCount" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                            <option value="5" selected>5 Soal Pilihan Ganda</option>
+                            <option value="10">10 Soal (Rekomendasi Balap)</option>
+                            <option value="15">15 Soal Lengkap</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">
+                            Tingkat Kesulitan:
+                        </label>
+                        <select id="aiDifficulty" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500">
+                            <option value="Mudah &amp; Menyenangkan (Dasar)">Mudah &amp; Menyenangkan (Dasar)</option>
+                            <option value="Sedang (Standar Kompetensi Sekolah)" selected>Sedang (Standar Kompetensi)</option>
+                            <option value="Menantang / HOTS (Analisis &amp; Logika)">Menantang / HOTS (Tinggi)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-1">
+                    <span class="text-[11px] text-slate-400">
+                        ⚡ Didukung model Google Gemini dengan auto-fallback cerdas.
+                    </span>
+                    <button type="button" id="btnGenerateAi" onclick="buatSoalDenganGemini()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold text-xs shadow-lg transition flex items-center gap-2">
+                        <span>✨</span> Buat Soal dengan Gemini AI
+                    </button>
+                </div>
+
+                <!-- Notifikasi Status AI -->
+                <div id="aiGenerateStatus" class="hidden p-3 rounded-xl bg-indigo-950/60 border border-indigo-500/40 text-xs text-indigo-200"></div>
+            </div>
+
+            <!-- ================= PANEL 2: KOLOM TERPISAH (MANUAL) ================= -->
+            <div id="panelMakerManual" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col gap-3">
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-200 mb-1">
+                        1. Pertanyaan / Soal:
+                    </label>
+                    <textarea id="manualQ" rows="2" placeholder="Ketik pertanyaan soal di sini... (Contoh: Bagian tumbuhan yang berfungsi menyerap air dari dalam tanah adalah ...)" class="w-full bg-slate-900 border border-slate-700 focus:border-indigo-500 rounded-xl p-2.5 text-xs text-white focus:outline-none transition"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-200 mb-1.5">
+                        2. Empat Kolom Pilihan Jawaban:
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <!-- Opsi A -->
+                        <div class="flex items-center bg-slate-900 border border-slate-700 rounded-xl overflow-hidden focus-within:border-indigo-500">
+                            <span class="px-3 py-2 bg-slate-800 text-indigo-300 font-bold text-xs shrink-0 border-r border-slate-700">A</span>
+                            <input type="text" id="manualOptA" placeholder="Jawaban A" class="w-full bg-transparent px-3 py-2 text-xs text-white focus:outline-none">
+                        </div>
+
+                        <!-- Opsi B -->
+                        <div class="flex items-center bg-slate-900 border border-slate-700 rounded-xl overflow-hidden focus-within:border-indigo-500">
+                            <span class="px-3 py-2 bg-slate-800 text-indigo-300 font-bold text-xs shrink-0 border-r border-slate-700">B</span>
+                            <input type="text" id="manualOptB" placeholder="Jawaban B" class="w-full bg-transparent px-3 py-2 text-xs text-white focus:outline-none">
+                        </div>
+
+                        <!-- Opsi C -->
+                        <div class="flex items-center bg-slate-900 border border-slate-700 rounded-xl overflow-hidden focus-within:border-indigo-500">
+                            <span class="px-3 py-2 bg-slate-800 text-indigo-300 font-bold text-xs shrink-0 border-r border-slate-700">C</span>
+                            <input type="text" id="manualOptC" placeholder="Jawaban C" class="w-full bg-transparent px-3 py-2 text-xs text-white focus:outline-none">
+                        </div>
+
+                        <!-- Opsi D -->
+                        <div class="flex items-center bg-slate-900 border border-slate-700 rounded-xl overflow-hidden focus-within:border-indigo-500">
+                            <span class="px-3 py-2 bg-slate-800 text-indigo-300 font-bold text-xs shrink-0 border-r border-slate-700">D</span>
+                            <input type="text" id="manualOptD" placeholder="Jawaban D" class="w-full bg-transparent px-3 py-2 text-xs text-white focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-200 mb-1.5">
+                        3. Pilih Kunci Jawaban yang Benar:
+                    </label>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="pilihKunciManual('A')" id="btnKeyA" class="flex-1 py-1.5 rounded-lg border text-xs font-bold transition bg-emerald-600 border-emerald-400 text-white shadow">
+                            Kunci: A
+                        </button>
+                        <button type="button" onclick="pilihKunciManual('B')" id="btnKeyB" class="flex-1 py-1.5 rounded-lg border text-xs font-bold transition bg-slate-900 border-slate-700 text-slate-300 hover:text-white">
+                            Kunci: B
+                        </button>
+                        <button type="button" onclick="pilihKunciManual('C')" id="btnKeyC" class="flex-1 py-1.5 rounded-lg border text-xs font-bold transition bg-slate-900 border-slate-700 text-slate-300 hover:text-white">
+                            Kunci: C
+                        </button>
+                        <button type="button" onclick="pilihKunciManual('D')" id="btnKeyD" class="flex-1 py-1.5 rounded-lg border text-xs font-bold transition bg-slate-900 border-slate-700 text-slate-300 hover:text-white">
+                            Kunci: D
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-1">
+                    <button type="button" onclick="tambahSoalManual()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow transition flex items-center gap-1.5">
+                        <span>➕</span> Masukkan Soal ke Daftar
                     </button>
                 </div>
             </div>
 
-            <!-- Daftar Mapel Custom Yang Tersimpan -->
+            <!-- ================= PANEL 3: TEMPEL TEKS CEPAT (BULK) ================= -->
+            <div id="panelMakerBulk" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs font-bold text-slate-200">
+                        Tempel Soal (Satu Baris Per Soal):
+                    </label>
+                    <span class="text-[11px] text-amber-300">Format: Soal | Opsi A | Opsi B | Opsi C | Opsi D | Kunci(A/B/C/D)</span>
+                </div>
+                <textarea id="inputCustomQuestionsBulk" rows="4" placeholder="Planet terdekat dengan Matahari? | Venus | Merkurius | Mars | Jupiter | B
+Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white font-mono focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
+                <div class="flex justify-end">
+                    <button type="button" onclick="tambahSoalDariBulk()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700">
+                        📥 Ekstrak &amp; Masukkan ke Daftar
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= DAFTAR SOAL SIAP DISIMPAN ================= -->
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col gap-3">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-white">
+                            📋 Daftar Soal Siap Disimpan:
+                        </span>
+                        <span id="stagedCountBadge" class="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-bold text-xs border border-indigo-500/40">
+                            0 Soal
+                        </span>
+                    </div>
+                    <button type="button" onclick="kosongkanSemuaSoalAktif()" class="text-[11px] text-rose-400 hover:text-rose-300 font-semibold transition">
+                        🗑️ Kosongkan Semua
+                    </button>
+                </div>
+
+                <div id="stagedQuestionsList" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
+
+                <!-- Tombol Simpan Final -->
+                <div class="pt-2 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <span class="text-[11px] text-slate-400">
+                        💡 Setelah disimpan, materi ini langsung dapat dipilih di menu balap 3D!
+                    </span>
+                    <button type="button" id="btnSimpanMapelFinal" onclick="simpanMataPelajaranBaru()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs shadow-lg transition flex items-center justify-center gap-2">
+                        <span>💾</span> Simpan Mata Pelajaran &amp; Mainkan
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= DAFTAR MATA PELAJARAN TERSIMPAN ================= -->
             <div>
                 <h3 class="font-bold text-xs uppercase tracking-wider text-slate-300 mb-2">
-                    Mata Pelajaran Buatan Anda Saat Ini:
+                    Mata Pelajaran Buatan Guru yang Tersimpan di Browser:
                 </h3>
-                <div id="customSubjectsList" class="space-y-2"></div>
+                <div id="customSubjectsList" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
             </div>
 
             <div class="flex justify-end pt-2 border-t border-slate-800">
                 <button type="button" onclick="tutupModalKelolaMapel()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700">
-                    Tutup & Kembali ke Game
+                    Tutup &amp; Kembali ke Game
                 </button>
             </div>
         </div>
@@ -2451,8 +2667,16 @@ Pusat tata surya kita adalah? | Bumi | Bulan | Matahari | Saturnus | C" class="w
             initRaceSession(false);
         };
 
-        // Modal Kelola Mata Pelajaran Custom
+        // ============================================================================
+        // PENGELOLAAN MATA PELAJARAN CUSTOM & BANK SOAL (AI GEMINI & KOLOM TERPISAH)
+        // ============================================================================
+        let daftarSoalAktif = [];
+        let selectedManualKey = 'A';
+        let currentMakerTab = 'ai';
+
         window.bukaModalKelolaMapel = function() {
+            updateQuickAiKeyBadge();
+            renderDaftarSoalAktif();
             renderCustomSubjectsList();
             document.getElementById('customSubjectModal').classList.remove('hidden');
         };
@@ -2460,6 +2684,352 @@ Pusat tata surya kita adalah? | Bumi | Bulan | Matahari | Saturnus | C" class="w
         window.tutupModalKelolaMapel = function() {
             document.getElementById('customSubjectModal').classList.add('hidden');
             renderSetupSelectors();
+        };
+
+        window.switchMakerTab = function(tab) {
+            currentMakerTab = tab;
+            const btnAi = document.getElementById('tabBtnAi');
+            const btnManual = document.getElementById('tabBtnManual');
+            const btnBulk = document.getElementById('tabBtnBulk');
+            const panelAi = document.getElementById('panelMakerAi');
+            const panelManual = document.getElementById('panelMakerManual');
+            const panelBulk = document.getElementById('panelMakerBulk');
+
+            // Reset tab styles
+            [btnAi, btnManual, btnBulk].forEach(btn => {
+                btn.className = "flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 text-slate-400 hover:text-white";
+            });
+            panelAi.classList.add('hidden');
+            panelManual.classList.add('hidden');
+            panelBulk.classList.add('hidden');
+
+            if (tab === 'ai') {
+                btnAi.className = "flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow";
+                panelAi.classList.remove('hidden');
+            } else if (tab === 'manual') {
+                btnManual.className = "flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow";
+                panelManual.classList.remove('hidden');
+            } else if (tab === 'bulk') {
+                btnBulk.className = "flex-1 py-2 px-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 bg-gradient-to-r from-slate-700 to-slate-800 text-white shadow border border-slate-600";
+                panelBulk.classList.remove('hidden');
+            }
+        };
+
+        window.toggleQuickAiKeyBox = function() {
+            const box = document.getElementById('quickAiKeyBox');
+            box.classList.toggle('hidden');
+            if (!box.classList.contains('hidden')) {
+                const curKey = localStorage.getItem('gemini_api_key') || '';
+                const curModel = localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
+                document.getElementById('inputQuickGeminiKey').value = curKey;
+                document.getElementById('selectQuickGeminiModel').value = curModel;
+            }
+        };
+
+        window.simpanQuickGeminiKey = function() {
+            const k = document.getElementById('inputQuickGeminiKey').value.trim();
+            const m = document.getElementById('selectQuickGeminiModel').value;
+            if (k) {
+                localStorage.setItem('gemini_api_key', k);
+                localStorage.setItem('gemini_model', m);
+                alert(`✅ API Key Gemini (${m}) berhasil disimpan!`);
+            } else {
+                localStorage.removeItem('gemini_api_key');
+                alert('🗑️ API Key Gemini dihapus.');
+            }
+            document.getElementById('quickAiKeyBox').classList.add('hidden');
+            updateQuickAiKeyBadge();
+        };
+
+        function updateQuickAiKeyBadge() {
+            const badge = document.getElementById('aiKeyBadgeInfo');
+            const key = localStorage.getItem('gemini_api_key') || '';
+            const model = localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
+            if (key && key.length > 8) {
+                const masked = key.slice(0, 6) + '...' + key.slice(-4);
+                badge.innerHTML = `🟢 <strong>Gemini AI Terhubung:</strong> Model <code class="text-indigo-300 font-bold">${model}</code> (${masked})`;
+            } else {
+                badge.innerHTML = `⚪ <strong>Gemini AI Belum Dikonfigurasi:</strong> Klik "Atur API Key" atau buka Pengaturan AI di Portal.`;
+            }
+        }
+
+        window.pilihKunciManual = function(key) {
+            selectedManualKey = key;
+            ['A', 'B', 'C', 'D'].forEach(k => {
+                const btn = document.getElementById('btnKey' + k);
+                if (k === key) {
+                    btn.className = "flex-1 py-1.5 rounded-lg border text-xs font-bold transition bg-emerald-600 border-emerald-400 text-white shadow";
+                } else {
+                    btn.className = "flex-1 py-1.5 rounded-lg border text-xs font-bold transition bg-slate-900 border-slate-700 text-slate-300 hover:text-white";
+                }
+            });
+        };
+
+        window.tambahSoalManual = function() {
+            const q = document.getElementById('manualQ').value.trim();
+            const a = document.getElementById('manualOptA').value.trim();
+            const b = document.getElementById('manualOptB').value.trim();
+            const c = document.getElementById('manualOptC').value.trim();
+            const d = document.getElementById('manualOptD').value.trim();
+            const k = selectedManualKey || 'A';
+
+            if (!q) {
+                alert('⚠️ Harap masukkan pertanyaan soal terlebih dahulu!');
+                document.getElementById('manualQ').focus();
+                return;
+            }
+            if (!a || !b || !c || !d) {
+                alert('⚠️ Harap isi lengkap 4 pilihan jawaban (A, B, C, dan D)!');
+                return;
+            }
+
+            daftarSoalAktif.push({ q, a, b, c, d, k });
+
+            // Reset input kolom
+            document.getElementById('manualQ').value = '';
+            document.getElementById('manualOptA').value = '';
+            document.getElementById('manualOptB').value = '';
+            document.getElementById('manualOptC').value = '';
+            document.getElementById('manualOptD').value = '';
+            document.getElementById('manualQ').focus();
+
+            renderDaftarSoalAktif();
+        };
+
+        window.tambahSoalDariBulk = function() {
+            const bulkText = document.getElementById('inputCustomQuestionsBulk').value.trim();
+            if (!bulkText) {
+                alert('⚠️ Harap tempelkan teks soal terlebih dahulu!');
+                return;
+            }
+            const lines = bulkText.split('\n').filter(l => l.trim().length > 0);
+            let count = 0;
+            lines.forEach(line => {
+                const parts = line.split('|').map(s => s.trim());
+                if (parts.length >= 6) {
+                    daftarSoalAktif.push({
+                        q: parts[0],
+                        a: parts[1],
+                        b: parts[2],
+                        c: parts[3],
+                        d: parts[4],
+                        k: parts[5].toUpperCase()
+                    });
+                    count++;
+                } else if (parts.length >= 5) {
+                    daftarSoalAktif.push({
+                        q: parts[0],
+                        a: parts[1],
+                        b: parts[2],
+                        c: parts[3],
+                        d: parts[4],
+                        k: 'A'
+                    });
+                    count++;
+                }
+            });
+
+            if (count > 0) {
+                document.getElementById('inputCustomQuestionsBulk').value = '';
+                renderDaftarSoalAktif();
+                alert(`✅ Berhasil menambahkan ${count} soal ke daftar!`);
+            } else {
+                alert('Format tidak valid. Gunakan pemisah tanda pipa (|):\nPertanyaan | Opsi A | Opsi B | Opsi C | Opsi D | Kunci(A/B/C/D)');
+            }
+        };
+
+        window.hapusSoalAktif = function(idx) {
+            daftarSoalAktif.splice(idx, 1);
+            renderDaftarSoalAktif();
+        };
+
+        window.kosongkanSemuaSoalAktif = function() {
+            if (daftarSoalAktif.length === 0) return;
+            if (!confirm(`Hapus semua ${daftarSoalAktif.length} soal dari daftar persiapan ini?`)) return;
+            daftarSoalAktif = [];
+            renderDaftarSoalAktif();
+        };
+
+        function renderDaftarSoalAktif() {
+            const container = document.getElementById('stagedQuestionsList');
+            const badge = document.getElementById('stagedCountBadge');
+            const btnSave = document.getElementById('btnSimpanMapelFinal');
+
+            badge.textContent = `${daftarSoalAktif.length} Soal`;
+
+            if (daftarSoalAktif.length === 0) {
+                btnSave.disabled = true;
+                btnSave.classList.add('opacity-50', 'cursor-not-allowed');
+                container.innerHTML = `
+                    <div class="text-xs text-slate-500 italic p-3 bg-slate-900/60 rounded-xl border border-dashed border-slate-800 text-center">
+                        Belum ada soal dalam daftar. Gunakan fitur <strong>Buat Otomatis AI (Gemini)</strong> di atas atau isi <strong>Kolom Terpisah Manual</strong> untuk menambahkan soal!
+                    </div>
+                `;
+                return;
+            }
+
+            btnSave.disabled = false;
+            btnSave.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            container.innerHTML = daftarSoalAktif.map((item, idx) => {
+                const key = (item.k || 'A').toUpperCase();
+                return `
+                    <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl flex items-start justify-between gap-2.5 text-xs">
+                        <div class="flex-1">
+                            <div class="font-bold text-white mb-1.5 flex items-center gap-1.5">
+                                <span class="px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-bold shrink-0">#${idx + 1}</span>
+                                <span>${item.q}</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px] text-slate-300">
+                                <div class="px-2 py-1 rounded bg-slate-950 border ${key === 'A' ? 'border-emerald-500 text-emerald-300 font-bold bg-emerald-950/20' : 'border-slate-800'}">
+                                    A: ${item.a} ${key === 'A' ? '✓' : ''}
+                                </div>
+                                <div class="px-2 py-1 rounded bg-slate-950 border ${key === 'B' ? 'border-emerald-500 text-emerald-300 font-bold bg-emerald-950/20' : 'border-slate-800'}">
+                                    B: ${item.b} ${key === 'B' ? '✓' : ''}
+                                </div>
+                                <div class="px-2 py-1 rounded bg-slate-950 border ${key === 'C' ? 'border-emerald-500 text-emerald-300 font-bold bg-emerald-950/20' : 'border-slate-800'}">
+                                    C: ${item.c} ${key === 'C' ? '✓' : ''}
+                                </div>
+                                <div class="px-2 py-1 rounded bg-slate-950 border ${key === 'D' ? 'border-emerald-500 text-emerald-300 font-bold bg-emerald-950/20' : 'border-slate-800'}">
+                                    D: ${item.d} ${key === 'D' ? '✓' : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="hapusSoalAktif(${idx})" class="p-1 rounded bg-rose-950/40 hover:bg-rose-900 text-rose-300 hover:text-white border border-rose-800/40 shrink-0 text-xs transition" title="Hapus soal ini">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.buatSoalDenganGemini = async function() {
+            const topic = document.getElementById('aiTopic').value.trim();
+            const grade = document.getElementById('aiGrade').value;
+            const count = parseInt(document.getElementById('aiCount').value) || 5;
+            const diff = document.getElementById('aiDifficulty').value;
+
+            if (!topic) {
+                alert('⚠️ Harap masukkan Topik / Materi Pembelajaran terlebih dahulu!');
+                document.getElementById('aiTopic').focus();
+                return;
+            }
+
+            const apiKey = localStorage.getItem('gemini_api_key') || '';
+            if (!apiKey) {
+                alert('⚠️ Google Gemini API Key belum diatur!\nSilakan masukkan API Key pada panel di atas atau di Pengaturan Akun Portal.');
+                document.getElementById('quickAiKeyBox').classList.remove('hidden');
+                document.getElementById('inputQuickGeminiKey').focus();
+                return;
+            }
+
+            const savedModel = localStorage.getItem('gemini_model') || 'gemini-2.5-flash';
+            // Urutan model auto-fallback
+            const fallbackChain = [savedModel, 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+            const uniqueModels = [...new Set(fallbackChain)];
+
+            const statusEl = document.getElementById('aiGenerateStatus');
+            const btnEl = document.getElementById('btnGenerateAi');
+
+            btnEl.disabled = true;
+            statusEl.classList.remove('hidden');
+            statusEl.innerHTML = `<span class="animate-spin inline-block mr-2">⏳</span> Sedang merancang ${count} butir soal pilihan ganda dengan Google Gemini AI...`;
+
+            const promptText = `Anda adalah ahli kurikulum dan guru profesional Indonesia. Buatlah ${count} butir soal pilihan ganda (4 opsi jawaban: A, B, C, D) yang edukatif, berbobot, dan menarik untuk jenjang ${grade} mengenai materi "${topic}".
+Tingkat kesulitan: ${diff}.
+Instruksi Wajib:
+1. Kalimat pertanyaan jelas, mendidik, dan ramah untuk murid sekolah.
+2. Setiap soal memiliki 4 opsi jawaban (A, B, C, D).
+3. Tepat 1 kunci jawaban yang benar (A, B, C, atau D).
+4. Berikan HANYA format JSON murni (array of objects) tanpa ada teks lain atau markdown tambahan:
+[
+  {
+    "q": "Teks pertanyaan soal...",
+    "a": "Pilihan A",
+    "b": "Pilihan B",
+    "c": "Pilihan C",
+    "d": "Pilihan D",
+    "k": "A"
+  }
+]`;
+
+            let success = false;
+            let resultQuestions = [];
+            let lastError = '';
+
+            for (const model of uniqueModels) {
+                try {
+                    statusEl.innerHTML = `<span class="animate-spin inline-block mr-2">⏳</span> Menghubungi Gemini AI model <strong class="text-white">${model}</strong>...`;
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+                    
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: promptText }] }],
+                            generationConfig: {
+                                temperature: 0.7,
+                                responseMimeType: "application/json"
+                            }
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errData = await response.json().catch(() => ({}));
+                        lastError = errData.error ? errData.error.message : `HTTP ${response.status}`;
+                        console.warn(`Gemini model ${model} gagal (${lastError}), mencoba model cadangan...`);
+                        continue;
+                    }
+
+                    const resData = await response.json();
+                    if (resData && resData.candidates && resData.candidates[0] && resData.candidates[0].content) {
+                        const partText = resData.candidates[0].content.parts[0].text;
+                        const cleanJson = partText.replace(/```json/gi, '').replace(/```/g, '').trim();
+                        const parsed = JSON.parse(cleanJson);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            resultQuestions = parsed;
+                            success = true;
+                            break;
+                        }
+                    }
+                } catch (err) {
+                    lastError = err.message;
+                    console.warn(`Exception on model ${model}:`, err);
+                }
+            }
+
+            btnEl.disabled = false;
+
+            if (success && resultQuestions.length > 0) {
+                let added = 0;
+                resultQuestions.forEach(item => {
+                    if (item.q && item.a && item.b && item.c && item.d) {
+                        daftarSoalAktif.push({
+                            q: String(item.q).trim(),
+                            a: String(item.a).trim(),
+                            b: String(item.b).trim(),
+                            c: String(item.c).trim(),
+                            d: String(item.d).trim(),
+                            k: (item.k || 'A').toString().toUpperCase().trim()
+                        });
+                        added++;
+                    }
+                });
+
+                // Otomatis isi nama mapel jika masih kosong
+                const nameInp = document.getElementById('inputCustomSubjectName');
+                if (!nameInp.value.trim()) {
+                    nameInp.value = `${grade}: ${topic}`;
+                }
+
+                renderDaftarSoalAktif();
+                statusEl.innerHTML = `🎉 <strong>Berhasil!</strong> ${added} butir soal telah dibuat oleh Gemini AI dan siap disimpan di bawah.`;
+                setTimeout(() => {
+                    statusEl.classList.add('hidden');
+                }, 6000);
+            } else {
+                statusEl.innerHTML = `❌ <strong>Gagal membuat soal AI:</strong> ${lastError || 'Respon AI tidak valid'}. Pastikan API Key valid atau gunakan input kolom manual di samping.`;
+            }
         };
 
         function renderCustomSubjectsList() {
@@ -2517,45 +3087,15 @@ Pusat tata surya kita adalah? | Bumi | Bulan | Matahari | Saturnus | C" class="w
         window.simpanMataPelajaranBaru = function() {
             const name = document.getElementById('inputCustomSubjectName').value.trim();
             const icon = document.getElementById('inputCustomSubjectIcon').value.trim() || '📚';
-            const bulkText = document.getElementById('inputCustomQuestionsBulk').value.trim();
 
             if (!name) {
-                alert('Silakan masukkan Nama Mata Pelajaran!');
-                return;
-            }
-            if (!bulkText) {
-                alert('Silakan masukkan soal-soal pilihan ganda!');
+                alert('⚠️ Silakan masukkan Nama Mata Pelajaran / Judul Materi!');
+                document.getElementById('inputCustomSubjectName').focus();
                 return;
             }
 
-            const lines = bulkText.split('\n').filter(l => l.trim().length > 0);
-            const parsedQuestions = [];
-
-            lines.forEach((line, idx) => {
-                const parts = line.split('|').map(s => s.trim());
-                if (parts.length >= 6) {
-                    parsedQuestions.push({
-                        q: parts[0],
-                        a: parts[1],
-                        b: parts[2],
-                        c: parts[3],
-                        d: parts[4],
-                        k: parts[5].toUpperCase()
-                    });
-                } else if (parts.length >= 5) {
-                    parsedQuestions.push({
-                        q: parts[0],
-                        a: parts[1],
-                        b: parts[2],
-                        c: parts[3],
-                        d: parts[4],
-                        k: 'A'
-                    });
-                }
-            });
-
-            if (parsedQuestions.length === 0) {
-                alert('Format soal tidak valid. Pastikan menggunakan pemisah pipa (|):\nPertanyaan | Opsi A | Opsi B | Opsi C | Opsi D | Kunci');
+            if (daftarSoalAktif.length === 0) {
+                alert('⚠️ Daftar soal masih kosong! Silakan gunakan tombol Gemini AI atau isi kolom manual di atas untuk menambahkan minimal 1 soal.');
                 return;
             }
 
@@ -2566,17 +3106,20 @@ Pusat tata surya kita adalah? | Bumi | Bulan | Matahari | Saturnus | C" class="w
                 name: name,
                 icon: icon,
                 type: 'static_bank',
-                desc: `${parsedQuestions.length} Soal Khusus Guru`,
-                questions: parsedQuestions
+                desc: `${daftarSoalAktif.length} Soal Khusus Guru`,
+                questions: [...daftarSoalAktif]
             };
 
             saveCustomSubjects(customs);
             config.subjectId = subId;
             config.stageId = 1;
 
-            alert(`BERHASIL! Mata pelajaran "${name}" (${parsedQuestions.length} soal) berhasil disimpan dan siap dimainkan!`);
+            alert(`🎉 BERHASIL!\nMata pelajaran "${name}" (${daftarSoalAktif.length} soal) berhasil disimpan dan siap dimainkan!`);
+            
+            // Bersihkan form
             document.getElementById('inputCustomSubjectName').value = '';
-            document.getElementById('inputCustomQuestionsBulk').value = '';
+            daftarSoalAktif = [];
+            renderDaftarSoalAktif();
             renderCustomSubjectsList();
             tutupModalKelolaMapel();
             initRaceSession(false);
