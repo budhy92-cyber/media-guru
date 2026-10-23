@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Media Interaktif - CBT B-TEK</title>
+    <title>Portal Media Interaktif - GURUPEDIA</title>
     
     <!-- Supabase JS & Google Fonts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -475,17 +475,22 @@
 
 <div class="portal-wrapper">
 
-    <!-- NAVBAR ATAS BERSIH (TANPA LINK GIM DI ATAS) -->
+    <!-- NAVBAR ATAS BERSIH DENGAN LOGO GURUPEDIA -->
     <div class="portal-navbar">
-        <div class="user-info-group">
-            <span class="user-greeting">Halo, <strong id="teksEmail">Memuat...</strong></span>
-            <span id="badgeAdminArea"></span>
-            <span id="badgeTrialArea" class="trial-pill">⏳ Uji Coba: <strong id="teksTrial">-</strong></span>
-            <span class="kuota-pill">🪙 Token: <strong id="teksKuota">-</strong></span>
+        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <a href="index.html" title="Kembali ke Beranda GURUPEDIA" style="display: inline-flex; align-items: center; text-decoration: none;">
+                <img src="logo-gurupedia.png" alt="GURUPEDIA" style="height: 38px; width: auto; object-fit: contain;">
+            </a>
+            <div class="user-info-group">
+                <span class="user-greeting">Halo, <strong id="teksEmail">Memuat...</strong></span>
+                <span id="badgeAdminArea"></span>
+                <span id="badgeTrialArea" class="trial-pill">⏳ Uji Coba: <strong id="teksTrial">-</strong></span>
+                <span class="kuota-pill">🪙 Token: <strong id="teksKuota">-</strong></span>
+            </div>
         </div>
         <div class="nav-button-group">
             <!-- Tombol WhatsApp Resmi -->
-            <a href="https://wa.me/628525390541?text=Halo%20Admin%20CBT%20B-TEK%2C%20saya%20ingin%20konsultasi%20%2F%20upgrade%20akun%20Media%20Guru" target="_blank" rel="noopener" class="btn-nav-action btn-nav-wa" title="Hubungi Admin WhatsApp (08525390541)">
+            <a href="https://wa.me/628525390541?text=Halo%20Admin%20GURUPEDIA%2C%20saya%20ingin%20konsultasi%20%2F%20upgrade%20akun%20Media%20Guru" target="_blank" rel="noopener" class="btn-nav-action btn-nav-wa" title="Hubungi Admin WhatsApp (08525390541)">
                 <span>💬</span> Hubungi Admin WA
             </a>
 
@@ -511,9 +516,12 @@
         </div>
     </div>
 
-    <!-- HEADER UTAMA -->
+    <!-- HEADER UTAMA DENGAN LOGO GURUPEDIA -->
     <div class="portal-header-box">
-        <h1>Katalog Media Pembelajaran B-TEK</h1>
+        <div style="display: flex; justify-content: center; margin-bottom: 12px;">
+            <img src="logo-gurupedia.png" alt="GURUPEDIA" style="height: 52px; width: auto; max-width: 90%; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.05));">
+        </div>
+        <h1>Katalog Media Pembelajaran GURUPEDIA</h1>
         <p>Pilih, cari, dan eksplorasi modul serta media interaktif kurikulum digital di bawah ini.</p>
     </div>
 
@@ -543,7 +551,7 @@
                 <span id="labelTombolGim">🏎️ Mainkan Turbo Kart Edu-GP 3D (Uji Coba 14 Hari Aktif)</span>
                 <span>→</span>
             </button>
-            <a href="https://wa.me/628525390541?text=Halo%20Admin%20CBT%20B-TEK%2C%20saya%20ingin%20berlangganan%20Gim%20Balap%203D%20Turbo%20Kart" target="_blank" rel="noopener" style="padding: 11px 18px; border-radius: 14px; background: #ecfdf5; color: #047857; border: 1.5px solid #a7f3d0; font-weight: 700; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s;">
+            <a href="https://wa.me/628525390541?text=Halo%20Admin%20GURUPEDIA%2C%20saya%20ingin%20berlangganan%20Gim%20Balap%203D%20Turbo%20Kart" target="_blank" rel="noopener" style="padding: 11px 18px; border-radius: 14px; background: #ecfdf5; color: #047857; border: 1.5px solid #a7f3d0; font-weight: 700; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s;">
                 <span>💬</span> Beli Lisensi via WA (08525390541)
             </a>
         </div>
@@ -581,13 +589,14 @@
     <!-- CONTAINER KATALOG MEDIA INTERAKTIF -->
     <div class="grid-container" id="katalogMedia"></div>
 
-    <!-- FOOTER RESMI -->
-    <div class="portal-footer">
-        <div style="font-weight: 800; margin-bottom: 4px; font-size: 14.5px; color: #0f172a;">
-            Media Guru Btek By Pak Guru Budi
+    <!-- FOOTER RESMI DENGAN LOGO GURUPEDIA -->
+    <div class="portal-footer" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 32px 16px; margin-top: 36px; border-top: 1px solid #e2e8f0; text-align: center;">
+        <img src="logo-gurupedia.png" alt="GURUPEDIA" style="height: 42px; width: auto; object-fit: contain;">
+        <div style="font-weight: 800; font-size: 15px; color: #0f172a; margin-top: 2px;">
+            GURUPEDIA by Pak Guru Budi
         </div>
-        <div>
-            Dikembangkan oleh <a href="javascript:void(0)" onclick="bukaModalDev()">Budianto, S.Pd., Gr. (budhy92-cyber)</a> &bull; CBT B-TEK &copy; 2026
+        <div style="font-size: 12.5px; color: #64748b;">
+            Dikembangkan oleh <a href="javascript:void(0)" onclick="bukaModalDev()" style="color: #2563eb; font-weight: 700; text-decoration: none;">Budianto, S.Pd., Gr. (budhy92-cyber)</a> &bull; GURUPEDIA &copy; 2026
         </div>
     </div>
 
@@ -1006,7 +1015,7 @@
 
         // Pengecekan Masa Uji Coba 14 Hari untuk Gim Balapan 3D (Tidak bisa pakai token biasa)
         if (!userIsAdmin && !isTrialActive) {
-            const pesanWA = `Halo Admin CBT B-TEK (08525390541), masa uji coba 14 hari akun saya telah selesai. Saya ingin berlangganan akses Gim Balap 3D Turbo Kart Edu-GP. Email saya: ${dataUser.email}`;
+            const pesanWA = `Halo Admin GURUPEDIA (08525390541), masa uji coba 14 hari akun saya telah selesai. Saya ingin berlangganan akses Gim Balap 3D Turbo Kart Edu-GP. Email saya: ${dataUser.email}`;
             const chatWA = confirm(
                 "🔒 MASA UJI COBA 14 HARI TELAH BERAKHIR!\n\n" +
                 "Gim Balap 3D Turbo Kart Edu-GP dan fitur Pembuat Soal AI adalah layanan khusus pembelajaran interaktif berbayar (tidak dapat dibuka dengan token biasa).\n\n" +
@@ -1039,7 +1048,7 @@
         // Jika bukan admin dan media berbayar dan belum milik sendiri
         if (!userIsAdmin && !isMediaGratis && !isSudahMilikSendiri) {
             if (sisaKuota <= 0) {
-                const pesanWA = `Halo Admin CBT B-TEK (08525390541), token akun saya habis (0 token). Saya ingin menambah token / upgrade paket premium. Email saya: ${dataUser.email}`;
+                const pesanWA = `Halo Admin GURUPEDIA (08525390541), token akun saya habis (0 token). Saya ingin menambah token / upgrade paket premium. Email saya: ${dataUser.email}`;
                 const bukaWA = confirm(
                     "MAAF, TOKEN ANDA TELAH HABIS!\n\n" +
                     "Saldo Token Anda saat ini: 0 Token.\n" +
@@ -1070,7 +1079,7 @@
         if (jendelaBaru) {
             jendelaBaru.document.write(`
                 <h2 style="font-family:sans-serif; text-align:center; margin-top:50px; color:#2563eb;">
-                    ⏳ Menyiapkan Media Pembelajaran CBT B-TEK...
+                    ⏳ Menyiapkan Media Pembelajaran GURUPEDIA...
                 </h2>
             `);
         } else {

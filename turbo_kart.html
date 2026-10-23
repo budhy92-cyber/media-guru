@@ -57,7 +57,7 @@
                 🔒
             </div>
             <h3 class="text-white font-bold text-lg mb-1" id="securityShieldTitle">Memverifikasi Hak Akses...</h3>
-            <p class="text-xs text-slate-400 mb-4 leading-relaxed" id="securityShieldDesc">Memeriksa kredensial sesi akun CBT B-TEK dan tiket peluncuran dari portal resmi.</p>
+            <p class="text-xs text-slate-400 mb-4 leading-relaxed" id="securityShieldDesc">Memeriksa kredensial sesi akun GURUPEDIA dan tiket peluncuran dari portal resmi.</p>
             <div id="securityShieldSpinner" class="w-8 h-8 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin mb-2"></div>
             <div id="securityShieldAction" class="hidden mt-3 w-full"></div>
         </div>
@@ -575,14 +575,14 @@ Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A"
 
             if (adminSession) {
                 const adminData = JSON.parse(localStorage.getItem('btek_admin_user') || '{}');
-                userIdentitas = adminData.name || 'Admin CBT B-TEK';
+                userIdentitas = adminData.name || 'Admin GURUPEDIA';
             } else {
                 try {
                     if (window.supabase) {
                         const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                         const { data: { session }, error } = await client.auth.getSession();
                         if (session && session.user) {
-                            userIdentitas = session.user.email || 'Guru CBT B-TEK';
+                            userIdentitas = session.user.email || 'Guru GURUPEDIA';
                         }
                     }
                 } catch (e) {
@@ -594,7 +594,7 @@ Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A"
             if (!userIdentitas) {
                 if (shieldSpinner) shieldSpinner.classList.add('hidden');
                 if (shieldTitle) shieldTitle.textContent = "🚫 Akses Ditolak: Belum Masuk";
-                if (shieldDesc) shieldDesc.innerHTML = "Gim balap 3D ini terlindungi. Anda harus <strong>login</strong> ke akun Guru atau Admin CBT B-TEK terlebih dahulu.";
+                if (shieldDesc) shieldDesc.innerHTML = "Gim balap 3D ini terlindungi. Anda harus <strong>login</strong> ke akun Guru atau Admin GURUPEDIA terlebih dahulu.";
                 if (shieldAction) {
                     shieldAction.innerHTML = `
                         <a href="login.html" class="block w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs text-center shadow">
@@ -688,10 +688,10 @@ Benda langit pemancar cahaya sendiri? | Bintang | Planet | Komet | Asteroid | A"
                 if (!trialAktif) {
                     if (shieldSpinner) shieldSpinner.classList.add('hidden');
                     if (shieldTitle) shieldTitle.textContent = "🔒 Masa Uji Coba 14 Hari Telah Selesai";
-                    if (shieldDesc) shieldDesc.innerHTML = "Gim Balapan 3D dan fitur Pembuat Soal AI adalah layanan khusus interaktif berbayar (tidak bisa memakai token biasa). Silakan hubungi Admin CBT B-TEK via WhatsApp untuk mengaktifkan lisensi akses penuh tanpa batas.";
+                    if (shieldDesc) shieldDesc.innerHTML = "Gim Balapan 3D dan fitur Pembuat Soal AI adalah layanan khusus interaktif berbayar (tidak bisa memakai token biasa). Silakan hubungi Admin GURUPEDIA via WhatsApp untuk mengaktifkan lisensi akses penuh tanpa batas.";
                     if (shieldAction) {
                         shieldAction.innerHTML = `
-                            <a href="https://wa.me/628525390541?text=${encodeURIComponent('Halo Admin CBT B-TEK (08525390541), masa uji coba 14 hari akun saya telah selesai. Saya ingin berlangganan lisensi Gim Balap 3D Turbo Kart. Akun: ' + userIdentitas)}" target="_blank" rel="noopener" class="block w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs text-center shadow mb-2">
+                            <a href="https://wa.me/628525390541?text=${encodeURIComponent('Halo Admin GURUPEDIA (08525390541), masa uji coba 14 hari akun saya telah selesai. Saya ingin berlangganan lisensi Gim Balap 3D Turbo Kart. Akun: ' + userIdentitas)}" target="_blank" rel="noopener" class="block w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs text-center shadow mb-2">
                                 💬 Hubungi Admin via WhatsApp (08525390541)
                             </a>
                             <a href="portal.html" class="block w-full py-2 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold text-center border border-slate-700">
