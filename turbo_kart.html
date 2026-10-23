@@ -128,7 +128,7 @@
     </main>
 
     <!-- AREA BAWAH: PANEL SOAL BERJEJER KIRI KE KANAN (1 S.D. 6 PEMAIN) -->
-    <section class="h-[43%] min-h-[220px] max-h-[340px] bg-slate-900 border-t-2 border-slate-800 w-full shrink-0 z-20 overflow-hidden">
+    <section class="h-[46%] min-h-[250px] max-h-[380px] bg-slate-900 border-t-2 border-slate-800 w-full shrink-0 z-20 overflow-hidden">
         <div id="playersQuizGrid" class="w-full h-full grid divide-x divide-slate-800"></div>
     </section>
 
@@ -1216,8 +1216,8 @@ Pusat tata surya kita adalah? | Bumi | Bulan | Matahari | Saturnus | C" class="w
                         </div>
                     </div>
 
-                    <!-- Tombol Jawaban -->
-                    <div id="quiz-options-${p.index}" class="grid grid-cols-2 sm:grid-cols-4 gap-1 shrink-0">
+                    <!-- Tombol Jawaban: Grid 2x2 Lega -->
+                    <div id="quiz-options-${p.index}" class="grid grid-cols-2 gap-1.5 shrink-0 pt-0.5">
                         ${renderPlayerOptionButtonsHTML(p)}
                     </div>
                 </div>
@@ -1256,19 +1256,29 @@ Pusat tata surya kita adalah? | Bumi | Bulan | Matahari | Saturnus | C" class="w
 
         function renderPlayerOptionButtonsHTML(player) {
             const labels = ['A', 'B', 'C', 'D'];
+            const badgeBg = [
+                'bg-amber-400 text-slate-950',
+                'bg-sky-400 text-slate-950',
+                'bg-emerald-400 text-slate-950',
+                'bg-rose-400 text-white'
+            ];
             const q = player.currentQuestion;
 
             return q.options.map((opt, idx) => {
                 let innerContent = '';
                 if (q.isFraction) {
                     innerContent = `
-                        <span class="text-[8px] font-racing text-slate-400">${labels[idx]}</span>
-                        ${formatFractionHTML(opt.num, opt.den, 'text-xs text-white')}
+                        <div class="flex items-center justify-center gap-2 w-full">
+                            <span class="w-5 h-5 rounded flex items-center justify-center font-racing font-black text-[10px] shrink-0 shadow-xs ${badgeBg[idx]}">${labels[idx]}</span>
+                            <span class="font-racing font-bold text-sm sm:text-base text-white drop-shadow">${formatFractionHTML(opt.num, opt.den, 'text-sm sm:text-base text-white')}</span>
+                        </div>
                     `;
                 } else {
                     innerContent = `
-                        <span class="text-[8px] font-racing font-bold text-amber-300 mr-1">${labels[idx]}:</span>
-                        <span class="text-[10px] sm:text-xs font-semibold text-white leading-tight truncate max-w-full">${opt.text}</span>
+                        <div class="flex items-start gap-1.5 w-full text-left">
+                            <span class="w-5 h-5 rounded flex items-center justify-center font-racing font-black text-[10px] shrink-0 shadow-xs mt-0.5 ${badgeBg[idx]}">${labels[idx]}</span>
+                            <span class="text-[11px] sm:text-xs font-bold text-slate-100 leading-snug break-words whitespace-normal flex-1">${opt.text}</span>
+                        </div>
                     `;
                 }
 
@@ -1276,7 +1286,7 @@ Pusat tata surya kita adalah? | Bumi | Bulan | Matahari | Saturnus | C" class="w
                     <button
                         type="button"
                         onclick="handlePlayerAnswer(${player.index}, '${opt.key}')"
-                        class="py-1.5 px-1 rounded-lg bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-600/80 hover:border-sky-400 transition flex items-center justify-center shadow text-center overflow-hidden"
+                        class="min-h-[44px] sm:min-h-[48px] px-2 py-1.5 rounded-xl bg-slate-800/95 hover:bg-slate-700 active:scale-95 border-2 border-slate-600/90 hover:border-amber-300 transition flex items-center justify-center shadow-md cursor-pointer select-none text-left"
                     >
                         ${innerContent}
                     </button>

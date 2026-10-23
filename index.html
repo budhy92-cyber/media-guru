@@ -79,18 +79,13 @@
                 <!-- Desktop Nav Links -->
                 <nav class="hidden md:flex items-center gap-7">
                     <a href="#beranda" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">Beranda</a>
-                    <a href="#game3d" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition flex items-center gap-1">
-                        <span>🏎️</span> Gim Balap 3D <span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-700 text-[10px] font-bold">Baru</span>
-                    </a>
+                    <a href="#gim-soal" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">Gim Pembelajaran</a>
                     <a href="#fitur" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">Fitur Platform</a>
                     <a href="#pengembang" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition">Profil Pengembang</a>
                 </nav>
 
                 <!-- Desktop Header Actions -->
                 <div class="hidden sm:flex items-center gap-3">
-                    <a href="turbo_kart.html" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition">
-                        <span>🎮</span> Main Game 3D
-                    </a>
                     <a href="login.html" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 shadow-md shadow-blue-500/25 hover:shadow-lg hover:shadow-blue-500/35 transition transform active:scale-95">
                         <span>Masuk Guru / Siswa</span>
                         <span>→</span>
@@ -120,9 +115,8 @@
             <a href="#beranda" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-blue-600 transition">
                 🏠 Beranda
             </a>
-            <a href="turbo_kart.html" class="block px-3 py-2.5 rounded-xl text-sm font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 transition flex items-center justify-between">
-                <span class="flex items-center gap-2"><span>🏎️</span> Turbo Kart Edu-GP 3D</span>
-                <span class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-200 text-amber-900">MAIN SEKARANG</span>
+            <a href="#gim-soal" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-blue-600 transition">
+                🎮 Gim Pembelajaran
             </a>
             <a href="#fitur" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 hover:text-blue-600 transition">
                 ✨ Fitur Platform
@@ -166,13 +160,10 @@
                 </p>
 
                 <!-- Tombol Aksi Cepat (Ramah Ponsel & Desktop) -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 max-w-md mx-auto">
-                    <a href="login.html" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition transform active:scale-95 flex items-center justify-center gap-2">
-                        <span>🚀 Masuk ke Portal Media</span>
-                    </a>
-                    <a href="turbo_kart.html" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base border-2 border-slate-200 hover:border-slate-300 shadow-sm transition transform active:scale-95 flex items-center justify-center gap-2">
-                        <span>🏎️ Mainkan Game 3D</span>
-                        <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Gratis</span>
+                <div class="flex items-center justify-center max-w-md mx-auto">
+                    <a href="login.html" class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm sm:text-base shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition transform active:scale-95 flex items-center justify-center gap-2">
+                        <span>🚀 Masuk ke Portal Media Pembelajaran</span>
+                        <span>→</span>
                     </a>
                 </div>
 
@@ -200,97 +191,54 @@
         </div>
     </section>
 
-    <!-- ================= SHOWCASE KHUSUS: GAME 3D TURBO KART ================= -->
-    <section id="game3d" class="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
+    <!-- ================= SEKSI: GIM PEMBELAJARAN BISA TAMBAHKAN SOAL ================= -->
+    <section id="gim-soal" class="py-16 sm:py-20 bg-slate-900 text-white relative overflow-hidden">
         <!-- Glow Efek -->
         <div class="absolute -top-32 -right-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-700 rounded-3xl p-6 sm:p-10 shadow-2xl">
-                <div class="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+                <div class="max-w-3xl mx-auto text-center space-y-4">
                     
-                    <!-- Kiri: Penjelasan Gim -->
-                    <div class="flex-1 text-left space-y-4">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-bold">
-                            <span>🎮 INOVASI TERBARU</span>
-                            <span>•</span>
-                            <span>Edu-GP 3D Multiplayer</span>
-                        </div>
-                        <h2 class="text-2xl sm:text-4xl font-display font-black text-white leading-tight">
-                            Turbo Kart Edu-GP 3D: <br>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-rose-400">
-                                Balapan Sambil Asah Pengetahuan
-                            </span>
-                        </h2>
-                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                            Game balap mobil 3D edukasi pertama yang menggabungkan adu kecepatan sirkuit dengan menjawab soal kuis pelajaran! Mendukung 1 hingga 6 pembalap sekaligus di satu layar gawai (*split-screen multi-viewport*).
-                        </p>
-                        
-                        <!-- Poin Fitur Gim -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                            <div class="flex items-start gap-2.5">
-                                <span class="text-lg">🔢</span>
-                                <div>
-                                    <div class="font-bold text-xs sm:text-sm text-white">Soal Pecahan & Multi-Mapel</div>
-                                    <div class="text-[11px] text-slate-400">Pecahan visual kue pie, bar, matematika dasar, IPAS, & Pancasila.</div>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-2.5">
-                                <span class="text-lg">✍️</span>
-                                <div>
-                                    <div class="font-bold text-xs sm:text-sm text-white">Tambah Soal Sendiri</div>
-                                    <div class="text-[11px] text-slate-400">Guru bebas membuat mata pelajaran & bank soal khusus kelasnya!</div>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-2.5">
-                                <span class="text-lg">🎁</span>
-                                <div>
-                                    <div class="font-bold text-xs sm:text-sm text-white">2 Kotak Misteri Taktis</div>
-                                    <div class="text-[11px] text-slate-400">Mega Star 🌟, Tumpahan Oli 🛢️, Magnet 🧲, Petir ⚡, & Roket 🚀.</div>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-2.5">
-                                <span class="text-lg">🛣️</span>
-                                <div>
-                                    <div class="font-bold text-xs sm:text-sm text-white">5 Bentuk Sirkuit 3D</div>
-                                    <div class="text-[11px] text-slate-400">Sirkuit Lurus, Oval GP, Berkelok S, Bukit Gelombang, & Ekstrem Z.</div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-bold">
+                        <span>🎮 INOVASI MEDIA EDUKASI</span>
+                    </div>
 
-                        <!-- CTA Langsung Main -->
-                        <div class="pt-4 flex flex-col sm:flex-row items-center gap-3">
-                            <a href="turbo_kart.html" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 hover:from-amber-300 hover:to-rose-400 text-slate-950 font-black text-sm sm:text-base shadow-lg shadow-orange-500/25 transition transform active:scale-95 text-center flex items-center justify-center gap-2">
-                                <span>🏁 Buka & Mainkan Game Sekarang</span>
-                                <span>→</span>
-                            </a>
+                    <!-- SUBJUDUL RESMI -->
+                    <h2 class="text-2xl sm:text-4xl font-display font-black text-white leading-tight uppercase tracking-tight">
+                        GIM PEMBELAJARAN BISA TAMBAHKAN SOAL
+                    </h2>
+
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Platform CBT B-TEK menghadirkan inovasi media ajar interaktif yang sangat fleksibel bagi tenaga pendidik. Guru memiliki kebebasan penuh untuk merancang, membuat materi, dan memasukkan bank soal kuis sendiri sesuai kurikulum dan capaian pembelajaran yang diajarkan di kelas.
+                    </p>
+
+                    <!-- Poin Keunggulan -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-left">
+                        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-700/80 shadow-md">
+                            <div class="text-3xl mb-2.5">✍️</div>
+                            <div class="font-bold text-sm sm:text-base text-white mb-1.5">Buat Soal Sendiri</div>
+                            <div class="text-xs text-slate-400 leading-relaxed">Bebas mengetikkan pertanyaan dan opsi jawaban A, B, C, D sesuai mata pelajaran yang diinginkan guru.</div>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-700/80 shadow-md">
+                            <div class="text-3xl mb-2.5">👥</div>
+                            <div class="font-bold text-sm sm:text-base text-white mb-1.5">Multiplayer 1–6 Siswa</div>
+                            <div class="text-xs text-slate-400 leading-relaxed">Mendukung belajar seru dan kompetitif antar-murid dalam satu layar (*split-screen multi-viewport*).</div>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-700/80 shadow-md">
+                            <div class="text-3xl mb-2.5">🔒</div>
+                            <div class="font-bold text-sm sm:text-base text-white mb-1.5">Eksklusif di Portal</div>
+                            <div class="text-xs text-slate-400 leading-relaxed">Tersedia langsung di katalog media pembelajaran setelah guru atau murid masuk melalui akun terdaftar.</div>
                         </div>
                     </div>
 
-                    <!-- Kanan: Mockup Kartu Preview Game -->
-                    <div class="w-full lg:w-96 shrink-0 bg-slate-950 border border-slate-700/80 rounded-2xl p-4 shadow-xl">
-                        <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-                            <div class="flex items-center gap-2">
-                                <span class="w-3 h-3 rounded-full bg-red-500"></span>
-                                <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
-                                <span class="w-3 h-3 rounded-full bg-green-500"></span>
-                            </div>
-                            <span class="text-[11px] font-mono text-slate-400">turbo_kart_3d.web</span>
+                    <!-- Info Box Panduan Akses -->
+                    <div class="pt-4">
+                        <div class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-950/80 border border-slate-700 text-xs text-slate-300 font-medium text-left">
+                            <span class="text-base shrink-0">💡</span>
+                            <span>Gim pembelajaran interaktif ini dapat diakses langsung oleh siswa &amp; guru melalui menu katalog di dalam <strong>Portal CBT B-TEK</strong> setelah masuk.</span>
                         </div>
-                        <div class="py-6 text-center space-y-3">
-                            <div class="text-6xl animate-bounce">🏎️💨</div>
-                            <div class="font-display font-black text-lg text-amber-300">TURBO KART EDU-GP</div>
-                            <p class="text-xs text-slate-400 px-2">
-                                Siap dimainkan langsung di Browser Chrome, Edge, Safari di HP, Tablet, Laptop, atau Proyektor Kelas tanpa install aplikasi!
-                            </p>
-                            <div class="flex items-center justify-center gap-1.5 text-xs text-emerald-400 font-bold">
-                                <span>✅ Split-Screen 3D Siap Digunakan</span>
-                            </div>
-                        </div>
-                        <a href="turbo_kart.html" class="block w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-center font-bold text-xs text-sky-300 transition">
-                            Coba Simulasi Balapan 3D ⚡
-                        </a>
                     </div>
 
                 </div>
@@ -457,7 +405,9 @@
                 </div>
                 <div class="flex flex-wrap items-center justify-center gap-4 text-xs font-semibold">
                     <a href="#beranda" class="hover:text-white transition">Beranda</a>
-                    <a href="turbo_kart.html" class="hover:text-amber-400 transition">Game 3D Edu-GP</a>
+                    <a href="#gim-soal" class="hover:text-white transition">Gim Pembelajaran</a>
+                    <a href="#fitur" class="hover:text-white transition">Fitur Platform</a>
+                    <a href="#pengembang" class="hover:text-white transition">Profil Pengembang</a>
                     <a href="login.html" class="hover:text-white transition">Masuk Akun</a>
                     <a href="https://github.com/budhy92-cyber" target="_blank" class="hover:text-white transition">GitHub</a>
                 </div>
